@@ -1,0 +1,17 @@
+cat <<EOF > .gitignore
+# Backend (Spring Boot)
+Fixly-Backend/target/
+*.log
+
+# Frontend (React / Vite)
+fixly-frontend/node_modules/
+fixly-frontend/dist/
+
+# Environment
+.env
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+EOF

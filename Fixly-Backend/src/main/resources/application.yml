@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Fixly-Backend	
+  datasource:
+    url: jdbc:mysql://localhost:3306/Fixly_Backend
+    username: root
+    password: Ss@#1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+   
+      
+      
