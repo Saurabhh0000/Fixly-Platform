@@ -1,0 +1,171 @@
+/* ================= OVERLAY ================= */
+.otp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* ================= MODAL ================= */
+.otp-modal {
+  background: #ffffff;
+  padding: 26px;
+  border-radius: 18px;
+  width: 92%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.otp-modal h3 {
+  margin-bottom: 6px;
+}
+
+.otp-subtitle {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* ================= OTP BOXES ================= */
+.otp-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.otp-input {
+  width: 42px;
+  height: 50px;
+  border-radius: 10px;
+  border: 2px solid #c7d2fe;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  transition: all 0.25s ease;
+  text-transform: lowercase;
+}
+
+/* ================= STATES ================= */
+.otp-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+}
+
+.otp-input.error {
+  border-color: #ef4444;
+  background: #fee2e2;
+}
+
+.otp-input.success {
+  border-color: #22c55e;
+  background: #dcfce7;
+}
+
+/* ================= SHAKE ================= */
+.shake {
+  animation: shake 0.35s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* ================= MESSAGE ================= */
+.otp-message {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.otp-message.error {
+  color: #dc2626;
+}
+
+.otp-message.success {
+  color: #16a34a;
+}
+
+/* ================= ACTIONS ================= */
+/* ================= ACTIONS ================= */
+.otp-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* COMMON BUTTON */
+.btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* ❌ CANCEL BUTTON */
+.btn.cancel {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+@media (hover: hover) {
+  .btn.cancel:hover {
+    background: #e2e8f0;
+  }
+}
+
+.btn.cancel:active {
+  transform: scale(0.97);
+}
+
+/* ✅ VERIFY OTP – FIXLY GREEN */
+.btn.verify {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(34, 197, 94, 0.35);
+}
+
+@media (hover: hover) {
+  .btn.verify:hover {
+    box-shadow: 0 14px 30px rgba(34, 197, 94, 0.5);
+    transform: translateY(-1px);
+  }
+}
+
+.btn.verify:active {
+  transform: scale(0.96);
+}
+
+
+/* ================= MOBILE ================= */
+@media (max-width: 480px) {
+  .otp-boxes {
+    gap: 8px;
+  }
+
+  .otp-input {
+    width: 38px;
+    height: 46px;
+    font-size: 1.1rem;
+  }
+
+  .otp-modal {
+    padding: 22px;
+  }
+}

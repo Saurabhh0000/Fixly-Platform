@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap");
+
+/* ================= PROVIDER FOOTER ================= */
+.provider-footer {
+  background: linear-gradient(135deg, #020617, #111827);
+  color: #ecfdf5;
+  padding: 60px 20px 30px;
+  font-family: "Nunito", sans-serif;
+}
+
+/* ================= TOP ================= */
+.provider-footer-top {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 40px;
+  align-items: center;
+}
+
+/* ================= BRAND ================= */
+.provider-brand h3 {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #ffffff; /* Fix */
+}
+
+.provider-brand h3 span {
+  color: #22c55e; /* ly – Fixly brand green */
+}
+
+.provider-desc {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #d1fae5;
+  max-width: 520px;
+}
+
+/* ================= BADGES ================= */
+.provider-badges {
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.provider-badges span {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.provider-badges span:hover {
+  background: #22c55e;
+  color: #022c22;
+  transform: translateY(-4px);
+}
+
+/* ================= SOCIAL ================= */
+.provider-social h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 16px;
+}
+
+.social-icons svg {
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.social-icons svg:hover {
+  transform: scale(1.25);
+  color: #22c55e;
+}
+
+/* ================= BOTTOM ================= */
+.provider-footer-bottom {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #bbf7d0;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .provider-footer-top {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .provider-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .provider-badges {
+    justify-content: center;
+  }
+
+  .social-icons {
+    justify-content: center;
+  }
+
+  .provider-footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}

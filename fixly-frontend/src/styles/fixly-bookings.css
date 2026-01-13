@@ -1,0 +1,347 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap");
+
+/* =====================================================
+   FIXLY ROOT COLORS
+===================================================== */
+:root {
+  --fixly-green: #22c55e;
+  --fixly-green-dark: #16a34a;
+
+  --fixly-blue: #2563eb;
+  --fixly-blue-dark: #1e40af;
+
+  --bg-page: #f8fafc;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+
+  --pending-bg: #fef3c7;
+  --pending-text: #92400e;
+
+  --accepted-bg: #dbeafe;
+  --accepted-text: #1e3a8a;
+
+  --cancel-bg: #fee2e2;
+  --cancel-text: #7f1d1d;
+}
+
+/* =====================================================
+   PAGE BASE
+===================================================== */
+.bookings-page-bg {
+  background: var(--bg-page);
+  min-height: 100vh;
+  padding: 16px;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* =====================================================
+   RESERVATION CARD
+===================================================== */
+.reservation-card {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    var(--fixly-blue),
+    var(--fixly-blue-dark)
+  );
+  color: #ffffff;
+
+  border-radius: 24px;
+  padding: 24px 26px;
+  margin-bottom: 20px;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+  .reservation-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* =====================================================
+   STATUS BADGES
+===================================================== */
+.status-badges {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  padding: 6px 16px;
+  border-radius: 999px;
+
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.status-badges.completed {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-badges.pending {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+
+.status-badges.accepted {
+  background: var(--accepted-bg);
+  color: var(--accepted-text);
+}
+
+.status-badges.cancelled {
+  background: var(--cancel-bg);
+  color: var(--cancel-text);
+}
+
+/* =====================================================
+   PROVIDER INFO
+===================================================== */
+.provider-name {
+  margin-top: 10px;
+  font-size: 1.35rem;
+  font-weight: 800;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ICON COLORS */
+.icon-provider { color: #facc15; }
+.icon-date { color: var(--fixly-green); }
+.icon-location { color: #38bdf8; }
+.icon-price { color: #fde047; }
+
+/* =====================================================
+   DATE & LOCATION
+===================================================== */
+.card-date,
+.card-location {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  font-size: 0.85rem;
+  opacity: 0.95;
+}
+
+/* =====================================================
+   OTP SECTION
+===================================================== */
+.otp-box {
+  margin-top: 14px;
+  background: #eef2ff;
+  color: var(--accepted-text);
+
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.otp-warning {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  background: #dc2626;
+  color: #ffffff;
+
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* =====================================================
+   DIVIDER
+===================================================== */
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.35);
+  margin: 24px 0;
+}
+
+/* =====================================================
+   PRICE ROW
+===================================================== */
+.amount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.amount-row .price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.15rem;
+}
+
+.amount-row svg {
+  color: var(--fixly-green);
+}
+
+/* =====================================================
+   REVIEW
+===================================================== */
+.review-section {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.review-btn {
+  background: linear-gradient(
+    135deg,
+    var(--fixly-green),
+    var(--fixly-green-dark)
+  );
+  color: #ffffff;
+
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.rated-badge {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+/* =====================================================
+   NO BOOKINGS EMPTY STATE
+===================================================== */
+.no-bookings {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 56px 26px;
+  max-width: 520px;
+  margin: 48px auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.08);
+}
+
+.no-bookings img {
+  width: 200px;
+  max-width: 100%;
+  margin-bottom: 24px;
+}
+
+.no-bookings h4 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.no-bookings p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 12px 0 22px;
+  line-height: 1.6;
+}
+
+/* CTA */
+.book-service-btn {
+  background: linear-gradient(
+    135deg,
+    var(--fixly-blue),
+    var(--fixly-blue-dark)
+  );
+  color: #ffffff;
+
+  border: none;
+  border-radius: 999px;
+  padding: 14px 34px;
+
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+  .book-service-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgba(37, 99, 235, 0.45);
+  }
+}
+
+/* =====================================================
+   MOBILE RESPONSIVE
+===================================================== */
+@media (max-width: 576px) {
+  .reservation-card {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .provider-name {
+    font-size: 1.2rem;
+  }
+
+  .otp-box {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .amount-row {
+    font-size: 0.9rem;
+  }
+
+  .no-bookings {
+    padding: 44px 20px;
+    margin: 28px 14px;
+  }
+
+  .no-bookings img {
+    width: 170px;
+  }
+
+  .book-service-btn {
+    width: 100%;
+    padding: 14px 0;
+  }
+}

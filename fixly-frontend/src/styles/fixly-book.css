@@ -1,0 +1,245 @@
+/* ================= CONTAINER ================= */
+.fixly-book-container {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+}
+
+/* ================= CARD ================= */
+.fixly-book-card {
+  width: 100%;
+  max-width: 540px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 32px;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.12);
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= HEADER ================= */
+.booking-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.booking-header h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.booking-header p {
+  font-size: 0.92rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* ================= SUMMARY ================= */
+.booking-summary {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eef2ff, #f0fdf4);
+  border: 1px solid #e0e7ff;
+}
+
+.summary-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.summary-item:last-child {
+  margin-bottom: 0;
+}
+
+.summary-item svg {
+  font-size: 1.2rem;
+  color: #4f46e5;
+  margin-top: 4px;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: block;
+}
+
+.summary-item strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+/* ================= PRICE ================= */
+
+
+/* PRICE HIGHLIGHT */
+.summary-item.price strong {
+  color: #16a34a; /* green */
+  font-size: 1rem;
+}
+.summary-item.price {
+
+  background: rgba(34, 197, 94, 0.08);
+  padding: 10px;
+  border-radius: 12px;
+}
+
+
+/* ================= FORM ================= */
+.booking-form {
+  margin-top: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #334155;
+}
+
+.form-group select,
+.form-group input {
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid #c7d2fe;
+  font-size: 0.9rem;
+  transition: border 0.25s ease, box-shadow 0.25s ease;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* ================= BUTTONS ================= */
+.confirm-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6366f1, #22c55e);
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(79, 70, 229, 0.35);
+}
+
+.confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ================= SPINNER ================= */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================= SUCCESS SCREEN ================= */
+.booking-status-container {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-card {
+  background: #ffffff;
+  padding: 44px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.18);
+}
+
+.success-icon {
+  font-size: 4.5rem;
+  color: #22c55e;
+}
+
+.success-card h2 {
+  margin-top: 14px;
+  font-size: 1.6rem;
+}
+
+.success-card p {
+  margin-top: 8px;
+  color: #64748b;
+}
+
+.redirect-text {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 480px) {
+  .fixly-book-card {
+    padding: 24px;
+  }
+
+  .booking-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .summary-item {
+    gap: 10px;
+  }
+}

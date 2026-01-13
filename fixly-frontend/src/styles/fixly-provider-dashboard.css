@@ -1,0 +1,575 @@
+.provider-dashboard {
+  max-width: 1200px;
+  margin: auto;
+  padding: 28px;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* WELCOME */
+.provider-welcome {
+  display: flex;
+  gap: 16px;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  padding: 22px;
+  border-radius: 18px;
+  margin-bottom: 26px;
+}
+
+.welcome-icon {
+  font-size: 2.4rem;
+  color: #6366f1;
+}
+
+/* STATS */
+.provider-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 16px;
+  display: flex;
+  gap: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+.stat-details .stat-title{
+  font-weight: 900;
+}
+
+.stat-card.blue .stat-icon { background:#dbeafe;color:#1e40af }
+.stat-card.yellow .stat-icon { background:#fef3c7;color:#92400e }
+.stat-card.green .stat-icon { background:#dcfce7;color:#166534 }
+.stat-card.purple .stat-icon { background:#ede9fe;color:#5b21b6 }
+.stat-card.red .stat-icon{background: #f3babe; color: red;}
+.stat-card.lightblue .stat-icon{background: rgb(171, 171, 240); color: #1e40af;}
+/* REVIEWS */
+.provider-reviews {
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:28px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+/* GRID */
+.booking-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:28px;
+}
+
+/* CARD */
+.booking-profile-card {
+  background:#fff;
+  border-radius:26px;
+  overflow:hidden;
+  box-shadow:0 22px 45px rgba(0,0,0,.08);
+  position:relative;
+}
+
+/* COVER */
+.booking-cover {
+  height: 140px;
+width: calc(100% + 32px);     /* ⬅ compensate card padding */
+  margin-left: -16px;           /* ⬅ pull left */
+  margin-right: -16px;          /* ⬅ pull right */  background: linear-gradient(
+    135deg,
+    #eef2ff 0%,
+    #e0e7ff 50%,
+    #f8fafc 100%
+  );
+  position: relative;
+    border-radius: 16px 16px 0 0; /* optional – nice top curve */
+
+}
+
+.booking-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top right,
+    rgba(255,255,255,0.35),
+    transparent 60%
+  );
+}
+
+/* STATUS */
+.status-pill {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 6px 16px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.status-pill.pending{background:#fef3c7;color:#92400e}
+.status-pill.accepted{background:#dbeafe;color:#1e40af}
+.status-pill.completed{background:#dcfce7;color:#166534}
+.status-pill.cancelled{background:#fee2e2;color:#991b1b}
+
+.rating-pill {
+  position: absolute;
+  top: 54px;
+  right: 16px;
+
+  background: #ffffff;
+  padding: 6px 12px;
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f59e0b;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* AVATAR */
+.booking-avatar {
+  width: 96px;
+  height: 96px;
+
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #ffffff;
+
+  border-radius: 50%;
+  position: absolute;
+
+  left: 24px;
+  top: 86px;                    /* ✅ overlaps cover nicely */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2.4rem;
+
+  border: 6px solid #ffffff;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+
+/* CONTENT */
+.booking-content {
+  padding:38px 24px 24px 24px;
+}
+
+.customer-name {
+  font-size:1.35rem;
+  font-weight:800;
+}
+
+.address-text,
+.date-text {
+  margin-top:8px;
+  display:flex;
+  gap:8px;
+  font-size:.9rem;
+  color:#64748b;
+}
+
+.address-text svg{color:#2563eb}
+.date-text svg{color:#16a34a}
+
+/* ================= PRICE INFO BAR ================= */
+.price-info-bar {
+  margin-top: 18px;
+
+  /* ⬅️➡️ RIGHT SIDE SPACE BADHAYA */
+  width: calc(100% - 0px);   /* pehle 48px tha */
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 18px 32px 18px 10px;
+  /*            ↑ RIGHT padding increased */
+
+  min-height: 64px;
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, #dcfce7, #ecfdf5);
+  color: #166534;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+}
+
+
+/* PRICE ROW */
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* PRICE ICON */
+.price-row svg {
+  font-size: 1.2rem;
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+/* PRICE TEXT */
+.price-row span {
+  line-height: 1.4;
+  font-size: 0.8rem;
+}
+
+.price-row strong {
+  font-weight: 800;
+}
+
+
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .price-info-bar {
+    width: calc(100% - 32px);
+    padding: 12px 16px;
+  }
+}
+
+
+
+
+
+/* ACTIONS */
+.booking-actions {
+  margin-top:18px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.action-btn {
+  border:none;
+  border-radius:14px;
+  padding:8px 16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.action-btn.accept{background:#dcfce7;color:#166534}
+.action-btn.cancel{background:#fee2e2;color:#991b1b}
+.action-btn.otp{background:#e0e7ff;color:#4338ca}
+
+.completed-badge{font-weight:800;color:#166534}
+.cancelled-badge{font-weight:800;color:#991b1b}
+
+/* EMPTY */
+.booking-empty {
+  text-align:center;
+  padding:50px 20px;
+}
+
+.empty-avatar {
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:#eef2ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto auto 16px;
+  font-size:2rem;
+  color:#6366f1;
+}
+/* ================= FILTER BAR ================= */
+
+.booking-filter-bar {
+  display: flex;
+  gap: 12px;
+}
+
+/* 📱 MOBILE FIX */
+@media (max-width: 768px) {
+  .booking-filter-bar {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 6px;
+  }
+
+  .booking-filter-bar::-webkit-scrollbar {
+    display: none; /* clean look */
+  }
+
+  .filter-btn {
+    flex-shrink: 0; /* 🔥 MOST IMPORTANT */
+  }
+}
+
+/* ================= RATINGS CARD ================= */
+.ratings-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
+.ratings-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #166534;
+  margin-bottom: 18px;
+}
+
+.ratings-title svg {
+  color: #22c55e;
+}
+
+/* ================= TABLE ================= */
+.ratings-table-wrapper {
+  overflow-x: auto;
+}
+
+.ratings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ratings-table thead th {
+  text-align: left;
+  padding: 14px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  background: #f0fdf4;
+}
+
+.ratings-table tbody td {
+  padding: 16px 14px;
+  border-bottom: 1px solid #ecfdf5;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.ratings-table tbody tr:hover {
+  background: #f0fdf4;
+}
+
+/* ================= RATINGS ================= */
+
+.ratings-section {
+  margin-top: 40px;
+}
+
+.ratings-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.ratings-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.rating-icon {
+  color: #f5b301;
+}
+
+/* TABLE WRAPPER */
+.ratings-table-wrapper {
+  overflow-x: auto;
+}
+
+/* TABLE */
+.ratings-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.ratings-table thead {
+  background: #f9fafb;
+}
+
+.ratings-table th {
+  padding: 14px;
+  text-align: left;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #555;
+}
+
+.ratings-table td {
+  padding: 14px;
+  font-size: 0.95rem;
+  border-top: 1px solid #eee;
+}
+
+.ratings-table tbody tr:hover {
+  background: #f7faff;
+}
+
+/* ZEBRA */
+.ratings-table tbody tr:nth-child(even) {
+  background: #fcfcfc;
+}
+
+/* RATING BADGE */
+/* ===== FIX BOOTSTRAP OVERRIDE ===== */
+
+.rating-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 6px 14px !important;   /* ⬅ FIX HEIGHT */
+  min-height: unset !important;
+  line-height: 1 !important;
+
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* STAR ICON */
+.rating-badge svg {
+  font-size: 0.9rem;
+  margin-right: 6px;
+}
+
+
+/* STAR COLORS */
+.r-5 {
+  background: #e6f7ed;
+  color: #1b8f3a;
+}
+
+.r-4 {
+  background: #edf7ff;
+  color: #0b5ed7;
+}
+
+.r-3 {
+  background: #fff6e5;
+  color: #f59e0b;
+}
+
+.r-2 {
+  background: #ffeaea;
+  color: #dc3545;
+}
+
+.r-1 {
+  background: #ffeaea;
+  color: #b02a37;
+}
+
+/* EMPTY */
+.no-ratings {
+  text-align: center;
+  padding: 40px 0;
+  color: #777;
+}
+
+.empty-star {
+  font-size: 40px;
+  color: #ddd;
+  margin-bottom: 10px;
+}
+
+.no-feedback {
+  font-style: italic;
+  color: #999;
+}
+
+/* ================= MOBILE VIEW ================= */
+@media (max-width: 768px) {
+  .ratings-table {
+    min-width: 100%;
+  }
+
+  .ratings-table thead {
+    display: none;
+  }
+
+  .ratings-table tr {
+    display: block;
+    margin-bottom: 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .ratings-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border: none;
+  }
+
+  .ratings-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+  }
+}
+
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .booking-avatar {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .booking-content {
+    padding-top: 50px;
+    text-align: center;
+  }
+
+  .address-text,
+  .date-text,
+  .booking-actions {
+    justify-content: center;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .price-info-bar {
+    width: calc(100% - 0px);
+    padding: 16px 22px;
+  }
+}

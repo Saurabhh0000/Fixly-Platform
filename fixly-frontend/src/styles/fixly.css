@@ -1,0 +1,18 @@
+/* ================= ROOT ================= */
+:root {
+  --primary: #2563eb;
+  --accent: #22c55e;
+  --dark: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --card: #ffffff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--dark);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+
+
