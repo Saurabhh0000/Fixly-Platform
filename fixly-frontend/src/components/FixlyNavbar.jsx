@@ -47,6 +47,10 @@ const FixlyNavbar = () => {
     toast.success("Logged out successfully 👋");
     navigate("/login");
   };
+  const closeMenuAndNavigate = (path) => {
+    setMenuOpen(false);
+    navigate(path);
+  };
 
   /* ================= NOT LOGGED IN ================= */
   if (!user) {
@@ -61,15 +65,26 @@ const FixlyNavbar = () => {
 
           <Navbar.Collapse in={menuOpen} ref={menuRef}>
             <Nav className="ms-auto gap-3">
-              <Nav.Link as={Link} to="/" className="nav-link-custom">
+              <Nav.Link
+                as={Link}
+                to="/"
+                className="nav-link-custom"
+                onClick={() => setMenuOpen(false)}>
                 Home
               </Nav.Link>
 
-              <Nav.Link as={Link} to="/login" className="nav-btn secondary">
+              <Nav.Link
+                as={Link}
+                to="/login"
+                className="nav-btn secondary"
+                onClick={() => setMenuOpen(false)}>
                 Login
               </Nav.Link>
-
-              <Nav.Link as={Link} to="/register" className="nav-btn primary">
+              <Nav.Link
+                as={Link}
+                to="/register"
+                className="nav-btn primary"
+                onClick={() => setMenuOpen(false)}>
                 Register
               </Nav.Link>
             </Nav>
@@ -105,26 +120,31 @@ const FixlyNavbar = () => {
           <Nav className="ms-auto align-items-center gap-3">
             <Nav.Link
               className="nav-link-custom"
-              onClick={() => navigate(dashboardPath)}>
+              onClick={() => closeMenuAndNavigate(dashboardPath)}>
               Dashboard
             </Nav.Link>
 
             {role === "USER" && (
               <>
-                <Nav.Link as={Link} to="/search" className="nav-link-custom">
+                <Nav.Link
+                  as={Link}
+                  to="/search"
+                  className="nav-link-custom"
+                  onClick={() => setMenuOpen(false)}>
                   Book Service
                 </Nav.Link>
 
                 <Nav.Link
                   as={Link}
                   to="/user/bookings"
-                  className="nav-link-custom">
+                  className="nav-link-custom"
+                  onClick={() => setMenuOpen(false)}>
                   My Bookings
                 </Nav.Link>
 
                 <button
                   className="become-provider-btn"
-                  onClick={() => navigate("/become-provider")}>
+                  onClick={() => closeMenuAndNavigate("/become-provider")}>
                   Become Provider
                 </button>
               </>
