@@ -18,22 +18,36 @@
   background: #ffffff;
 }
 
-/* SPINNER */
-.spinner {
-  width: 44px;
-  height: 44px;
-  border: 4px solid #e5e7eb;
-  border-top-color: #22c55e;
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+/* ================= LOADER ================= */
+.loader-overlay {
+  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #ffffff;
+  z-index: 9999;
 }
 
-/* TEXT */
+/* CIRCULAR SPINNER */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(34, 197, 94, 0.25);
+  border-top-color: #16a34a;
+  animation: spin 0.8s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+}
+
+/* LOADER TEXT */
 .loader-text {
   font-size: 0.95rem;
   font-weight: 600;
   color: #374151;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
 }
 
 /* SPIN ANIMATION */
@@ -52,9 +66,11 @@
   }
 
   .loader-text {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 }
+
+
 
 
 /* ================= HEADER ================= */
