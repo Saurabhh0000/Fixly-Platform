@@ -516,8 +516,9 @@ body {
     flex-wrap: wrap;
   }
 
-  .cta-badges {
+.cta-badges {
     justify-content: center;
+    margin-bottom: 24px; /* ✅ GAP between badges & buttons */
   }
 }
 

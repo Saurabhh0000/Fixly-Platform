@@ -50,7 +50,7 @@ const UserDashboard = () => {
     return (
       <div className="loader-overlay">
         <div className="spinner" />
-        <p>Loading dashboard…</p>
+        <p className="loader-text">Loading dashboard</p>
       </div>
     );
   }
