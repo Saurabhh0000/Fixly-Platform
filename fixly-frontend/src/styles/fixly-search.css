@@ -38,6 +38,97 @@
   margin-top: 10px;
   font-size: 1rem;
 }
+/* ================= PAGE LOADER ================= */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  z-index: 99999;
+}
+
+/* CONTAINER */
+.logo-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* STACK FOR LOGO + SPINNER */
+.logo-stack {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: grid;
+  place-items: center;
+}
+
+/* LOGO CIRCLE */
+.logo-circle {
+  width: 52px;
+  height: 52px;
+  background: #22c55e;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.35);
+}
+
+/* SPINNER RING */
+.spinner-ring {
+  position: absolute;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: 3px solid rgba(34, 197, 94, 0.2);
+  border-top-color: #22c55e;
+  animation: spin 0.9s linear infinite;
+}
+
+/* TEXT */
+.logo-loader p {
+  margin-top: 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* SPIN ANIMATION */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .logo-stack {
+    width: 72px;
+    height: 72px;
+  }
+
+  .logo-circle {
+    width: 44px;
+    height: 44px;
+    font-size: 1.35rem;
+  }
+
+  .spinner-ring {
+    width: 62px;
+    height: 62px;
+    border-width: 2.5px;
+  }
+
+  .logo-loader p {
+    font-size: 0.88rem;
+  }
+}
+
 
 /* ================= TRUST BADGES ================= */
 .trust-badges {

@@ -42,9 +42,14 @@ const UserBookings = () => {
 
   if (loading) {
     return (
-      <div className="loader-overlay">
-        <Spinner animation="border" />
-        <p>Loading bookings…</p>
+      <div className="page-loader">
+        <div className="logo-loader">
+          <div className="logo-stack">
+            <div className="spinner-ring"></div>
+            <div className="logo-circle">F</div>
+          </div>
+          <p>Loading Fixly…</p>
+        </div>
       </div>
     );
   }

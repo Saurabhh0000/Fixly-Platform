@@ -50,8 +50,10 @@ const UserDashboard = () => {
     return (
       <div className="page-loader">
         <div className="logo-loader">
-          <div className="logo-circle">F</div>
-          <div className="spinner-ring"></div>
+          <div className="logo-stack">
+            <div className="spinner-ring"></div>
+            <div className="logo-circle">F</div>
+          </div>
           <p>Loading Fixly…</p>
         </div>
       </div>

@@ -98,6 +98,20 @@ const SearchResults = () => {
     navigate("/book", { state: provider });
   };
 
+  if (loading) {
+    return (
+      <div className="page-loader">
+        <div className="logo-loader">
+          <div className="logo-stack">
+            <div className="spinner-ring"></div>
+            <div className="logo-circle">F</div>
+          </div>
+          <p>Loading Fixly…</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <UserLayout>
       <div className="fixly-search">
