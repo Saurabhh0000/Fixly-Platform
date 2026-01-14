@@ -71,7 +71,6 @@ const SearchResults = () => {
           )}&category=${encodeURIComponent(category)}`
         );
 
-        console.log("Providers API response:", res.data); // ✅ DEBUG
         setProviders(res.data || []);
       } catch (err) {
         console.error("Provider fetch error", err);
