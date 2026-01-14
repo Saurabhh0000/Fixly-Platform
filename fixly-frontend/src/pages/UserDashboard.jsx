@@ -48,9 +48,12 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="loader-overlay">
-        <div className="spinner" />
-        <p className="loader-text">Loading dashboard</p>
+      <div className="page-loader">
+        <div className="logo-loader">
+          <div className="logo-circle">F</div>
+          <div className="spinner-ring"></div>
+          <p>Loading Fixly…</p>
+        </div>
       </div>
     );
   }
