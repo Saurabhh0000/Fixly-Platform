@@ -5,9 +5,14 @@ import {
   FaUser,
   FaHeart,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import "../../styles/fixly-user-footer.css";
 
 const UserFooter = () => {
+  const navigate = useNavigate();
+
   return (
     <footer className="fixly-footer user">
       <div className="footer-container">
@@ -17,8 +22,11 @@ const UserFooter = () => {
             Fix<span>ly</span>
           </h3>
           <p className="footer-desc">
-            Book trusted home services with verified professionals. Fast,
-            reliable and stress-free.
+            Book trusted home services with{" "}
+            <span className="highlight">verified</span> professionals.{" "}
+            <span className="highlight">Fast</span>,{" "}
+            <span className="highlight">reliable</span> and{" "}
+            <span className="highlight">stress-free</span>.
           </p>
 
           <div className="footer-badges">
@@ -29,22 +37,23 @@ const UserFooter = () => {
         </div>
 
         {/* RIGHT */}
+        {/* RIGHT */}
         <div className="footer-links">
           <h4>Quick Links</h4>
 
-          <span>
+          <span onClick={() => navigate("/search")}>
             <FaSearch /> Search Services
           </span>
 
-          <span>
+          <span onClick={() => navigate("/user/bookings")}>
             <FaCalendarCheck /> My Bookings
           </span>
 
-          <span>
+          <span onClick={() => navigate("/profile")}>
             <FaUser /> Profile
           </span>
 
-          <span>
+          <span onClick={() => toast("Help & Support coming soon 🚧")}>
             <FaHeadset /> Help & Support
           </span>
         </div>
