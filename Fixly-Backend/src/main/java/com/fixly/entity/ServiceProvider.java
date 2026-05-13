@@ -3,6 +3,7 @@ package com.fixly.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fixly.enums.ProviderStatus;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -37,6 +38,7 @@ public class ServiceProvider {
     private double rating;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProviderStatus status = ProviderStatus.PENDING;
 
     private String panCardNumber;
