@@ -4,10 +4,13 @@ import lombok.Data;
 
 @Data
 public class ProviderRegisterRequest {
-	
+
 	private Long userId;
 	private Long categoryId;
 	private int experienceYears;
 	private double pricePerVisit;
+	private String panCardNumber;
+
+	private String aadhaarNumber;
 
 }

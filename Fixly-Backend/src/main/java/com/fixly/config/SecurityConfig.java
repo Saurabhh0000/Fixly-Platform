@@ -35,54 +35,53 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors(withDefaults())
-            .csrf(csrf -> csrf.disable())
+                .cors(withDefaults())
+                .csrf(csrf -> csrf.disable())
 
-            .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
 
-                /* ================= PUBLIC ================= */
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/addresses/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
-                
-                /* ================= AUTHENTICATED (ALL ROLES) ================= */
+                        /* ================= PUBLIC ================= */
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/addresses/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
 
-                .requestMatchers("/api/users/change-password").authenticated()
+                        /* ================= AUTHENTICATED (ALL ROLES) ================= */
 
-                /* ================= USER ================= */
-                .requestMatchers(
-                    "/api/dashboard/user",
-                    "/api/bookings/user/**",
-                    "/api/providers/register"
-                ).hasRole("USER")
+                        .requestMatchers("/api/users/change-password").authenticated()
 
-                /* ================= PROVIDER ================= */
-                .requestMatchers(
-                    "/api/dashboard/provider",
-                    "/api/bookings/provider/**"
-                ).hasRole("PROVIDER")
+                        /* ================= USER ================= */
+                        .requestMatchers(
+                                "/api/dashboard/user",
+                                "/api/bookings/user/**",
+                                "/api/providers/register",
+                                "/api/providers/status/**")
+                        .hasRole("USER")
 
-                /* ================= ADMIN ================= */
-                .requestMatchers("/api/categories/**").hasRole("ADMIN")
+                        /* ================= PROVIDER ================= */
+                        .requestMatchers(
+                                "/api/dashboard/provider",
+                                "/api/bookings/provider/**")
+                        .hasRole("PROVIDER")
 
-                /* ================= PREFLIGHT ================= */
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        /* ================= ADMIN ================= */
+                        .requestMatchers("/api/categories/**", "/api/admin/providers/**").hasRole("ADMIN")
 
-                .anyRequest().authenticated()
-            )
-            .httpBasic(httpBasic -> 
-            httpBasic.authenticationEntryPoint((request, response, authException) -> {
-                response.setStatus(401);
-                response.setContentType("application/json");
-                response.getWriter().write("""
-                    {
-                      "error": "UNAUTHORIZED",
-                      "message": "Authentication required"
-                    }
-                """);
-            })
-        );
+                        /* ================= PREFLIGHT ================= */
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        .anyRequest().authenticated())
+                .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(401);
+                    response.setContentType("application/json");
+                    response.getWriter().write("""
+                                {
+                                  "error": "UNAUTHORIZED",
+                                  "message": "Authentication required"
+                                }
+                            """);
+                }));
 
         return http.build();
     }

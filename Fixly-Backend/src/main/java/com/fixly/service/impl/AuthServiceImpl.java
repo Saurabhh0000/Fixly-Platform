@@ -1,6 +1,5 @@
 package com.fixly.service.impl;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import com.fixly.dto.request.RegisterRequest;
 import com.fixly.dto.response.AuthResponse;
 import com.fixly.entity.Address;
 import com.fixly.entity.User;
+import com.fixly.enums.ProviderStatus;
 import com.fixly.enums.Role;
 import com.fixly.repository.ServiceProviderRepository;
 import com.fixly.repository.UserRepository;
@@ -73,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepo.findByEmail(request.getEmail())
-            .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
         if (!encoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
@@ -88,11 +88,48 @@ public class AuthServiceImpl implements AuthService {
 
         // ✅ PROVIDER ID ONLY IF USER IS PROVIDER
         if (user.getRole() == Role.PROVIDER) {
+
             serviceProviderRepository
-                .findByUser_UserId(user.getUserId())
-                .ifPresent(provider ->
-                    response.setProviderId(provider.getProviderId())
-                );
+                    .findByUser_UserId(user.getUserId())
+                    .ifPresent(provider -> {
+
+                        // ✅ CHECK PROVIDER STATUS
+
+                        if (provider.getStatus() == ProviderStatus.PENDING) {
+
+                            throw new RuntimeException(
+                                    "Your provider account is pending approval");
+                        }
+
+                        if (provider.getStatus() == ProviderStatus.VERIFYING) {
+
+                            throw new RuntimeException(
+                                    "Your documents are under verification");
+                        }
+
+                        if (provider.getStatus() == ProviderStatus.REJECTED) {
+
+                            throw new RuntimeException(
+                                    "Your provider application was rejected");
+                        }
+
+                        if (provider.getStatus() == ProviderStatus.SUSPENDED) {
+
+                            throw new RuntimeException(
+                                    "Your provider account is suspended");
+                        }
+
+                        // ✅ ONLY APPROVED PROVIDERS CAN LOGIN
+
+                        if (provider.getStatus() != ProviderStatus.APPROVED) {
+
+                            throw new RuntimeException(
+                                    "Provider account not approved");
+                        }
+
+                        response.setProviderId(
+                                provider.getProviderId());
+                    });
         }
 
         return response;

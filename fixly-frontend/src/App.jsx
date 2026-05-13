@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
 import ChangePassword from "./pages/ChangePassword";
 import Profile from "./pages/Profile";
+import AdminProviderRequests from "./pages/AdminProviderRequests";
 
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -98,7 +99,14 @@ function App() {
               </PrivateRoute>
             }
           />
-
+          <Route
+            path="/admin/providers"
+            element={
+              <PrivateRoute role="ADMIN">
+                <AdminProviderRequests />
+              </PrivateRoute>
+            }
+          />
           {/* BOOK SERVICE */}
           <Route
             path="/book"

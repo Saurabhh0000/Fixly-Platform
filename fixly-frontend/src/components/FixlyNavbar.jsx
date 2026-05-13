@@ -104,8 +104,8 @@ const FixlyNavbar = () => {
     role === "ADMIN"
       ? "/admin/dashboard"
       : role === "PROVIDER"
-      ? "/provider/dashboard"
-      : "/user/dashboard";
+        ? "/provider/dashboard"
+        : "/user/dashboard";
 
   return (
     <Navbar expand="lg" sticky="top" className="fixly-navbar">
@@ -147,6 +147,18 @@ const FixlyNavbar = () => {
                   onClick={() => closeMenuAndNavigate("/become-provider")}>
                   Become Provider
                 </button>
+              </>
+            )}
+
+            {role === "ADMIN" && (
+              <>
+                <Nav.Link
+                  as={Link}
+                  to="/admin/providers"
+                  className="nav-link-custom"
+                  onClick={() => setMenuOpen(false)}>
+                  Provider Requests
+                </Nav.Link>
               </>
             )}
 

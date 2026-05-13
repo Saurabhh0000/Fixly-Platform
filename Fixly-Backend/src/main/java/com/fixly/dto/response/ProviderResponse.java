@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class ProviderResponse {
-	
-	private Long providerId;
+
+    private Long providerId;
     private Long userId;
     private String fullName;
     private String category;
@@ -14,7 +14,9 @@ public class ProviderResponse {
     // ⭐ Rating Info
     private double rating;
     private long ratingCount;
-    
+
+    private String status;
+
     // 🟢 Availability
     private boolean available;
 }

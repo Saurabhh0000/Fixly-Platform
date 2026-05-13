@@ -133,6 +133,7 @@
 
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
+
   .navbar .nav-btn {
     width: 100%;
     padding: 12px 0;

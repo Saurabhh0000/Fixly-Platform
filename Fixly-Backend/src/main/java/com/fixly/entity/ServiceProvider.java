@@ -1,10 +1,11 @@
 package com.fixly.entity;
 
-
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fixly.enums.ProviderStatus;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,5 +35,16 @@ public class ServiceProvider {
     private double pricePerVisit;
     private boolean available = true;
     private double rating;
-}
 
+    @Enumerated(EnumType.STRING)
+    private ProviderStatus status = ProviderStatus.PENDING;
+
+    private String panCardNumber;
+
+    private String aadhaarNumber;
+
+    private String aadhaarFrontImage;
+
+    private String aadhaarBackImage;
+
+}
