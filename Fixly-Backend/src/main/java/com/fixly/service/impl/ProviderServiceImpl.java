@@ -119,8 +119,7 @@ public class ProviderServiceImpl implements ProviderService {
 					+ "_"
 					+ file.getOriginalFilename();
 
-			Path uploadPath = Paths.get("uploads");
-
+			Path uploadPath = Paths.get("./uploads");
 			if (!Files.exists(uploadPath)) {
 
 				Files.createDirectories(uploadPath);
