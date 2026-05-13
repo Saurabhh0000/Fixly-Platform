@@ -5,7 +5,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -91,6 +90,10 @@ public class ProviderServiceImpl implements ProviderService {
 		provider.setAadhaarNumber(
 				request.getAadhaarNumber());
 
+		validateImage(aadhaarFrontImage);
+
+		validateImage(aadhaarBackImage);
+
 		provider.setAadhaarFrontImage(
 				saveFile(aadhaarFrontImage));
 
@@ -166,7 +169,10 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getProviderId());
 
 		response.setStatus(
-				provider.getStatus().name());
+
+				provider.getStatus() != null
+						? provider.getStatus().name()
+						: "PENDING");
 
 		response.setAvailable(
 				provider.isAvailable());
@@ -312,9 +318,36 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getAadhaarBackImage());
 
 		response.setStatus(
-				provider.getStatus().name());
+
+				provider.getStatus() != null
+						? provider.getStatus().name()
+						: "PENDING");
 
 		return response;
+	}
+
+	private void validateImage(
+			MultipartFile file) {
+
+		String contentType = file.getContentType();
+
+		if (contentType == null ||
+
+				!(contentType.equals("image/jpeg")
+						|| contentType.equals("image/jpg")
+						|| contentType.equals("image/png"))) {
+
+			throw new BadRequestException(
+					"Only JPG, JPEG, PNG files are allowed");
+		}
+
+		long maxSize = 1 * 1024 * 1024;
+
+		if (file.getSize() > maxSize) {
+
+			throw new BadRequestException(
+					"File size must be less than 1MB");
+		}
 	}
 
 	private ProviderSearchResponse mapToSearchResponse(ServiceProvider provider) {
@@ -359,7 +392,10 @@ public class ProviderServiceImpl implements ProviderService {
 				reviewRepository.countByBookingProviderProviderId(provider.getProviderId()));
 
 		response.setStatus(
-				provider.getStatus().name());
+
+				provider.getStatus() != null
+						? provider.getStatus().name()
+						: "PENDING");
 
 		// 🟢 Availability
 		response.setAvailable(provider.isAvailable());

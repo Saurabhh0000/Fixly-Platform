@@ -93,6 +93,33 @@ const BecomeProvider = () => {
       toast.error("Upload Aadhaar back image");
       return;
     }
+    const maxSize = 1 * 1024 * 1024; // 1MB
+
+    if (form.aadhaarFrontImage.size > maxSize) {
+      toast.error("Front image must be less than 1MB");
+
+      return;
+    }
+
+    if (form.aadhaarBackImage.size > maxSize) {
+      toast.error("Back image must be less than 1MB");
+
+      return;
+    }
+
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (!allowedTypes.includes(form.aadhaarFrontImage.type)) {
+      toast.error("Only JPG, JPEG, PNG files are allowed for Aadhaar Front");
+
+      return;
+    }
+
+    if (!allowedTypes.includes(form.aadhaarBackImage.type)) {
+      toast.error("Only JPG, JPEG, PNG files are allowed for Aadhaar Back");
+
+      return;
+    }
 
     try {
       setLoading(true);
