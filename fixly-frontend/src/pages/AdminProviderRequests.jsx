@@ -15,6 +15,7 @@ import {
   FaEnvelope,
   FaUserTie,
 } from "react-icons/fa";
+import AdminLayout from "../layouts/AdminLayout";
 
 import "../styles/admin-provider-requests.css";
 
