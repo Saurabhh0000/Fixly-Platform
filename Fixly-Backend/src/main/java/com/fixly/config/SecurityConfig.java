@@ -45,8 +45,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/addresses/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
-                        .requestMatchers("/uploads/**").permitAll()
-
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/uploads/**")
+                        .permitAll()
                         /* ================= AUTHENTICATED (ALL ROLES) ================= */
 
                         .requestMatchers("/api/users/change-password").authenticated()
