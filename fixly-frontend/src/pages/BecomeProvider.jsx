@@ -256,38 +256,28 @@ const BecomeProvider = () => {
 
           <p>Start offering services and earn with Fixly</p>
         </div>
-
         {/* ================= TIMELINE ================= */}
-
         {renderTimeline()}
+        /* ================= REJECTED STATE ================= */
+        {providerStatus?.status === "REJECTED" && !showReapplyForm && (
+          <div className="rejected-box">
+            <h3>Application Rejected</h3>
 
+            <p>
+              Your provider application was rejected. Please correct your
+              details and submit again.
+            </p>
+
+            <button
+              className="reapply-btn"
+              onClick={() => setShowReapplyForm(true)}>
+              Reapply
+            </button>
+          </div>
+        )}
         {/* ================= FORM ================= */}
-
         {(!providerStatus ||
           (providerStatus?.status === "REJECTED" && showReapplyForm)) && (
-
-<div className="rejected-box">
-
-  <h3>Application Rejected</h3>
-
-  <p>
-    Your provider request was rejected.
-    Please update your details and
-    submit again.
-  </p>
-
-  <button
-    className="reapply-btn"
-    onClick={() =>
-      setShowReapplyForm(true)
-    }
-  >
-    Reapply
-  </button>
-
-</div>
-          )}
-
           <div className="become-provider-form">
             {/* CATEGORY */}
 
@@ -447,9 +437,7 @@ const BecomeProvider = () => {
             </button>
           </div>
         )}
-
         {/* INFO */}
-
         <div className="info-box">
           💡 Your documents will be verified by admin before approval.
         </div>
