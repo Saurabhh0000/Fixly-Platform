@@ -257,7 +257,15 @@ const BecomeProvider = () => {
           <p>Start offering services and earn with Fixly</p>
         </div>
         {/* ================= TIMELINE ================= */}
-        {renderTimeline()}
+
+        {providerStatus &&
+          !(providerStatus.status === "REJECTED" && showReapplyForm) && (
+            <div className="timeline-container">
+              {/* timeline UI */}
+              {renderTimeline()}
+            </div>
+          )}
+
         {/* ================= REJECTED STATE ================= */}
         {providerStatus?.status === "REJECTED" && !showReapplyForm && (
           <div className="rejected-box">
