@@ -8,6 +8,7 @@ import java.util.List;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,17 +61,66 @@ public class ProviderServiceImpl implements ProviderService {
 			MultipartFile aadhaarBackImage) {
 
 		User user = userRepo.findById(request.getUserId())
-				.orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"User Not Found"));
 
-		if (providerRepository.existsByUserUserId(user.getUserId())) {
-
-			throw new BadRequestException(
-					"User already registered as Provider");
-		}
-
-		ServiceCategory category = categoryRepository.findById(request.getCategoryId())
+		ServiceCategory category = categoryRepository.findById(
+				request.getCategoryId())
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Category Not Found"));
+
+		Optional<ServiceProvider> existingProvider = providerRepository.findByUser_UserId(
+				user.getUserId());
+
+		// Existing provider found
+		if (existingProvider.isPresent()) {
+
+			ServiceProvider provider = existingProvider.get();
+
+			// Allow reapply only if rejected
+			if (provider.getStatus() == ProviderStatus.REJECTED) {
+
+				validateImage(aadhaarFrontImage);
+				validateImage(aadhaarBackImage);
+
+				provider.setCategory(category);
+
+				provider.setExperienceYears(
+						request.getExperienceYears());
+
+				provider.setPricePerVisit(
+						request.getPricePerVisit());
+
+				provider.setPanCardNumber(
+						request.getPanCardNumber());
+
+				provider.setAadhaarNumber(
+						request.getAadhaarNumber());
+
+				provider.setAadhaarFrontImage(
+						saveFile(aadhaarFrontImage));
+
+				provider.setAadhaarBackImage(
+						saveFile(aadhaarBackImage));
+
+				provider.setStatus(
+						ProviderStatus.PENDING);
+
+				provider.setAvailable(false);
+
+				ServiceProvider updated = providerRepository.save(
+						provider);
+
+				return mapToResponse(updated);
+			}
+
+			throw new BadRequestException(
+					"Provider request already exists");
+		}
+
+		// New provider application
+		validateImage(aadhaarFrontImage);
+		validateImage(aadhaarBackImage);
 
 		ServiceProvider provider = new ServiceProvider();
 
@@ -90,17 +140,14 @@ public class ProviderServiceImpl implements ProviderService {
 		provider.setAadhaarNumber(
 				request.getAadhaarNumber());
 
-		validateImage(aadhaarFrontImage);
-
-		validateImage(aadhaarBackImage);
-
 		provider.setAadhaarFrontImage(
 				saveFile(aadhaarFrontImage));
 
 		provider.setAadhaarBackImage(
 				saveFile(aadhaarBackImage));
 
-		provider.setStatus(ProviderStatus.PENDING);
+		provider.setStatus(
+				ProviderStatus.PENDING);
 
 		provider.setAvailable(false);
 
