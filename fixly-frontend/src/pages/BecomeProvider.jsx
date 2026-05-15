@@ -258,7 +258,7 @@ const BecomeProvider = () => {
         </div>
         {/* ================= TIMELINE ================= */}
         {renderTimeline()}
-        /* ================= REJECTED STATE ================= */
+        {/* ================= REJECTED STATE ================= */}
         {providerStatus?.status === "REJECTED" && !showReapplyForm && (
           <div className="rejected-box">
             <h3>Application Rejected</h3>
