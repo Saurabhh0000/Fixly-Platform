@@ -22,6 +22,8 @@ const BecomeProvider = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const [showReapplyForm, setShowReapplyForm] = useState(false);
+
   const [providerStatus, setProviderStatus] = useState(null);
 
   const [form, setForm] = useState({
@@ -261,7 +263,31 @@ const BecomeProvider = () => {
 
         {/* ================= FORM ================= */}
 
-        {!providerStatus && (
+        {(!providerStatus ||
+          (providerStatus?.status === "REJECTED" && showReapplyForm)) && (
+
+<div className="rejected-box">
+
+  <h3>Application Rejected</h3>
+
+  <p>
+    Your provider request was rejected.
+    Please update your details and
+    submit again.
+  </p>
+
+  <button
+    className="reapply-btn"
+    onClick={() =>
+      setShowReapplyForm(true)
+    }
+  >
+    Reapply
+  </button>
+
+</div>
+          )}
+
           <div className="become-provider-form">
             {/* CATEGORY */}
 
