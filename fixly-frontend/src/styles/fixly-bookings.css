@@ -3,7 +3,7 @@
    Zero global overrides. Safe alongside any other stylesheet.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
 /* ================= PAGE LOADER ================= */
 
@@ -33,8 +33,8 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 3px solid rgba(37, 99, 235, 0.15);
-  border-top-color: #2563eb;
+  border: 3px solid rgba(22, 163, 74, 0.18);
+  border-top-color: #16a34a;
   animation: ub-spin 0.8s linear infinite;
 }
 
@@ -46,14 +46,14 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  background: linear-gradient(160deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
   color: #ffffff;
   font-size: 1.4rem;
   font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.38);
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
@@ -69,10 +69,10 @@
 .ub-wrapper {
   min-height: 100vh;
   background: #f0f4f8;
-  padding: 24px 20px 56px;
+  padding: 28px 20px 60px;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   box-sizing: border-box;
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
@@ -84,7 +84,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .ub-page-header-left {
@@ -94,21 +94,21 @@
 }
 
 .ub-header-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 13px;
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  font-size: 1.15rem;
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
   flex-shrink: 0;
 }
 
 .ub-page-title {
-  font-size: 1.4rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0 0 3px;
@@ -127,76 +127,97 @@
 .ub-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  gap: 20px;
 }
 
-/* ================= BOOKING CARD ================= */
+/* ================================================================
+   BOOKING CARD — Green gradient dark card, white text
+   ================================================================ */
 
 .ub-card {
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1.5px solid #e4e9f0;
-  overflow: hidden;
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.04),
-    0 6px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  background: linear-gradient(160deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
+  border-radius: 24px;
+  padding: 22px 22px 20px;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  box-shadow:
+    0 6px 18px rgba(21, 128, 61, 0.28),
+    0 16px 40px rgba(21, 128, 61, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   transition:
     box-shadow 0.2s ease,
-    border-color 0.2s ease,
     transform 0.18s ease;
   box-sizing: border-box;
 }
 
+/* Subtle inner glow overlay */
+.ub-card::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.ub-card::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  left: -30px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+}
+
 .ub-card:hover {
+  transform: translateY(-5px);
   box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.06),
-    0 14px 36px rgba(37, 99, 235, 0.12);
-  border-color: #bfdbfe;
-  transform: translateY(-3px);
+    0 10px 28px rgba(21, 128, 61, 0.35),
+    0 24px 56px rgba(21, 128, 61, 0.22);
 }
 
-/* ================= ACCENT STRIP ================= */
-
-.ub-card-strip {
-  height: 4px;
-  width: 100%;
-}
-
-.ub-status-pending-strip   { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-.ub-status-accepted-strip  { background: linear-gradient(90deg, #1d4ed8, #2563eb); }
-.ub-status-completed-strip { background: linear-gradient(90deg, #15803d, #22c55e); }
-.ub-status-cancelled-strip { background: linear-gradient(90deg, #dc2626, #f87171); }
-
-/* ================= CARD TOP ================= */
+/* ================= CARD TOP ROW ================= */
 
 .ub-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 14px 16px 10px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
 .ub-category-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
-  font-size: 0.68rem;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+  font-size: 0.67rem;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 4px 11px;
   border-radius: 20px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  backdrop-filter: blur(4px);
 }
 
 .ub-category-icon {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
+  opacity: 0.85;
 }
 
 /* ================= STATUS BADGE ================= */
@@ -205,18 +226,18 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   font-weight: 800;
-  padding: 4px 10px;
+  padding: 4px 11px;
   border-radius: 20px;
   letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
-.ub-status-pending   { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
-.ub-status-accepted  { background: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
-.ub-status-completed { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
-.ub-status-cancelled { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.ub-status-pending   { background: #fef9c3; color: #713f12; }
+.ub-status-accepted  { background: #dbeafe; color: #1e3a8a; }
+.ub-status-completed { background: #ffffff; color: #15803d; }
+.ub-status-cancelled { background: #fee2e2; color: #991b1b; }
 
 /* ================= PROVIDER ROW ================= */
 
@@ -224,23 +245,24 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px 10px;
-  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
 }
 
 .ub-provider-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
 }
 
 .ub-provider-info {
@@ -249,68 +271,70 @@
 }
 
 .ub-provider-label {
-  font-size: 0.63rem;
+  font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #94a3b8;
-  margin: 0 0 2px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 3px;
 }
 
 .ub-provider-name {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .ub-provider-icon {
-  color: #f59e0b;
-  font-size: 1rem;
+  color: #fde047;
+  font-size: 1.1rem;
   flex-shrink: 0;
 }
 
-/* ================= META GRID ================= */
+/* ================= META ROW ================= */
 
 .ub-meta-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  padding: 12px 16px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
 }
 
 .ub-meta-item {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  background: #f8fafc;
-  border: 1px solid #edf0f5;
-  border-radius: 10px;
-  padding: 9px 10px;
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 11px;
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .ub-meta-item:hover {
-  background: #f0f7ff;
-  border-color: #bfdbfe;
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .ub-meta-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
+  color: #ffffff;
   flex-shrink: 0;
 }
-
-.ub-meta-icon.blue  { background: #dbeafe; color: #1e40af; }
-.ub-meta-icon.red   { background: #fee2e2; color: #dc2626; }
 
 .ub-meta-text {
   display: flex;
@@ -320,17 +344,17 @@
 }
 
 .ub-meta-label {
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .ub-meta-value {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #ffffff;
   word-break: break-word;
   line-height: 1.3;
 }
@@ -341,70 +365,74 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.73rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  color: #64748b;
-  padding: 0 16px 10px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .ub-pincode-icon {
-  color: #94a3b8;
   font-size: 0.65rem;
+  opacity: 0.7;
 }
 
 /* ================= OTP BLOCK ================= */
 
 .ub-otp-block {
-  margin: 0 16px 10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
 }
 
 .ub-otp-box {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #eff6ff;
-  border: 1.5px solid #93c5fd;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   border-radius: 12px;
   padding: 11px 14px;
+  backdrop-filter: blur(4px);
 }
 
 .ub-otp-label {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #1e40af;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .ub-otp-label svg {
-  font-size: 0.68rem;
-  color: #2563eb;
+  font-size: 0.65rem;
 }
 
 .ub-otp-value {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 900;
-  color: #1e40af;
-  letter-spacing: 0.1em;
+  color: #ffffff;
+  letter-spacing: 0.14em;
 }
 
 .ub-otp-warning {
   display: flex;
   align-items: flex-start;
   gap: 7px;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
+  background: rgba(220, 38, 38, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   padding: 9px 12px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #c2410c;
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: #ffffff;
   line-height: 1.45;
 }
 
@@ -418,8 +446,10 @@
 
 .ub-divider {
   height: 1px;
-  background: #f1f5f9;
-  margin: 0 16px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* ================= PRICE ROW ================= */
@@ -428,35 +458,39 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .ub-price-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.65);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .ub-price-value {
   display: flex;
   align-items: center;
   gap: 3px;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 900;
-  color: #0f172a;
+  color: #ffffff;
+  letter-spacing: -0.01em;
 }
 
 .ub-rupee-icon {
-  font-size: 0.9rem;
-  color: #16a34a;
+  font-size: 1rem;
+  color: #bbf7d0;
 }
 
 /* ================= REVIEW ROW ================= */
 
 .ub-review-row {
-  padding: 0 16px 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .ub-review-btn {
@@ -465,34 +499,36 @@
   justify-content: center;
   gap: 7px;
   width: 100%;
-  padding: 11px 14px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #15803d, #22c55e);
+  padding: 12px 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 0.84rem;
+  font-size: 0.86rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
-  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
   letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.15s ease;
 }
 
 .ub-review-btn:hover {
-  background: linear-gradient(135deg, #166534, #16a34a);
-  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.38);
+  background: rgba(255, 255, 255, 0.26);
+  border-color: rgba(255, 255, 255, 0.7);
   transform: translateY(-1px);
 }
 
 .ub-review-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
 }
 
 .ub-review-star {
-  color: #fef08a;
-  font-size: 0.82rem;
+  color: #fde047;
+  font-size: 0.84rem;
 }
 
 .ub-rated-badge {
@@ -500,27 +536,27 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #15803d;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 10px;
-  padding: 10px 14px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 11px 14px;
 }
 
 .ub-rated-badge svg {
-  color: #f59e0b;
+  color: #fde047;
 }
 
 /* ================= EMPTY STATE ================= */
 
 .ub-empty {
   background: #ffffff;
-  border-radius: 20px;
-  padding: 56px 28px;
+  border-radius: 22px;
+  padding: 60px 28px;
   max-width: 480px;
-  margin: 32px auto 0;
+  margin: 36px auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -528,18 +564,18 @@
   border: 1.5px solid #e4e9f0;
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.04),
-    0 16px 40px rgba(0, 0, 0, 0.06);
+    0 18px 44px rgba(0, 0, 0, 0.06);
 }
 
 .ub-empty-img {
   width: 180px;
   max-width: 80%;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
   opacity: 0.9;
 }
 
 .ub-empty-title {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0 0 10px;
@@ -547,10 +583,10 @@
 }
 
 .ub-empty-sub {
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   color: #64748b;
   line-height: 1.65;
-  margin: 0 0 24px;
+  margin: 0 0 26px;
   max-width: 320px;
 }
 
@@ -558,24 +594,25 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  background: linear-gradient(160deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
   color: #ffffff;
   border: none;
-  border-radius: 11px;
-  padding: 13px 26px;
+  border-radius: 12px;
+  padding: 13px 28px;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
   letter-spacing: 0.02em;
-  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.15s ease;
 }
 
 .ub-empty-btn:hover {
-  background: linear-gradient(135deg, #1e40af, #1d4ed8);
-  box-shadow: 0 6px 22px rgba(37, 99, 235, 0.4);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.46);
+  transform: translateY(-2px);
 }
 
 .ub-empty-btn:active {
@@ -583,7 +620,7 @@
 }
 
 .ub-empty-btn-icon {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 /* ======================================================
@@ -603,22 +640,22 @@
 
 @media (max-width: 600px) {
   .ub-wrapper {
-    padding: 16px 12px 44px;
+    padding: 16px 12px 48px;
   }
 
   .ub-page-header {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
   }
 
   .ub-header-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 11px;
-    font-size: 0.95rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 1rem;
   }
 
   .ub-page-title {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
   }
 
   .ub-page-sub {
@@ -631,94 +668,72 @@
   }
 
   .ub-card {
-    border-radius: 14px;
+    border-radius: 20px;
+    padding: 18px 18px 16px;
   }
 
   .ub-card-top {
-    padding: 12px 13px 8px;
-  }
-
-  .ub-provider-row {
-    padding: 10px 13px 9px;
-    gap: 10px;
+    margin-bottom: 14px;
   }
 
   .ub-provider-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 9px;
-    font-size: 0.9rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    font-size: 0.95rem;
   }
 
   .ub-provider-name {
-    font-size: 0.84rem;
+    font-size: 0.95rem;
+  }
+
+  .ub-provider-icon {
+    font-size: 0.95rem;
   }
 
   .ub-meta-grid {
-    padding: 10px 13px;
     gap: 8px;
+    margin-bottom: 12px;
   }
 
   .ub-meta-item {
-    padding: 8px 9px;
-    border-radius: 9px;
+    padding: 9px 10px;
+    border-radius: 10px;
   }
 
   .ub-meta-icon {
     width: 24px;
     height: 24px;
-    font-size: 0.65rem;
     border-radius: 6px;
+    font-size: 0.62rem;
   }
 
   .ub-meta-value {
-    font-size: 0.73rem;
-  }
-
-  .ub-pincode {
-    padding: 0 13px 9px;
-    font-size: 0.69rem;
-  }
-
-  .ub-otp-block {
-    margin: 0 13px 9px;
+    font-size: 0.72rem;
   }
 
   .ub-otp-value {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
 
   .ub-otp-warning {
     font-size: 0.69rem;
-    padding: 8px 10px;
-  }
-
-  .ub-divider {
-    margin: 0 13px;
-  }
-
-  .ub-price-row {
-    padding: 11px 13px;
   }
 
   .ub-price-value {
-    font-size: 1rem;
-  }
-
-  .ub-review-row {
-    padding: 0 13px 13px;
+    font-size: 1.12rem;
   }
 
   .ub-review-btn {
-    font-size: 0.8rem;
-    padding: 10px 12px;
-    border-radius: 9px;
+    font-size: 0.82rem;
+    padding: 11px 12px;
+    border-radius: 10px;
   }
 
   .ub-empty {
-    padding: 40px 20px;
+    padding: 44px 20px;
     margin: 20px auto 0;
-    border-radius: 16px;
+    border-radius: 18px;
   }
 
   .ub-empty-img {
@@ -738,8 +753,8 @@
     width: 100%;
     justify-content: center;
     font-size: 0.86rem;
-    padding: 12px 20px;
-    border-radius: 10px;
+    padding: 13px 20px;
+    border-radius: 11px;
   }
 }
 
@@ -749,7 +764,12 @@
 
 @media (max-width: 380px) {
   .ub-wrapper {
-    padding: 12px 10px 40px;
+    padding: 12px 10px 44px;
+  }
+
+  .ub-card {
+    border-radius: 18px;
+    padding: 16px 15px 14px;
   }
 
   .ub-card-top {
@@ -764,15 +784,15 @@
 
   .ub-otp-box {
     flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
-    text-align: center;
   }
 
   .ub-price-value {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .ub-page-title {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
 }
