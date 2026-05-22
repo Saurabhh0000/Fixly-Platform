@@ -1,438 +1,778 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap");
+/* ============================================================
+   USER BOOKINGS — Scoped under .ub-* prefix
+   Zero global overrides. Safe alongside any other stylesheet.
+   ============================================================ */
 
-/* =====================================================
-   FIXLY ROOT COLORS
-===================================================== */
-:root {
-  --fixly-green: #22c55e;
-  --fixly-green-dark: #16a34a;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-  --fixly-blue: #2563eb;
-  --fixly-blue-dark: #1e40af;
-
-  --bg-page: #f8fafc;
-  --text-dark: #0f172a;
-  --text-muted: #64748b;
-
-  --success-bg: #dcfce7;
-  --success-text: #166534;
-
-  --pending-bg: #fef3c7;
-  --pending-text: #92400e;
-
-  --accepted-bg: #dbeafe;
-  --accepted-text: #1e3a8a;
-
-  --cancel-bg: #fee2e2;
-  --cancel-text: #7f1d1d;
-}
-
-/* =====================================================
-   PAGE BASE
-===================================================== */
-.bookings-page-bg {
-  background: var(--bg-page);
-  min-height: 100vh;
-  padding: 16px;
-  font-family: "Inter", system-ui, sans-serif;
-}
-
-/* =====================================================
-   RESERVATION CARD
-===================================================== */
-.reservation-card {
-  position: relative;
-  background: linear-gradient(
-    135deg,
-    var(--fixly-blue),
-    var(--fixly-blue-dark)
-  );
-  color: #ffffff;
-
-  border-radius: 24px;
-  padding: 24px 26px;
-  margin-bottom: 20px;
-
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-@media (hover: hover) {
-  .reservation-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.25);
-  }
-}
-
-/* =====================================================
-   HEADER
-===================================================== */
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.category {
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
 /* ================= PAGE LOADER ================= */
-.page-loader {
+
+.ub-page-loader {
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: #ffffff;
   z-index: 99999;
+  gap: 18px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
-/* CONTAINER */
-.logo-loader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* STACK FOR LOGO + SPINNER */
-.logo-stack {
+.ub-loader-inner {
   position: relative;
-  width: 90px;
-  height: 90px;
-  display: grid;
-  place-items: center;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* LOGO CIRCLE */
-.logo-circle {
-  width: 52px;
-  height: 52px;
-  background: #22c55e;
-  color: #ffffff;
-  border-radius: 50%;
-  font-size: 1.6rem;
-  font-weight: 900;
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.35);
-}
-
-/* SPINNER RING */
-.spinner-ring {
+.ub-loader-ring {
   position: absolute;
-  width: 78px;
-  height: 78px;
+  inset: 0;
   border-radius: 50%;
-  border: 3px solid rgba(34, 197, 94, 0.2);
-  border-top-color: #22c55e;
-  animation: spin 0.9s linear infinite;
+  border: 3px solid rgba(37, 99, 235, 0.15);
+  border-top-color: #2563eb;
+  animation: ub-spin 0.8s linear infinite;
 }
 
-/* TEXT */
-.logo-loader p {
-  margin-top: 18px;
-  font-size: 0.95rem;
+@keyframes ub-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ub-loader-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.ub-loader-text {
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #374151;
+  color: #64748b;
+  margin: 0;
 }
 
-/* SPIN ANIMATION */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+/* ================= PAGE WRAPPER ================= */
+
+.ub-wrapper {
+  min-height: 100vh;
+  background: #f0f4f8;
+  padding: 24px 20px 56px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  box-sizing: border-box;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-  .logo-stack {
-    width: 72px;
-    height: 72px;
-  }
+/* ================= PAGE HEADER ================= */
 
-  .logo-circle {
-    width: 44px;
-    height: 44px;
-    font-size: 1.35rem;
-  }
-
-  .spinner-ring {
-    width: 62px;
-    height: 62px;
-    border-width: 2.5px;
-  }
-
-  .logo-loader p {
-    font-size: 0.88rem;
-  }
-}
-
-
-/* =====================================================
-   STATUS BADGES
-===================================================== */
-.status-badges {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-
-  padding: 6px 16px;
-  border-radius: 999px;
-
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-.status-badges.completed {
-  background: var(--success-bg);
-  color: var(--success-text);
-}
-
-.status-badges.pending {
-  background: var(--pending-bg);
-  color: var(--pending-text);
-}
-
-.status-badges.accepted {
-  background: var(--accepted-bg);
-  color: var(--accepted-text);
-}
-
-.status-badges.cancelled {
-  background: var(--cancel-bg);
-  color: var(--cancel-text);
-}
-
-/* =====================================================
-   PROVIDER INFO
-===================================================== */
-.provider-name {
-  margin-top: 10px;
-  font-size: 1.35rem;
-  font-weight: 800;
-
+.ub-page-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-/* ICON COLORS */
-.icon-provider { color: #facc15; }
-.icon-date { color: var(--fixly-green); }
-.icon-location { color: #38bdf8; }
-.icon-price { color: #fde047; }
-
-/* =====================================================
-   DATE & LOCATION
-===================================================== */
-.card-date,
-.card-location {
-  margin-top: 10px;
-  display: flex;
-  gap: 10px;
-  font-size: 0.85rem;
-  opacity: 0.95;
-}
-
-/* =====================================================
-   OTP SECTION
-===================================================== */
-.otp-box {
-  margin-top: 14px;
-  background: #eef2ff;
-  color: var(--accepted-text);
-
-  padding: 10px 14px;
-  border-radius: 12px;
-
-  font-weight: 800;
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-}
-
-.otp-warning {
-  margin-top: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-
-  background: #dc2626;
-  color: #ffffff;
-
-  font-size: 0.8rem;
-  font-weight: 700;
-
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-/* =====================================================
-   DIVIDER
-===================================================== */
-.divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.35);
-  margin: 24px 0;
-}
-
-/* =====================================================
-   PRICE ROW
-===================================================== */
-.amount-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-.amount-row .price {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 1.15rem;
-}
-
-.amount-row svg {
-  color: var(--fixly-green);
-}
-
-/* =====================================================
-   REVIEW
-===================================================== */
-.review-section {
-  margin-top: 16px;
-  text-align: center;
-}
-
-.review-btn {
-  background: linear-gradient(
-    135deg,
-    var(--fixly-green),
-    var(--fixly-green-dark)
-  );
-  color: #ffffff;
-
-  border: none;
-  border-radius: 999px;
-  padding: 10px 20px;
-
-  font-size: 0.85rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.rated-badge {
-  font-size: 0.85rem;
-  font-weight: 800;
-}
-
-/* =====================================================
-   NO BOOKINGS EMPTY STATE
-===================================================== */
-.no-bookings {
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 56px 26px;
-  max-width: 520px;
-  margin: 48px auto;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-
-  box-shadow: 0 20px 42px rgba(0, 0, 0, 0.08);
-}
-
-.no-bookings img {
-  width: 200px;
-  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
-.no-bookings h4 {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-dark);
+.ub-page-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.no-bookings p {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  margin: 12px 0 22px;
-  line-height: 1.6;
-}
-
-/* CTA */
-.book-service-btn {
-  background: linear-gradient(
-    135deg,
-    var(--fixly-blue),
-    var(--fixly-blue-dark)
-  );
+.ub-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #ffffff;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  flex-shrink: 0;
+}
 
+.ub-page-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 3px;
+  letter-spacing: -0.02em;
+}
+
+.ub-page-sub {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ================= BOOKINGS GRID ================= */
+
+.ub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+/* ================= BOOKING CARD ================= */
+
+.ub-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1.5px solid #e4e9f0;
+  overflow: hidden;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 6px 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.18s ease;
+  box-sizing: border-box;
+}
+
+.ub-card:hover {
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.06),
+    0 14px 36px rgba(37, 99, 235, 0.12);
+  border-color: #bfdbfe;
+  transform: translateY(-3px);
+}
+
+/* ================= ACCENT STRIP ================= */
+
+.ub-card-strip {
+  height: 4px;
+  width: 100%;
+}
+
+.ub-status-pending-strip   { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.ub-status-accepted-strip  { background: linear-gradient(90deg, #1d4ed8, #2563eb); }
+.ub-status-completed-strip { background: linear-gradient(90deg, #15803d, #22c55e); }
+.ub-status-cancelled-strip { background: linear-gradient(90deg, #dc2626, #f87171); }
+
+/* ================= CARD TOP ================= */
+
+.ub-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  flex-wrap: wrap;
+}
+
+.ub-category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ub-category-icon {
+  font-size: 0.62rem;
+}
+
+/* ================= STATUS BADGE ================= */
+
+.ub-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.ub-status-pending   { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+.ub-status-accepted  { background: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
+.ub-status-completed { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+.ub-status-cancelled { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+/* ================= PROVIDER ROW ================= */
+
+.ub-provider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.ub-provider-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+}
+
+.ub-provider-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ub-provider-label {
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #94a3b8;
+  margin: 0 0 2px;
+}
+
+.ub-provider-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ub-provider-icon {
+  color: #f59e0b;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ================= META GRID ================= */
+
+.ub-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.ub-meta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #edf0f5;
+  border-radius: 10px;
+  padding: 9px 10px;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.ub-meta-item:hover {
+  background: #f0f7ff;
+  border-color: #bfdbfe;
+}
+
+.ub-meta-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+
+.ub-meta-icon.blue  { background: #dbeafe; color: #1e40af; }
+.ub-meta-icon.red   { background: #fee2e2; color: #dc2626; }
+
+.ub-meta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ub-meta-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.ub-meta-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e293b;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+/* ================= PINCODE ================= */
+
+.ub-pincode {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: #64748b;
+  padding: 0 16px 10px;
+}
+
+.ub-pincode-icon {
+  color: #94a3b8;
+  font-size: 0.65rem;
+}
+
+/* ================= OTP BLOCK ================= */
+
+.ub-otp-block {
+  margin: 0 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ub-otp-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eff6ff;
+  border: 1.5px solid #93c5fd;
+  border-radius: 12px;
+  padding: 11px 14px;
+}
+
+.ub-otp-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #1e40af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ub-otp-label svg {
+  font-size: 0.68rem;
+  color: #2563eb;
+}
+
+.ub-otp-value {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #1e40af;
+  letter-spacing: 0.1em;
+}
+
+.ub-otp-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #c2410c;
+  line-height: 1.45;
+}
+
+.ub-otp-warning svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 0.75rem;
+}
+
+/* ================= DIVIDER ================= */
+
+.ub-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 0 16px;
+}
+
+/* ================= PRICE ROW ================= */
+
+.ub-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+
+.ub-price-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ub-price-value {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.ub-rupee-icon {
+  font-size: 0.9rem;
+  color: #16a34a;
+}
+
+/* ================= REVIEW ROW ================= */
+
+.ub-review-row {
+  padding: 0 16px 16px;
+}
+
+.ub-review-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 11px 14px;
   border: none;
-  border-radius: 999px;
-  padding: 14px 34px;
-
-  font-size: 0.95rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #15803d, #22c55e);
+  color: #ffffff;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.84rem;
   font-weight: 800;
   cursor: pointer;
-
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.35);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+  letter-spacing: 0.02em;
 }
 
-@media (hover: hover) {
-  .book-service-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 40px rgba(37, 99, 235, 0.45);
+.ub-review-btn:hover {
+  background: linear-gradient(135deg, #166534, #16a34a);
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.38);
+  transform: translateY(-1px);
+}
+
+.ub-review-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+}
+
+.ub-review-star {
+  color: #fef08a;
+  font-size: 0.82rem;
+}
+
+.ub-rated-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.ub-rated-badge svg {
+  color: #f59e0b;
+}
+
+/* ================= EMPTY STATE ================= */
+
+.ub-empty {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 56px 28px;
+  max-width: 480px;
+  margin: 32px auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1.5px solid #e4e9f0;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    0 16px 40px rgba(0, 0, 0, 0.06);
+}
+
+.ub-empty-img {
+  width: 180px;
+  max-width: 80%;
+  margin-bottom: 22px;
+  opacity: 0.9;
+}
+
+.ub-empty-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+
+.ub-empty-sub {
+  font-size: 0.84rem;
+  color: #64748b;
+  line-height: 1.65;
+  margin: 0 0 24px;
+  max-width: 320px;
+}
+
+.ub-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #ffffff;
+  border: none;
+  border-radius: 11px;
+  padding: 13px 26px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+  letter-spacing: 0.02em;
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+}
+
+.ub-empty-btn:hover {
+  background: linear-gradient(135deg, #1e40af, #1d4ed8);
+  box-shadow: 0 6px 22px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
+}
+
+.ub-empty-btn:active {
+  transform: translateY(0);
+}
+
+.ub-empty-btn-icon {
+  font-size: 0.8rem;
+}
+
+/* ======================================================
+   RESPONSIVE — TABLET (≤ 900px)
+   ====================================================== */
+
+@media (max-width: 900px) {
+  .ub-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
 }
 
-/* =====================================================
-   MOBILE RESPONSIVE
-===================================================== */
-@media (max-width: 576px) {
-  .reservation-card {
-    padding: 18px;
-    border-radius: 20px;
+/* ======================================================
+   RESPONSIVE — MOBILE (≤ 600px)
+   ====================================================== */
+
+@media (max-width: 600px) {
+  .ub-wrapper {
+    padding: 16px 12px 44px;
   }
 
-  .provider-name {
-    font-size: 1.2rem;
+  .ub-page-header {
+    margin-bottom: 18px;
   }
 
-  .otp-box {
+  .ub-header-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    font-size: 0.95rem;
+  }
+
+  .ub-page-title {
+    font-size: 1.15rem;
+  }
+
+  .ub-page-sub {
+    font-size: 0.75rem;
+  }
+
+  .ub-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .ub-card {
+    border-radius: 14px;
+  }
+
+  .ub-card-top {
+    padding: 12px 13px 8px;
+  }
+
+  .ub-provider-row {
+    padding: 10px 13px 9px;
+    gap: 10px;
+  }
+
+  .ub-provider-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    font-size: 0.9rem;
+  }
+
+  .ub-provider-name {
+    font-size: 0.84rem;
+  }
+
+  .ub-meta-grid {
+    padding: 10px 13px;
+    gap: 8px;
+  }
+
+  .ub-meta-item {
+    padding: 8px 9px;
+    border-radius: 9px;
+  }
+
+  .ub-meta-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 0.65rem;
+    border-radius: 6px;
+  }
+
+  .ub-meta-value {
+    font-size: 0.73rem;
+  }
+
+  .ub-pincode {
+    padding: 0 13px 9px;
+    font-size: 0.69rem;
+  }
+
+  .ub-otp-block {
+    margin: 0 13px 9px;
+  }
+
+  .ub-otp-value {
+    font-size: 1rem;
+  }
+
+  .ub-otp-warning {
+    font-size: 0.69rem;
+    padding: 8px 10px;
+  }
+
+  .ub-divider {
+    margin: 0 13px;
+  }
+
+  .ub-price-row {
+    padding: 11px 13px;
+  }
+
+  .ub-price-value {
+    font-size: 1rem;
+  }
+
+  .ub-review-row {
+    padding: 0 13px 13px;
+  }
+
+  .ub-review-btn {
+    font-size: 0.8rem;
+    padding: 10px 12px;
+    border-radius: 9px;
+  }
+
+  .ub-empty {
+    padding: 40px 20px;
+    margin: 20px auto 0;
+    border-radius: 16px;
+  }
+
+  .ub-empty-img {
+    width: 150px;
+    margin-bottom: 18px;
+  }
+
+  .ub-empty-title {
+    font-size: 1.08rem;
+  }
+
+  .ub-empty-sub {
+    font-size: 0.8rem;
+  }
+
+  .ub-empty-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.86rem;
+    padding: 12px 20px;
+    border-radius: 10px;
+  }
+}
+
+/* ======================================================
+   RESPONSIVE — SMALL MOBILE (≤ 380px)
+   ====================================================== */
+
+@media (max-width: 380px) {
+  .ub-wrapper {
+    padding: 12px 10px 40px;
+  }
+
+  .ub-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+  }
+
+  .ub-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ub-otp-box {
     flex-direction: column;
     gap: 6px;
     text-align: center;
   }
 
-  .amount-row {
-    font-size: 0.9rem;
+  .ub-price-value {
+    font-size: 0.95rem;
   }
 
-  .no-bookings {
-    padding: 44px 20px;
-    margin: 28px 14px;
-  }
-
-  .no-bookings img {
-    width: 170px;
-  }
-
-  .book-service-btn {
-    width: 100%;
-    padding: 14px 0;
+  .ub-page-title {
+    font-size: 1rem;
   }
 }
