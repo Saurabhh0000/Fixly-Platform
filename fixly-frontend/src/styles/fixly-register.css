@@ -187,7 +187,9 @@
 
 /* Two / Three col grids */
 .rg-two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.rg-three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.rg-three-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* Pincode on its own row so it never overflows */
+.rg-three-col .rg-field:last-child { grid-column: 1 / -1; }
 
 /* Field */
 .rg-field { display: flex; flex-direction: column; gap: 5px; }
@@ -295,12 +297,23 @@
     grid-template-columns: 1fr;
     border-radius: 20px;
     max-width: 520px;
+    width: 100%;
     margin: 0 auto;
+    overflow: hidden;
   }
 
   .rg-left { display: none; }
 
-  .rg-right { padding: 30px 26px 28px; }
+  .rg-right {
+    padding: 30px 26px 28px;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Keep two-col but collapse three-col to 1-col at tablet */
+  .rg-three-col { grid-template-columns: 1fr; }
+  .rg-three-col .rg-field:last-child { grid-column: unset; }
 }
 
 /* ======================================================
@@ -317,10 +330,17 @@
     border-radius: 0;
     box-shadow: none;
     max-width: 100%;
+    width: 100%;
     min-height: 100vh;
+    overflow: hidden;
   }
 
-  .rg-right { padding: 28px 18px 36px; }
+  .rg-right {
+    padding: 28px 18px 36px;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+  }
 
   .rg-right-icon {
     width: 46px; height: 46px; border-radius: 13px; font-size: 1.05rem;
@@ -329,7 +349,11 @@
   .rg-right-title { font-size: 1.15rem; }
 
   /* Stack all grids to 1 col */
-  .rg-two-col, .rg-three-col { grid-template-columns: 1fr; gap: 10px; }
+  .rg-two-col,
+  .rg-three-col { grid-template-columns: 1fr; gap: 10px; }
+  .rg-three-col .rg-field:last-child { grid-column: unset; }
+
+  .rg-form { gap: 10px; }
 
   .rg-input-wrap { padding: 10px 12px; border-radius: 10px; }
 
