@@ -16,6 +16,8 @@ import {
   FaTimesCircle,
   FaClock,
   FaExclamationTriangle,
+  FaLeaf,
+  FaArrowRight,
 } from "react-icons/fa";
 
 const BecomeProvider = () => {
@@ -53,8 +55,17 @@ const BecomeProvider = () => {
       const res = await fixlyApi.get("/api/categories");
       setCategories(res.data);
     } catch {
-      toast.error("⚠️ Failed to load categories. Please refresh the page.", {
+      toast.error("Failed to load categories. Please refresh the page.", {
         duration: 4000,
+        icon: "⚠️",
+        style: {
+          background: "#fef2f2",
+          color: "#991b1b",
+          border: "1px solid #fca5a5",
+          borderRadius: "12px",
+          fontWeight: "600",
+          fontSize: "0.85rem",
+        },
       });
     }
   };
@@ -75,56 +86,57 @@ const BecomeProvider = () => {
   const submit = async () => {
     if (loading) return;
 
+    const errorToast = (msg) =>
+      toast.error(msg, {
+        duration: 3500,
+        style: {
+          background: "#fef2f2",
+          color: "#991b1b",
+          border: "1px solid #fca5a5",
+          borderRadius: "12px",
+          fontWeight: "600",
+          fontSize: "0.85rem",
+        },
+      });
+
     if (!form.categoryId) {
-      toast.error("Please select a service category.", { duration: 3000 });
+      errorToast("Please select a service category.");
       return;
     }
     if (!form.panCardNumber) {
-      toast.error("PAN card number is required.", { duration: 3000 });
+      errorToast("PAN card number is required.");
       return;
     }
     if (!form.aadhaarNumber) {
-      toast.error("Aadhaar number is required.", { duration: 3000 });
+      errorToast("Aadhaar number is required.");
       return;
     }
     if (!form.aadhaarFrontImage) {
-      toast.error("Please upload the front side of your Aadhaar card.", {
-        duration: 3000,
-      });
+      errorToast("Please upload the front side of your Aadhaar card.");
       return;
     }
     if (!form.aadhaarBackImage) {
-      toast.error("Please upload the back side of your Aadhaar card.", {
-        duration: 3000,
-      });
+      errorToast("Please upload the back side of your Aadhaar card.");
       return;
     }
 
-    const maxSize = 1 * 1024 * 1024; // 1MB
+    const maxSize = 1 * 1024 * 1024;
     if (form.aadhaarFrontImage.size > maxSize) {
-      toast.error("Aadhaar front image must be less than 1MB.", {
-        duration: 3000,
-      });
+      errorToast("Aadhaar front image must be less than 1MB.");
       return;
     }
     if (form.aadhaarBackImage.size > maxSize) {
-      toast.error("Aadhaar back image must be less than 1MB.", {
-        duration: 3000,
-      });
+      errorToast("Aadhaar back image must be less than 1MB.");
       return;
     }
 
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
     if (!allowedTypes.includes(form.aadhaarFrontImage.type)) {
-      toast.error("Aadhaar front image must be JPG, JPEG, or PNG.", {
-        duration: 3000,
-      });
+      errorToast("Aadhaar front image must be JPG, JPEG, or PNG.");
       return;
     }
     if (!allowedTypes.includes(form.aadhaarBackImage.type)) {
-      toast.error("Aadhaar back image must be JPG, JPEG, or PNG.", {
-        duration: 3000,
-      });
+      errorToast("Aadhaar back image must be JPG, JPEG, or PNG.");
       return;
     }
 
@@ -146,8 +158,19 @@ const BecomeProvider = () => {
       });
 
       toast.success(
-        "✅ Application submitted! We'll review your documents shortly.",
-        { duration: 5000 },
+        "Application submitted! We'll review your documents shortly.",
+        {
+          duration: 5000,
+          icon: "✅",
+          style: {
+            background: "#f0fdf4",
+            color: "#15803d",
+            border: "1px solid #86efac",
+            borderRadius: "12px",
+            fontWeight: "600",
+            fontSize: "0.85rem",
+          },
+        },
       );
 
       loadProviderStatus();
@@ -155,8 +178,19 @@ const BecomeProvider = () => {
     } catch (err) {
       toast.error(
         err?.response?.data?.message ||
-          "❌ Registration failed. Please try again.",
-        { duration: 4000 },
+          "Registration failed. Please try again.",
+        {
+          duration: 4000,
+          icon: "❌",
+          style: {
+            background: "#fef2f2",
+            color: "#991b1b",
+            border: "1px solid #fca5a5",
+            borderRadius: "12px",
+            fontWeight: "600",
+            fontSize: "0.85rem",
+          },
+        },
       );
     } finally {
       setLoading(false);
@@ -314,11 +348,31 @@ const BecomeProvider = () => {
         {/* HEADER */}
         <div className="bp-header">
           <div className="bp-header-icon">
-            <FaBriefcase />
+            <FaLeaf />
           </div>
           <h2>Become a Service Provider</h2>
           <p>Join Fixly, offer your services, and start earning today.</p>
         </div>
+
+        {/* PERKS STRIP */}
+        {!providerStatus && (
+          <div className="bp-perks">
+            <div className="perk-item">
+              <FaShieldAlt />
+              <span>Verified Badge</span>
+            </div>
+            <div className="perk-divider" />
+            <div className="perk-item">
+              <FaRupeeSign />
+              <span>Earn Daily</span>
+            </div>
+            <div className="perk-divider" />
+            <div className="perk-item">
+              <FaUserCheck />
+              <span>Trusted Network</span>
+            </div>
+          </div>
+        )}
 
         {/* TIMELINE — show when status exists and not reapplying */}
         {providerStatus &&
@@ -344,9 +398,18 @@ const BecomeProvider = () => {
                 toast("Fill in your correct details and reapply.", {
                   icon: "📋",
                   duration: 4000,
+                  style: {
+                    background: "#fffbeb",
+                    color: "#92400e",
+                    border: "1px solid #fcd34d",
+                    borderRadius: "12px",
+                    fontWeight: "600",
+                    fontSize: "0.85rem",
+                  },
                 });
               }}>
-              Reapply Now
+              <span>Reapply Now</span>
+              <FaArrowRight />
             </button>
           </div>
         )}
@@ -357,7 +420,7 @@ const BecomeProvider = () => {
           <div className="bp-form">
             {/* CATEGORY */}
             <div className="input-group">
-              <label>
+              <label className="field-label">
                 <FaBriefcase />
                 <span>
                   Service Category <span className="required">*</span>
@@ -382,10 +445,10 @@ const BecomeProvider = () => {
               )}
             </div>
 
-            {/* EXPERIENCE + PRICE — side by side on desktop */}
+            {/* EXPERIENCE + PRICE */}
             <div className="two-col">
               <div className="input-group">
-                <label>
+                <label className="field-label">
                   <FaBriefcase />
                   <span>Experience (Years)</span>
                 </label>
@@ -401,7 +464,7 @@ const BecomeProvider = () => {
               </div>
 
               <div className="input-group">
-                <label>
+                <label className="field-label">
                   <FaRupeeSign />
                   <span>
                     Price Per Visit <span className="required">*</span>
@@ -422,12 +485,15 @@ const BecomeProvider = () => {
               </div>
             </div>
 
-            {/* DIVIDER */}
-            <div className="form-section-label">Identity Verification</div>
+            {/* IDENTITY SECTION */}
+            <div className="form-section-label">
+              <FaIdCard />
+              <span>Identity Verification</span>
+            </div>
 
             {/* PAN */}
             <div className="input-group">
-              <label>
+              <label className="field-label">
                 <FaIdCard />
                 <span>
                   PAN Card Number <span className="required">*</span>
@@ -449,7 +515,7 @@ const BecomeProvider = () => {
 
             {/* AADHAAR */}
             <div className="input-group">
-              <label>
+              <label className="field-label">
                 <FaShieldAlt />
                 <span>
                   Aadhaar Number <span className="required">*</span>
@@ -467,17 +533,22 @@ const BecomeProvider = () => {
             </div>
 
             {/* AADHAAR IMAGES */}
+            <div className="upload-section-label">
+              <FaFileUpload />
+              <span>Aadhaar Card Images</span>
+            </div>
             <div className="two-col">
               {/* FRONT */}
               <div className="input-group">
-                <label>
-                  <FaFileUpload />
+                <label className="field-label">
                   <span>
-                    Aadhaar Front <span className="required">*</span>
+                    Front Side <span className="required">*</span>
                   </span>
                 </label>
                 <label className="file-upload-box" htmlFor="aadhaar-front">
-                  <FaFileUpload className="upload-icon" />
+                  <div className="upload-icon-wrap">
+                    <FaFileUpload />
+                  </div>
                   <span className="upload-text">
                     {fileNames.front ? fileNames.front : "Tap to upload"}
                   </span>
@@ -504,14 +575,15 @@ const BecomeProvider = () => {
 
               {/* BACK */}
               <div className="input-group">
-                <label>
-                  <FaFileUpload />
+                <label className="field-label">
                   <span>
-                    Aadhaar Back <span className="required">*</span>
+                    Back Side <span className="required">*</span>
                   </span>
                 </label>
                 <label className="file-upload-box" htmlFor="aadhaar-back">
-                  <FaFileUpload className="upload-icon" />
+                  <div className="upload-icon-wrap">
+                    <FaFileUpload />
+                  </div>
                   <span className="upload-text">
                     {fileNames.back ? fileNames.back : "Tap to upload"}
                   </span>
@@ -545,7 +617,10 @@ const BecomeProvider = () => {
                   Submitting...
                 </>
               ) : (
-                "Submit Application"
+                <>
+                  Submit Application
+                  <FaArrowRight />
+                </>
               )}
             </button>
           </div>
@@ -554,8 +629,10 @@ const BecomeProvider = () => {
         {/* INFO FOOTER */}
         <div className="info-box">
           <FaShieldAlt />
-          Your documents are encrypted and reviewed only by verified Fixly
-          admins.
+          <span>
+            Your documents are encrypted and reviewed only by verified Fixly
+            admins.
+          </span>
         </div>
       </div>
     </div>
