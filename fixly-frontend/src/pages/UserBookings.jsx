@@ -16,6 +16,7 @@ import {
   FaStar,
   FaShieldAlt,
   FaArrowRight,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../styles/fixly-bookings.css";
