@@ -98,10 +98,10 @@ const FixlyNavbar = () => {
             to="/"
             className="fnav-logo"
             onClick={() => setMobileOpen(false)}>
-            <div className="fnav-logo-icon">
-              <FaBolt />
+            <div className="fnav-logo-badge">
+              <span className="fnav-logo-fix">Fix</span>
+              <span className="fnav-logo-ly">ly</span>
             </div>
-            Fix<span>ly</span>
           </Link>
 
           {/* DESKTOP LINKS */}
@@ -166,10 +166,10 @@ const FixlyNavbar = () => {
           to={dashboardPath}
           className="fnav-logo"
           onClick={() => setMobileOpen(false)}>
-          <div className="fnav-logo-icon">
-            <FaBolt />
+          <div className="fnav-logo-badge">
+            <span className="fnav-logo-fix">Fix</span>
+            <span className="fnav-logo-ly">ly</span>
           </div>
-          Fix<span>ly</span>
         </Link>
 
         {/* DESKTOP LINKS */}

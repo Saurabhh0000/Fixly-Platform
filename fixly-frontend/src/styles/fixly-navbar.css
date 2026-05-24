@@ -32,30 +32,52 @@
 
 /* ================= LOGO ================= */
 .fnav-logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
   text-decoration: none;
-  font-size: 1.65rem;
-  font-weight: 900;
-  color: #0f172a;
-  letter-spacing: -.035em;
   flex-shrink: 0;
   transition: opacity .15s ease;
 }
 
 .fnav-logo:hover { opacity: .88; }
 
-.fnav-logo span { color: #16a34a;padding: 2px 10px;
-  border-radius: 8px;background: #dcfce7;}
+/* The green pill container */
+.fnav-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(160deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
+  border-radius: 14px;
+  padding: 6px 8px 6px 14px;
+  gap: 0;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.32);
+  line-height: 1;
+}
 
-.fnav-logo-icon {
-  width: 34px; height: 34px; border-radius: 9px;
-  background: linear-gradient(160deg,#15803d 0%,#16a34a 40%,#22c55e 100%);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: .88rem;
-  box-shadow: 0 3px 10px rgba(22,163,74,.3);
-  flex-shrink: 0;
+/* "Fix" — white bold text */
+.fnav-logo-fix {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+
+/* "ly" — dark green text inside a white rounded box */
+.fnav-logo-ly {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 9px;
+  padding: 3px 9px;
+  margin-left: 5px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #15803d;
+  letter-spacing: -.03em;
+  line-height: 1;
 }
 
 /* ================= DESKTOP LINKS ================= */
@@ -427,9 +449,12 @@
 @media (max-width: 480px) {
   .fnav-inner { padding: 0 14px; }
 
-  .fnav-logo { font-size: 1.45rem; gap: 7px; }
+  .fnav-logo-badge { border-radius: 11px; padding: 5px 7px 5px 11px; }
 
-  .fnav-logo-icon { width: 30px; height: 30px; font-size: .8rem; border-radius: 8px; }
+  .fnav-logo-fix,
+  .fnav-logo-ly { font-size: 1.3rem; }
+
+  .fnav-logo-ly { border-radius: 7px; padding: 2px 7px; }
 
   .fnav-mobile-drawer { padding: 12px 12px 18px; }
 
