@@ -1,497 +1,446 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap");
+/* ============================================================
+   FIXLY NAVBAR — Scoped .fnav-* prefix
+   Zero global overrides. No Bootstrap dependency.
+   ============================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
-/* =====================================================
-   FIXLY NAVBAR BASE
-===================================================== */
-.fixly-navbar {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 10px 0;
+/* ================= NAVBAR BAR ================= */
+.fnav-bar {
+  position: sticky;
+  top: 0;
   z-index: 1000;
-  font-family: "Inter", system-ui, sans-serif;
-}
-
-/* FORCE OVERRIDE BOOTSTRAP NAVBAR BRAND */
-.navbar .fixly-logo,
-.navbar-brand.fixly-logo {
-  font-family: "Nunito", sans-serif !important;
-  font-size: 2.5rem !important;   /* bigger */
-  font-weight: 900 !important;    /* bolder */
-  color: #0f172a !important;
-  text-decoration: none !important;
-  letter-spacing: -0.8px;
-  line-height: 1;
-}
-
-/* Green brand part */
-.navbar .fixly-logo span {
-  color: #22c55e !important;
-}
-
-/* =====================================================
-   NAV LINKS (COMMON)
-===================================================== */
-.nav-link-custom {
-  position: relative;
-  font-weight: 700;
-  color: #334155 !important;
-  cursor: pointer;
-  padding: 6px 2px;
-  transition: color 0.25s ease;
-}
-
-/* underline hover */
-.nav-link-custom::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 0%;
-  height: 2px;
-  background: linear-gradient(90deg, #22c55e, #16a34a);
-  transition: width 0.3s ease;
-}
-
-.nav-link-custom:hover {
-  color: #16a34a !important;
-}
-
-.nav-link-custom:hover::after {
-  width: 100%;
-}
-
-/* =====================================================
-   AUTH BUTTONS (LOGIN / REGISTER) – BOOTSTRAP OVERRIDE
-===================================================== */
-
-/* HARD RESET FOR BOOTSTRAP */
-.navbar .nav-btn {
-  all: unset;                           /* 🔥 kills bootstrap styles */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 10px 20px;
-  border-radius: 999px;
-
-  font-weight: 800;
-  font-size: 0.95rem;
-  line-height: 1;
-
-  cursor: pointer;
-  text-decoration: none;
-
-  transition:
-    background 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.2s ease,
-    color 0.25s ease;
-}
-
-/* ================= SECONDARY (LOGIN) ================= */
-.navbar .nav-btn.secondary {
-  border: 2px solid #22c55e;
-  color: #16a34a;
-  background: transparent;
-}
-
-@media (hover: hover) {
-  .navbar .nav-btn.secondary:hover {
-    background: #dcfce7;
-    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.25);
-    transform: translateY(-1px);
-  }
-}
-
-.navbar .nav-btn.secondary:active {
-  transform: scale(0.96);
-}
-
-/* ================= PRIMARY (REGISTER) ================= */
-.navbar .nav-btn.primary {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #ffffff;
-}
-
-@media (hover: hover) {
-  .navbar .nav-btn.primary:hover {
-    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.45);
-    transform: translateY(-1px);
-  }
-}
-
-.navbar .nav-btn.primary:active {
-  transform: scale(0.96);
-}
-
-/* ================= FOCUS (ACCESSIBILITY) ================= */
-.navbar .nav-btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
-}
-
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-
-  .navbar .nav-btn {
-    width: 100%;
-    padding: 12px 0;
-  }
-}
-
-/* =====================================================
-   BECOME PROVIDER BUTTON
-===================================================== */
-.become-provider-btn {
-  border: none;
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #ffffff;
-  padding: 8px 18px;
-  border-radius: 999px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.become-provider-btn:hover {
-  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.45);
-  transform: translateY(-1px);
-}
-
-/* =====================================================
-   PROFILE WRAPPER
-===================================================== */
-.profile-wrapper {
-  position: relative;
-}
-
-/* trigger */
-.profile-trigger {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 999px;
-  transition: background 0.25s ease;
-}
-
-.profile-trigger:hover {
-  background: #f0fdf4;
-}
-
-/* avatar */
-.profile-avatar {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #ffffff;
-  font-weight: 900;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.profile-avatar.big {
-  width: 56px;
-  height: 56px;
-  font-size: 1.4rem;
-}
-
-/* name */
-.profile-name {
-  font-weight: 700;
-  color: #0f172a;
-}
-
-/* arrow */
-.arrow {
-  font-size: 0.8rem;
-  transition: transform 0.3s ease;
-}
-
-.arrow.rotate {
-  transform: rotate(180deg);
-}
-
-/* =====================================================
-   PROFILE DROPDOWN (BOOTSTRAP OVERRIDE)
-===================================================== */
-.profile-dropdown {
-  position: absolute;
-  right: 0;
-  top: 120%;
-  width: 320px;
   background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
-  overflow: hidden;
-  z-index: 2000;
-}
-
-/* HEADER */
-.profile-dropdown .dropdown-header {
-  display: flex;
-  gap: 16px;
-  padding: 18px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  margin: 0;
-}
-
-/* header text */
-.header-text {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.header-text .profile-name {
-  color: #ffffff;
-  font-size: 1.1rem;
-  font-weight: 800;
-}
-
-/* role + email row */
-.header-meta {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.header-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-/* =====================================================
-   DROPDOWN LINKS
-===================================================== */
-/* ===== DROPDOWN LINKS ===== */
-
-.dropdown-link,
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.dropdown-link:hover:not(.disabled),
-.logout-btn:hover {
-  background: #f8fafc;
-}
-
-/* TEXT */
-.link-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.link-text .title {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.link-text .sub {
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-/* DISABLED */
-.dropdown-link.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ===== ICON BOX ===== */
-
-.icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-}
-
-/* INDIVIDUAL ICON COLORS */
-
-.icon-box.password {
-  background: #eef2ff;
-  color: #4338ca;
-}
-
-.icon-box.settings {
-  background: #f3f4f6;
-  color: #6b7280;
-}
-
-.icon-box.help {
-  background: #ecfeff;
-  color: #0f766e;
-}
-
-/* ===== LOGOUT BUTTON ===== */
-
-/* ===== LOGOUT BASE ===== */
-.logout-btn {
+  border-bottom: 1px solid #e8edf4;
+  box-shadow: 0 1px 12px rgba(0,0,0,.06);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   width: 100%;
-  margin-top: 10px;
-  border: none;
-  text-align: left;
+  box-sizing: border-box;
+}
 
-  background: #fee2e2;          /* light red */
-  border-radius: 12px;
-  padding: 12px 14px;
-
+/* ================= INNER ROW ================= */
+.fnav-inner {
   display: flex;
   align-items: center;
-  gap: 12px;
-
-  transition: background 0.2s ease, transform 0.15s ease;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  gap: 16px;
 }
 
-/* TEXT COLORS */
-.logout-btn .title,
-.logout-btn .sub {
-  color: #b91c1c;
+/* ================= LOGO ================= */
+.fnav-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -.035em;
+  flex-shrink: 0;
+  transition: opacity .15s ease;
 }
 
-/* ===== DESKTOP HOVER ===== */
-@media (hover: hover) {
-  .logout-btn:hover {
-    background: #fca5a5;        /* darker red */
-  }
+.fnav-logo:hover { opacity: .88; }
+
+.fnav-logo span { color: #16a34a; }
+
+.fnav-logo-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(160deg,#15803d 0%,#16a34a 40%,#22c55e 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: .88rem;
+  box-shadow: 0 3px 10px rgba(22,163,74,.3);
+  flex-shrink: 0;
 }
 
-/* ===== MOBILE TAP ===== */
-.logout-btn:active {
-  background: #ef4444;          /* strong red */
-  transform: scale(0.98);
+/* ================= DESKTOP LINKS ================= */
+.fnav-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: flex-end;
 }
 
-.logout-btn:active .title,
-.logout-btn:active .sub {
-  color: #ffffff;
+/* NAV LINK */
+.fnav-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: .85rem; font-weight: 700; color: #475569;
+  padding: 7px 12px; border-radius: 9px;
+  text-decoration: none;
+  transition: background .15s ease, color .15s ease;
+  white-space: nowrap;
 }
 
-/* ===== ICON ===== */
-.icon-box.logout {
-  background: #fecaca;
-  color: #b91c1c;
-  transition: background 0.2s ease, color 0.2s ease;
+.fnav-link:hover { background: #f0fdf4; color: #15803d; }
+
+.fnav-link-icon { font-size: .78rem; opacity: .75; }
+
+/* AUTH BUTTONS */
+.fnav-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: .83rem; font-weight: 800; cursor: pointer;
+  border-radius: 10px; padding: 8px 16px;
+  text-decoration: none; border: none; white-space: nowrap;
+  transition: background .15s ease, box-shadow .15s ease,
+              border-color .15s ease, transform .12s ease;
 }
 
-.logout-btn:hover .icon-box.logout {
-  background: #ef4444;
-  color: #ffffff;
+.fnav-btn-outline {
+  background: transparent;
+  border: 1.5px solid #86efac; color: #15803d;
+}
+.fnav-btn-outline:hover {
+  background: #f0fdf4; border-color: #4ade80;
+  box-shadow: 0 3px 12px rgba(22,163,74,.15);
 }
 
-.logout-btn:active .icon-box.logout {
-  background: #dc2626;
-  color: #ed3030;
+.fnav-btn-solid {
+  background: linear-gradient(160deg,#15803d 0%,#16a34a 40%,#22c55e 100%);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(22,163,74,.28);
+}
+.fnav-btn-solid:hover {
+  box-shadow: 0 5px 18px rgba(22,163,74,.4); transform: translateY(-1px);
 }
 
-
-/* ===== DESKTOP HOVER ===== */
-@media (hover: hover) {
-  .dropdown-link:hover:not(.disabled) {
-    background: #c5ddf5;
-  }
-
-    .logout-btn:hover {
-    background: #efadad;
-  }
-
-
-  .dropdown-link:hover .icon-box.password {
-    background: #e0e7ff;
-  }
-
-  .dropdown-link:hover .icon-box.help {
-    background: #ccfbf1;
-  }
-
+.fnav-btn-blue {
+  background: linear-gradient(135deg,#1d4ed8,#2563eb);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(37,99,235,.25);
+}
+.fnav-btn-blue:hover {
+  box-shadow: 0 5px 18px rgba(37,99,235,.38); transform: translateY(-1px);
 }
 
+/* ================= HAMBURGER ================= */
+.fnav-hamburger {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  color: #334155; font-size: 1.15rem;
+  width: 38px; height: 38px; border-radius: 9px;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s ease, color .15s ease;
+}
+.fnav-hamburger:hover { background: #f0fdf4; color: #15803d; }
 
+/* ================= PROFILE TRIGGER ================= */
+.fnav-profile-wrap { position: relative; }
 
-/* =====================================================
-   MOBILE VIEW – PROFILE FIX
-===================================================== */
-@media (max-width: 768px) {
-
-  /* Navbar spacing */
-  .fixly-navbar {
-    padding: 8px 12px;
-  }
-
-  /* Profile trigger full width */
-  .profile-trigger {
-    width: 100%;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border-radius: 12px;
-  }
-
-  /* Dropdown full-width & centered */
-  .profile-dropdown {
-    position: fixed;
-    top: 64px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    max-height: calc(100vh - 64px);
-    overflow-y: auto;
-  }
-
-  /* Header spacing */
-  .profile-dropdown .dropdown-header {
-    padding: 16px;
-    align-items: center;
-  }
-
-  .header-text .profile-name {
-    font-size: 1rem;
-  }
-
-  /* Dropdown items bigger for touch */
-  .dropdown-link,
-  .logout-btn {
-    padding: 14px 16px;
-    border-radius: 14px;
-  }
-
-  /* Icon box slightly larger */
-  .icon-box {
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
-  }
-
-  /* Logout spacing */
-  .logout-btn {
-    margin-top: 12px;
-  }
-
-  /* Remove hover dependency on mobile */
-  .dropdown-link:hover,
-  .logout-btn:hover {
-    background: inherit;
-  }
+.fnav-profile-trigger {
+  display: flex; align-items: center; gap: 8px;
+  background: #f8fafc; border: 1.5px solid #e4e9f0;
+  border-radius: 22px; padding: 5px 12px 5px 5px;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
 
+.fnav-profile-trigger:hover {
+  background: #f0fdf4; border-color: #86efac;
+  box-shadow: 0 2px 10px rgba(22,163,74,.12);
+}
+
+.fnav-trigger-active {
+  background: #f0fdf4 !important; border-color: #4ade80 !important;
+  box-shadow: 0 0 0 3px rgba(22,163,74,.1) !important;
+}
+
+.fnav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(160deg,#15803d 0%,#16a34a 40%,#22c55e 100%);
+  color: #fff; font-size: .88rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.fnav-trigger-name {
+  font-size: .82rem; font-weight: 700; color: #0f172a;
+  max-width: 100px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+.fnav-chevron {
+  font-size: .68rem; color: #64748b;
+  transition: transform .18s ease;
+}
+.fnav-chevron-up { transform: rotate(180deg); }
+
+/* ================= DROPDOWN ================= */
+.fnav-dropdown {
+  position: absolute; right: 0; top: calc(100% + 10px);
+  width: 300px; background: #fff;
+  border-radius: 18px; border: 1.5px solid #e4e9f0;
+  box-shadow: 0 8px 28px rgba(0,0,0,.1), 0 24px 56px rgba(0,0,0,.08);
+  overflow: hidden; z-index: 2000;
+}
+
+/* DROPDOWN HEADER */
+.fnav-dd-head {
+  display: flex; align-items: center; gap: 13px;
+  padding: 18px 18px 16px;
+  background: linear-gradient(160deg,#15803d 0%,#16a34a 40%,#22c55e 100%);
+  position: relative; overflow: hidden;
+}
+
+.fnav-dd-head::before {
+  content: ""; position: absolute; top: -30px; right: -30px;
+  width: 110px; height: 110px; border-radius: 50%;
+  background: rgba(255,255,255,.08); pointer-events: none;
+}
+
+.fnav-dd-avatar {
+  width: 48px; height: 48px; border-radius: 13px;
+  background: rgba(255,255,255,.22);
+  border: 2px solid rgba(255,255,255,.38);
+  color: #fff; font-size: 1.2rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.fnav-dd-meta { min-width: 0; position: relative; z-index: 1; }
+
+.fnav-dd-name {
+  font-size: .95rem; font-weight: 800; color: #fff;
+  margin: 0 0 6px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+.fnav-dd-pills { display: flex; flex-direction: column; gap: 4px; }
+
+.fnav-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.28);
+  border-radius: 20px; padding: 3px 9px;
+  font-size: .67rem; font-weight: 700; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* DROPDOWN ITEMS */
+.fnav-dd-items {
+  padding: 10px 10px 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+
+.fnav-dd-item {
+  display: flex; align-items: center; gap: 11px;
+  width: 100%; background: none; border: none; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  padding: 10px 11px; border-radius: 11px; text-align: left;
+  transition: background .15s ease;
+}
+
+.fnav-dd-item:hover:not(.fnav-dd-item-disabled) { background: #f8fafc; }
+
+.fnav-dd-item-disabled { opacity: .55; cursor: not-allowed; }
+
+.fnav-dd-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem; flex-shrink: 0;
+}
+
+.fnav-icon-violet { background: #ede9fe; color: #5b21b6; }
+.fnav-icon-slate  { background: #f1f5f9; color: #475569; }
+.fnav-icon-teal   { background: #ccfbf1; color: #0f766e; }
+.fnav-icon-red    { background: #fee2e2; color: #dc2626; }
+
+.fnav-dd-item-text {
+  display: flex; flex-direction: column; gap: 1px; min-width: 0;
+}
+
+.fnav-dd-item-title {
+  font-size: .84rem; font-weight: 700; color: #0f172a;
+}
+
+.fnav-dd-item-sub {
+  font-size: .72rem; color: #94a3b8; font-weight: 500;
+}
+
+/* DROPDOWN FOOTER / LOGOUT */
+.fnav-dd-footer {
+  padding: 10px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 8px;
+}
+
+.fnav-logout-btn {
+  display: flex; align-items: center; gap: 11px;
+  width: 100%; padding: 10px 11px; border-radius: 11px;
+  background: #fff5f5; border: 1.5px solid #fee2e2;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  text-align: left;
+  transition: background .15s ease, border-color .15s ease;
+}
+
+.fnav-logout-btn:hover {
+  background: #fee2e2; border-color: #fca5a5;
+}
+
+.fnav-logout-btn:hover .fnav-icon-red {
+  background: #fca5a5; color: #991b1b;
+}
+
+.fnav-logout-btn .fnav-dd-item-title { color: #dc2626; }
+.fnav-logout-btn .fnav-dd-item-sub   { color: #f87171; }
+
+/* ================================================================
+   MOBILE DRAWER
+   ================================================================ */
+.fnav-mobile-drawer {
+  background: #fff;
+  border-top: 1px solid #f1f5f9;
+  padding: 14px 16px 20px;
+  display: flex; flex-direction: column; gap: 6px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+
+/* MOBILE USER CARD */
+.fnav-mobile-user {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(160deg,#15803d 0%,#16a34a 40%,#22c55e 100%);
+  border-radius: 14px; padding: 14px 16px;
+  margin-bottom: 8px; position: relative; overflow: hidden;
+}
+
+.fnav-mobile-user::before {
+  content: ""; position: absolute; top: -30px; right: -30px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: rgba(255,255,255,.08); pointer-events: none;
+}
+
+.fnav-mobile-avatar {
+  width: 46px; height: 46px; border-radius: 13px;
+  background: rgba(255,255,255,.22);
+  border: 2px solid rgba(255,255,255,.38);
+  color: #fff; font-size: 1.15rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.fnav-mobile-uname {
+  font-size: .92rem; font-weight: 800; color: #fff; margin: 0 0 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.fnav-mobile-uemail {
+  font-size: .72rem; color: rgba(255,255,255,.78);
+  margin: 0; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.fnav-mobile-role-pill {
+  margin-left: auto; flex-shrink: 0;
+  background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3);
+  color: #fff; font-size: .65rem; font-weight: 700;
+  padding: 4px 9px; border-radius: 20px; white-space: nowrap;
+}
+
+/* MOBILE NAV & ACCOUNT GROUPS */
+.fnav-mobile-nav,
+.fnav-mobile-account {
+  display: flex; flex-direction: column; gap: 3px;
+}
+
+.fnav-mobile-account { margin-top: 8px; }
+
+.fnav-mobile-section-label {
+  font-size: .65rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .09em;
+  color: #94a3b8; margin: 0 0 4px; padding: 0 4px;
+}
+
+/* MOBILE LINK */
+.fnav-mobile-link {
+  display: flex; align-items: center; gap: 11px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: .88rem; font-weight: 700; color: #334155;
+  padding: 12px 14px; border-radius: 11px;
+  text-decoration: none; text-align: left; width: 100%;
+  transition: background .15s ease, color .15s ease;
+}
+
+.fnav-mobile-link:hover { background: #f0fdf4; color: #15803d; }
+
+.fnav-ml-icon {
+  font-size: .85rem; color: #94a3b8; flex-shrink: 0;
+  transition: color .15s ease;
+}
+
+.fnav-mobile-link:hover .fnav-ml-icon { color: #16a34a; }
+
+.fnav-ml-violet { color: #7c3aed !important; }
+.fnav-ml-slate  { color: #475569 !important; }
+
+/* "Become Provider" in blue */
+.fnav-ml-blue { color: #1d4ed8; }
+.fnav-ml-blue:hover { background: #eff6ff !important; color: #1d4ed8 !important; }
+.fnav-ml-blue:hover .fnav-ml-icon { color: #2563eb !important; }
+
+/* NOT-LOGGED MOBILE AUTH ROW */
+.fnav-mobile-auth-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-top: 8px;
+}
+
+.fnav-btn-full { justify-content: center; width: 100%; }
+
+/* MOBILE LOGOUT */
+.fnav-mobile-logout {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  margin-top: 10px; padding: 13px 16px; border-radius: 12px;
+  background: #fff5f5; border: 1.5px solid #fee2e2;
+  color: #dc2626;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: .88rem; font-weight: 800; cursor: pointer;
+  width: 100%;
+  transition: background .15s ease, border-color .15s ease;
+}
+
+.fnav-mobile-logout:hover { background: #fee2e2; border-color: #fca5a5; }
+
+/* ======================================================
+   RESPONSIVE — show hamburger at ≤ 900px
+   ====================================================== */
+@media (max-width: 900px) {
+  .fnav-desktop-links { display: none; }
+  .fnav-hamburger     { display: flex; }
+}
+
+@media (max-width: 480px) {
+  .fnav-inner { padding: 0 14px; }
+
+  .fnav-logo { font-size: 1.45rem; gap: 7px; }
+
+  .fnav-logo-icon { width: 30px; height: 30px; font-size: .8rem; border-radius: 8px; }
+
+  .fnav-mobile-drawer { padding: 12px 12px 18px; }
+
+  .fnav-mobile-user { padding: 12px 13px; border-radius: 12px; }
+
+  .fnav-mobile-avatar { width: 40px; height: 40px; border-radius: 11px; font-size: 1rem; }
+
+  .fnav-mobile-uname { font-size: .86rem; }
+
+  .fnav-mobile-uemail { font-size: .68rem; max-width: 140px; }
+
+  .fnav-mobile-link { font-size: .84rem; padding: 11px 12px; }
+
+  .fnav-mobile-auth-row { grid-template-columns: 1fr; gap: 8px; }
+}
