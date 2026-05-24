@@ -10,6 +10,7 @@ import {
   FaListUl,
   FaTimesCircle,
   FaHourglassHalf,
+  FaPhone,
 } from "react-icons/fa";
 import fixlyApi from "../api/fixlyApi";
 import { AuthContext } from "../context/AuthContext";
@@ -147,6 +148,11 @@ const UserDashboard = () => {
                     <span>
                       {new Date(b.serviceDate).toLocaleDateString("en-IN")}
                     </span>
+                  </div>
+
+                  <div className="info-row">
+                    <FaPhone />
+                    <span>{b.phone}</span>
                   </div>
 
                   <div className="info-row">
