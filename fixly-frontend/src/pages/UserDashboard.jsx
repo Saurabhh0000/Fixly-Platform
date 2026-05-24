@@ -152,7 +152,7 @@ const UserDashboard = () => {
 
                   <div className="info-row">
                     <FaPhone />
-                    <span>{b.phone}</span>
+                    <span>{b.providerPhone}</span>
                   </div>
 
                   <div className="info-row">
