@@ -20,6 +20,10 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaHashtag,
+  FaFilter,
+  FaListAlt,
+  FaBolt,
+  FaBan,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../styles/fixly-bookings.css";
@@ -29,6 +33,14 @@ import UserLayout from "../layouts/UserLayout";
 
 const CARDS_PER_PAGE = 6;
 
+const FILTERS = [
+  { key: "ALL", label: "All", icon: <FaListAlt /> },
+  { key: "PENDING", label: "Pending", icon: <FaClock /> },
+  { key: "ACCEPTED", label: "Accepted", icon: <FaBolt /> },
+  { key: "COMPLETED", label: "Completed", icon: <FaCheckCircle /> },
+  { key: "CANCELLED", label: "Cancelled", icon: <FaBan /> },
+];
+
 const UserBookings = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -37,6 +49,7 @@ const UserBookings = () => {
   const [loading, setLoading] = useState(true);
   const [showReview, setShowReview] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("ALL");
   const [page, setPage] = useState(1);
 
   const loadBookings = async () => {
@@ -82,10 +95,21 @@ const UserBookings = () => {
       icon: <FaClock />,
     };
 
+  /* ===== FILTER ===== */
+  const filtered =
+    activeFilter === "ALL"
+      ? bookings
+      : bookings.filter((b) => b.status === activeFilter);
+
+  const handleFilterChange = (key) => {
+    setActiveFilter(key);
+    setPage(1);
+  };
+
   /* ===== PAGINATION ===== */
-  const totalPages = Math.max(1, Math.ceil(bookings.length / CARDS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / CARDS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
-  const paginated = bookings.slice(
+  const paginated = filtered.slice(
     (safePage - 1) * CARDS_PER_PAGE,
     safePage * CARDS_PER_PAGE,
   );
@@ -96,6 +120,9 @@ const UserBookings = () => {
   ).length;
   const activeCount = bookings.filter(
     (b) => b.status === "PENDING" || b.status === "ACCEPTED",
+  ).length;
+  const cancelledCount = bookings.filter(
+    (b) => b.status === "CANCELLED",
   ).length;
 
   /* ===== LOADER ===== */
@@ -114,13 +141,12 @@ const UserBookings = () => {
   return (
     <UserLayout>
       <div className="ub-wrapper">
-        {/* ===== HERO HEADER ===== */}
+        {/* ===== HERO BANNER (no stats inside) ===== */}
         <div className="ub-hero">
           <div className="ub-hero-deco ub-deco-1" />
           <div className="ub-hero-deco ub-deco-2" />
           <div className="ub-hero-deco ub-deco-3" />
-
-          <div className="ub-hero-top">
+          <div className="ub-hero-content">
             <div className="ub-hero-icon-wrap">
               <FaClipboardList />
             </div>
@@ -131,54 +157,129 @@ const UserBookings = () => {
               </p>
             </div>
           </div>
+        </div>
 
-          <div className="ub-hero-stats">
-            <div className="ub-stat-tile">
+        {/* ===== STATS ROW (outside hero, with icons) ===== */}
+        <div className="ub-stats-row">
+          <div className="ub-stat-card ub-stat-total">
+            <div className="ub-stat-icon-wrap ub-si-blue">
+              <FaListAlt />
+            </div>
+            <div className="ub-stat-info">
               <span className="ub-stat-num">{bookings.length}</span>
               <span className="ub-stat-lbl">Total</span>
             </div>
-            <div className="ub-stat-divider" />
-            <div className="ub-stat-tile">
+          </div>
+          <div className="ub-stat-card ub-stat-completed">
+            <div className="ub-stat-icon-wrap ub-si-green">
+              <FaCheckCircle />
+            </div>
+            <div className="ub-stat-info">
               <span className="ub-stat-num">{completedCount}</span>
               <span className="ub-stat-lbl">Completed</span>
             </div>
-            <div className="ub-stat-divider" />
-            <div className="ub-stat-tile">
+          </div>
+          <div className="ub-stat-card ub-stat-active">
+            <div className="ub-stat-icon-wrap ub-si-amber">
+              <FaBolt />
+            </div>
+            <div className="ub-stat-info">
               <span className="ub-stat-num">{activeCount}</span>
               <span className="ub-stat-lbl">Active</span>
             </div>
           </div>
+          <div className="ub-stat-card ub-stat-cancelled">
+            <div className="ub-stat-icon-wrap ub-si-red">
+              <FaBan />
+            </div>
+            <div className="ub-stat-info">
+              <span className="ub-stat-num">{cancelledCount}</span>
+              <span className="ub-stat-lbl">Cancelled</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ===== FILTER BAR ===== */}
+        <div className="ub-filter-bar">
+          <div className="ub-filter-label">
+            <FaFilter className="ub-filter-icon" />
+            <span>Filter</span>
+          </div>
+          <div className="ub-filter-chips">
+            {FILTERS.map((f) => {
+              const count =
+                f.key === "ALL"
+                  ? bookings.length
+                  : bookings.filter((b) => b.status === f.key).length;
+              return (
+                <button
+                  key={f.key}
+                  className={`ub-chip ub-chip-${f.key.toLowerCase()} ${activeFilter === f.key ? "ub-chip-active" : ""}`}
+                  onClick={() => handleFilterChange(f.key)}>
+                  {f.icon}
+                  {f.label}
+                  <span className="ub-chip-count">{count}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* ===== EMPTY STATE ===== */}
-        {bookings.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="ub-empty">
-            <img
-              src={emptyBookingsImg}
-              alt="No bookings"
-              className="ub-empty-img"
-            />
-            <h4 className="ub-empty-title">No bookings yet</h4>
+            {bookings.length === 0 ? (
+              <img
+                src={emptyBookingsImg}
+                alt="No bookings"
+                className="ub-empty-img"
+              />
+            ) : (
+              <div className="ub-empty-icon-wrap">
+                <FaFilter />
+              </div>
+            )}
+            <h4 className="ub-empty-title">
+              {bookings.length === 0
+                ? "No bookings yet"
+                : `No ${activeFilter.toLowerCase()} bookings`}
+            </h4>
             <p className="ub-empty-sub">
-              You haven't made any service bookings. Browse available providers
-              and book your first service today.
+              {bookings.length === 0
+                ? "You haven't made any service bookings. Browse available providers and book your first service today."
+                : `You don't have any ${activeFilter.toLowerCase()} bookings at the moment.`}
             </p>
-            <button
-              className="ub-empty-btn"
-              onClick={() => navigate("/search")}>
-              Find a Service
-              <FaArrowRight className="ub-empty-btn-icon" />
-            </button>
+            {bookings.length === 0 ? (
+              <button
+                className="ub-empty-btn"
+                onClick={() => navigate("/search")}>
+                Find a Service <FaArrowRight className="ub-empty-btn-icon" />
+              </button>
+            ) : (
+              <button
+                className="ub-empty-btn"
+                onClick={() => handleFilterChange("ALL")}>
+                View All Bookings
+              </button>
+            )}
           </div>
         ) : (
           <>
+            {/* RESULTS LINE */}
+            {activeFilter !== "ALL" && (
+              <p className="ub-results-line">
+                Showing <strong>{filtered.length}</strong>{" "}
+                {activeFilter.toLowerCase()} booking
+                {filtered.length !== 1 ? "s" : ""}
+              </p>
+            )}
+
             {/* ===== GRID ===== */}
             <div className="ub-grid">
               {paginated.map((b) => {
                 const status = getStatus(b.status);
                 return (
                   <div key={b.bookingId} className="ub-card">
-                    {/* CARD TOP */}
                     <div className="ub-card-top">
                       <div className="ub-category-pill">
                         <FaTools className="ub-category-icon" />
@@ -190,7 +291,6 @@ const UserBookings = () => {
                       </div>
                     </div>
 
-                    {/* PROVIDER */}
                     <div className="ub-provider-row">
                       <div className="ub-provider-avatar">
                         {b.providerName?.charAt(0)?.toUpperCase() || "P"}
@@ -204,7 +304,6 @@ const UserBookings = () => {
                       <FaUserTie className="ub-provider-icon" />
                     </div>
 
-                    {/* PHONE — only when accepted or completed */}
                     {(b.status === "ACCEPTED" || b.status === "COMPLETED") &&
                       b.providerPhone &&
                       b.providerPhone.trim() !== "" && (
@@ -214,9 +313,7 @@ const UserBookings = () => {
                         </div>
                       )}
 
-                    {/* META GRID */}
                     <div className="ub-meta-grid">
-                      {/* DATE */}
                       <div className="ub-meta-item">
                         <div className="ub-meta-icon blue">
                           <FaCalendarAlt />
@@ -235,8 +332,6 @@ const UserBookings = () => {
                           </span>
                         </div>
                       </div>
-
-                      {/* LOCATION + PINCODE inside */}
                       <div className="ub-meta-item">
                         <div className="ub-meta-icon red">
                           <FaMapMarkerAlt />
@@ -256,7 +351,6 @@ const UserBookings = () => {
                       </div>
                     </div>
 
-                    {/* OTP */}
                     {b.status === "ACCEPTED" && b.otp && (
                       <div className="ub-otp-block">
                         <div className="ub-otp-box">
@@ -274,10 +368,8 @@ const UserBookings = () => {
                       </div>
                     )}
 
-                    {/* DIVIDER */}
                     <div className="ub-divider" />
 
-                    {/* PRICE */}
                     <div className="ub-price-row">
                       <span className="ub-price-label">Net Amount</span>
                       <span className="ub-price-value">
@@ -286,7 +378,6 @@ const UserBookings = () => {
                       </span>
                     </div>
 
-                    {/* REVIEW */}
                     {b.status === "COMPLETED" && (
                       <div className="ub-review-row">
                         {!b.reviewed ? (
@@ -296,8 +387,8 @@ const UserBookings = () => {
                               setSelectedBooking(b);
                               setShowReview(true);
                             }}>
-                            <FaStar className="ub-review-star" />
-                            Rate this Service
+                            <FaStar className="ub-review-star" /> Rate this
+                            Service
                           </button>
                         ) : (
                           <div className="ub-rated-badge">
@@ -320,7 +411,6 @@ const UserBookings = () => {
                   onClick={() => setPage(safePage - 1)}>
                   <FaChevronLeft />
                 </button>
-
                 <div className="ub-page-numbers">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                     (n) => {
@@ -349,16 +439,14 @@ const UserBookings = () => {
                     },
                   )}
                 </div>
-
                 <button
                   className="ub-page-btn ub-page-arrow"
                   disabled={safePage === totalPages}
                   onClick={() => setPage(safePage + 1)}>
                   <FaChevronRight />
                 </button>
-
                 <span className="ub-page-info">
-                  {safePage} / {totalPages} &nbsp;·&nbsp; {bookings.length}{" "}
+                  {safePage} / {totalPages} &nbsp;·&nbsp; {filtered.length}{" "}
                   bookings
                 </span>
               </div>
@@ -366,7 +454,6 @@ const UserBookings = () => {
           </>
         )}
 
-        {/* REVIEW MODAL */}
         {showReview && selectedBooking && (
           <ReviewModal
             booking={selectedBooking}

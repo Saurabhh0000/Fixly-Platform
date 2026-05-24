@@ -150,10 +150,15 @@ const UserDashboard = () => {
                     </span>
                   </div>
 
-                  <div className="info-row">
-                    <FaPhone />
-                    <span>{b.providerPhone}</span>
-                  </div>
+                  {(b.status === "ACCEPTED" || b.status === "COMPLETED") &&
+                    b.providerPhone &&
+                    b.providerPhone.trim() !== "" && (
+                      <div className="booking-contact-row">
+                        <FaPhone className="contact-icon" />
+
+                        <span>{b.providerPhone}</span>
+                      </div>
+                    )}
 
                   <div className="info-row">
                     <FaMapMarkerAlt />
