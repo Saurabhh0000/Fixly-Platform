@@ -6,11 +6,12 @@ import lombok.Data;
 
 @Data
 public class UserBookingResponse {
-	private Long bookingId;
+    private Long bookingId;
     private String providerName;
     private String category;
     private LocalDate serviceDate;
     private Double price;
+    private String providerPhone;
     private String city;
     private String area;
     private String pincode;
