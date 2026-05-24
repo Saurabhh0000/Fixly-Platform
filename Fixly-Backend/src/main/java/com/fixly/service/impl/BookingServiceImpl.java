@@ -163,8 +163,14 @@ public class BookingServiceImpl implements BookingService {
 
 		response.setBookingId(booking.getBookingId());
 		response.setCustomerName(booking.getUser().getFullName());
-		response.setCustomerPhone(booking.getUser().getPhone());
+		if (booking.getStatus().name().equals("ACCEPTED")
+				||
+				booking.getStatus().name().equals("COMPLETED")) {
 
+			response.setCustomerPhone(
+					booking.getUser()
+							.getPhone());
+		}
 		response.setCity(booking.getAddress().getCity());
 		response.setArea(booking.getAddress().getArea());
 		response.setPincode(booking.getAddress().getPincode());
@@ -191,7 +197,15 @@ public class BookingServiceImpl implements BookingService {
 		response.setBookingId(booking.getBookingId());
 		response.setProviderName(booking.getProvider().getUser().getFullName());
 		response.setCategory(booking.getProvider().getCategory().getName());
-		response.setProviderPhone(booking.getUser().getPhone());
+		if (booking.getStatus().name().equals("ACCEPTED")
+				||
+				booking.getStatus().name().equals("COMPLETED")) {
+
+			response.setProviderPhone(
+					booking.getProvider()
+							.getUser()
+							.getPhone());
+		}
 		response.setServiceDate(booking.getServiceDate());
 		response.setCity(booking.getAddress().getCity());
 		response.setArea(booking.getAddress().getArea());

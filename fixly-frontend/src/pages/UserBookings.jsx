@@ -168,6 +168,13 @@ const UserBookings = () => {
                     </div>
                     <FaUserTie className="ub-provider-icon" />
                   </div>
+                  {b.providerPhone && (
+                    <div className="ub-info-row">
+                      <FaPhoneAlt className="ub-info-icon" />
+
+                      <span>{b.providerPhone}</span>
+                    </div>
+                  )}
 
                   {/* META ROW */}
                   <div className="ub-meta-grid">

@@ -19,6 +19,21 @@
   font-size: 2.4rem;
   color: #6366f1;
 }
+.provider-phone-row,
+.ub-info-row{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+
+  margin-top:6px;
+
+  color:#334155;
+
+  font-size:.92rem;
+}
 
 /* STATS */
 .provider-stats {

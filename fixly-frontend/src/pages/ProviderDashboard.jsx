@@ -67,19 +67,19 @@ const ProviderDashboard = () => {
   /* ================= STATS ================= */
   const totalBookings = bookings.length;
   const pending = bookings.filter(
-    (b) => normalize(b.status) === "PENDING"
+    (b) => normalize(b.status) === "PENDING",
   ).length;
   const accepted = bookings.filter(
-    (b) => normalize(b.status) === "ACCEPTED"
+    (b) => normalize(b.status) === "ACCEPTED",
   ).length;
   const completed = bookings.filter((b) => normalize(b.status) === "COMPLETED");
   const cancelled = bookings.filter(
-    (b) => normalize(b.status) === "CANCELLED"
+    (b) => normalize(b.status) === "CANCELLED",
   ).length;
 
   const earnings = completed.reduce(
     (sum, b) => sum + (b.pricePerVisit || 0),
-    0
+    0,
   );
 
   const ratings = completed.filter((b) => b.rating != null);
@@ -191,7 +191,7 @@ const ProviderDashboard = () => {
               <div className="booking-cover">
                 <span
                   className={`status-pill ${normalize(
-                    b.status
+                    b.status,
                   ).toLowerCase()}`}>
                   {normalize(b.status)}
                 </span>
@@ -209,6 +209,13 @@ const ProviderDashboard = () => {
 
               <div className="booking-content">
                 <div className="customer-name">{b.customerName}</div>
+                {b.customerPhone && (
+                  <div className="provider-phone-row">
+                    <FaPhoneAlt />
+
+                    <span>{b.customerPhone}</span>
+                  </div>
+                )}
 
                 <div className="address-text">
                   <FaMapMarkerAlt />

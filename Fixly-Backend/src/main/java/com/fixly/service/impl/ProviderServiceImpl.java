@@ -429,6 +429,7 @@ public class ProviderServiceImpl implements ProviderService {
 		response.setProviderId(provider.getProviderId());
 		response.setUserId(provider.getUser().getUserId());
 		response.setFullName(provider.getUser().getFullName());
+
 		response.setCategory(provider.getCategory().getName());
 		response.setExperienceYears(provider.getExperienceYears());
 		response.setPricePerVisit(provider.getPricePerVisit());
