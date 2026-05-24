@@ -301,7 +301,7 @@ const UserDashboard = () => {
                           <div className="ud-info-text">
                             <span className="ud-info-label">Location</span>
                             <span className="ud-info-val">
-                              {b.area}, {b.city}
+                              {b.area}, {b.city} - {b.pincode}
                             </span>
                           </div>
                         </div>
