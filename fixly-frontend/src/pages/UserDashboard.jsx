@@ -238,105 +238,106 @@ const UserDashboard = () => {
                 };
                 const initial = b.providerName?.charAt(0)?.toUpperCase() || "P";
                 return (
-                  <div key={b.bookingId} className="ud-card">
-                    {/* TOP STRIP per status */}
-                    <div className={`ud-card-strip ${s.cls}-strip`} />
+                  <div key={b.bookingId} className={`ud-card ud-card-${s.cls}`}>
+                    {/* GRADIENT BAND HEADER */}
+                    <div
+                      className={`ud-card-band ud-band-${b.status.toLowerCase()}`}>
+                      {/* circle decors */}
+                      <div className="ud-band-deco ud-bd-1" />
+                      <div className="ud-band-deco ud-bd-2" />
 
-                    {/* CARD HEAD */}
-                    <div className="ud-card-head">
-                      <div className="ud-card-avatar">{initial}</div>
-                      <div className="ud-card-head-info">
-                        <p className="ud-card-provider-label">
-                          Service Provider
-                        </p>
-                        <p className="ud-card-provider-name">
-                          {b.providerName || "Assigned Provider"}
-                        </p>
-                      </div>
-                      <div className={`ud-status-pill ${s.cls}`}>{s.label}</div>
-                    </div>
-
-                    {/* CATEGORY */}
-                    <div className="ud-card-category">
-                      <FaBolt className="ud-cat-icon" />
-                      {b.category}
-                    </div>
-
-                    {/* INFO ROWS */}
-                    <div className="ud-card-info">
-                      <div className="ud-info-row">
-                        <span className="ud-info-icon ud-ic-blue">
-                          <FaCalendarAlt />
-                        </span>
-                        <div className="ud-info-text">
-                          <span className="ud-info-label">Date</span>
-                          <span className="ud-info-val">
-                            {new Date(b.serviceDate).toLocaleDateString(
-                              "en-IN",
-                              {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                              },
-                            )}
-                          </span>
+                      {/* avatar + name */}
+                      <div className="ud-band-left">
+                        <div className="ud-band-avatar">{initial}</div>
+                        <div className="ud-band-info">
+                          <p className="ud-band-provider-lbl">
+                            Service Provider
+                          </p>
+                          <p className="ud-band-provider-name">
+                            {b.providerName || "Assigned Provider"}
+                          </p>
                         </div>
                       </div>
 
-                      <div className="ud-info-row">
-                        <span className="ud-info-icon ud-ic-red">
-                          <FaMapMarkerAlt />
-                        </span>
-                        <div className="ud-info-text">
-                          <span className="ud-info-label">Location</span>
-                          <span className="ud-info-val">
-                            {b.area}, {b.city}
-                          </span>
+                      {/* status + category */}
+                      <div className="ud-band-right">
+                        <div className={`ud-status-pill ${s.cls}`}>
+                          {s.label}
+                        </div>
+                        <div className="ud-band-category">
+                          <FaBolt className="ud-cat-icon" />
+                          {b.category}
                         </div>
                       </div>
+                    </div>
 
-                      {(b.status === "ACCEPTED" || b.status === "COMPLETED") &&
-                        b.providerPhone &&
-                        b.providerPhone.trim() !== "" && (
-                          <div className="ud-info-row">
-                            <span className="ud-info-icon ud-ic-green">
-                              <FaPhone />
+                    {/* CARD BODY — floats up over band */}
+                    <div className="ud-card-body">
+                      {/* INFO GRID */}
+                      <div className="ud-info-grid">
+                        <div className="ud-info-tile">
+                          <span className="ud-info-icon ud-ic-blue">
+                            <FaCalendarAlt />
+                          </span>
+                          <div className="ud-info-text">
+                            <span className="ud-info-label">Date</span>
+                            <span className="ud-info-val">
+                              {new Date(b.serviceDate).toLocaleDateString(
+                                "en-IN",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )}
                             </span>
-                            <div className="ud-info-text">
-                              <span className="ud-info-label">Phone</span>
-                              <span className="ud-info-val">
-                                {b.providerPhone}
-                              </span>
-                            </div>
                           </div>
-                        )}
+                        </div>
 
-                      <div className="ud-info-row">
-                        <span className="ud-info-icon ud-ic-amber">
-                          <FaStar />
-                        </span>
-                        <div className="ud-info-text">
-                          <span className="ud-info-label">Rating</span>
-                          <span className="ud-info-val">
+                        <div className="ud-info-tile">
+                          <span className="ud-info-icon ud-ic-red">
+                            <FaMapMarkerAlt />
+                          </span>
+                          <div className="ud-info-text">
+                            <span className="ud-info-label">Location</span>
+                            <span className="ud-info-val">
+                              {b.area}, {b.city}
+                            </span>
+                          </div>
+                        </div>
+
+                        {(b.status === "ACCEPTED" ||
+                          b.status === "COMPLETED") &&
+                          b.providerPhone &&
+                          b.providerPhone.trim() !== "" && (
+                            <div className="ud-info-tile ud-tile-full">
+                              <span className="ud-info-icon ud-ic-green">
+                                <FaPhone />
+                              </span>
+                              <div className="ud-info-text">
+                                <span className="ud-info-label">Phone</span>
+                                <span className="ud-info-val">
+                                  {b.providerPhone}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                      </div>
+
+                      {/* BOTTOM ROW: rating + price */}
+                      <div className="ud-card-bottom">
+                        <div className="ud-rating-wrap">
+                          <FaStar className="ud-star-icon" />
+                          <span className="ud-rating-val">
                             {b.rating
                               ? `${b.rating.toFixed(1)} / 5`
-                              : "Not rated yet"}
+                              : "Not rated"}
                           </span>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* FOOTER */}
-                    <div className="ud-card-footer">
-                      <div className="ud-price-wrap">
-                        <span className="ud-price-label">Amount</span>
-                        <span className="ud-price-val">
+                        <div className="ud-price-pill">
                           <FaRupeeSign className="ud-rupee" />
-                          {b.price || "—"}
-                        </span>
-                      </div>
-                      <div className="ud-footer-provider">
-                        <FaUserTie className="ud-provider-tie" />
+                          <span>{b.price || "—"}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
