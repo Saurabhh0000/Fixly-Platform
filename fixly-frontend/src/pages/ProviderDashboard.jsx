@@ -209,13 +209,15 @@ const ProviderDashboard = () => {
 
               <div className="booking-content">
                 <div className="customer-name">{b.customerName}</div>
-                {b.customerPhone && (
-                  <div className="provider-phone-row">
-                    <FaPhoneAlt />
+                {(b.status === "ACCEPTED" || b.status === "COMPLETED") &&
+                  b.customerPhone &&
+                  b.customerPhone.trim() !== "" && (
+                    <div className="provider-phone-row">
+                      <FaPhoneAlt />
 
-                    <span>{b.customerPhone}</span>
-                  </div>
-                )}
+                      <span>{b.customerPhone}</span>
+                    </div>
+                  )}
 
                 <div className="address-text">
                   <FaMapMarkerAlt />
