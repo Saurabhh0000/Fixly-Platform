@@ -6,17 +6,13 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Optional;
-import com.fixly.entity.Address;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fixly.enums.ProviderStatus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fixly.dto.request.ProviderRegisterRequest;
 import com.fixly.dto.response.ProviderResponse;
@@ -204,26 +200,22 @@ public class ProviderServiceImpl implements ProviderService {
 	@Override
 	public ProviderStatusResponse getProviderStatus(Long userId) {
 
-		ServiceProvider provider =
-
-				providerRepository
-						.findByUser_UserId(userId)
-
-						.orElseThrow(() ->
-
-						new ResourceNotFoundException(
-								"Provider not found"));
-
 		ProviderStatusResponse response = new ProviderStatusResponse();
 
-		response.setProviderId(
-				provider.getProviderId());
+		providerRepository
+				.findByUser_UserId(userId)
 
-		response.setStatus(
-				provider.getStatus().name());
+				.ifPresent(provider -> {
 
-		response.setAvailable(
-				provider.isAvailable());
+					response.setProviderId(
+							provider.getProviderId());
+
+					response.setStatus(
+							provider.getStatus().name());
+
+					response.setAvailable(
+							provider.isAvailable());
+				});
 
 		return response;
 	}
@@ -327,6 +319,7 @@ public class ProviderServiceImpl implements ProviderService {
 	}
 
 	@Override
+	@Transactional
 	public void updateAvailability(
 			Long providerId,
 			boolean available) {
@@ -336,8 +329,8 @@ public class ProviderServiceImpl implements ProviderService {
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Provider not found"));
 
-		// ❌ Suspended provider
-		// cannot become available
+		// Suspended provider
+		// cannot go online
 
 		if (provider.getStatus() == ProviderStatus.SUSPENDED) {
 
@@ -353,9 +346,6 @@ public class ProviderServiceImpl implements ProviderService {
 	private ProviderVerificationResponse mapToVerificationResponse(ServiceProvider provider) {
 
 		ProviderVerificationResponse response = new ProviderVerificationResponse();
-		Address address = provider.getUser()
-				.getAddresses()
-				.get(0);
 
 		response.setProviderId(provider.getProviderId());
 
@@ -380,13 +370,36 @@ public class ProviderServiceImpl implements ProviderService {
 		response.setPricePerVisit(
 				provider.getPricePerVisit());
 
-		response.setCity(address.getCity());
+		if (
 
-		response.setArea(
-				address.getArea());
+		provider.getUser() != null
 
-		response.setPincode(
-				address.getPincode());
+				&&
+
+				provider.getUser()
+						.getAddresses() != null
+
+				&&
+
+				!provider.getUser()
+						.getAddresses()
+						.isEmpty()
+
+		) {
+
+			var address = provider.getUser()
+					.getAddresses()
+					.get(0);
+
+			response.setCity(
+					address.getCity());
+
+			response.setArea(
+					address.getArea());
+
+			response.setPincode(
+					address.getPincode());
+		}
 
 		response.setPanCardNumber(
 				provider.getPanCardNumber());
