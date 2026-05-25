@@ -366,7 +366,10 @@ const AdminProviderRequests = () => {
                       <div>
                         <p className="apr-metric-label">Location</p>
                         <p className="apr-metric-val apr-metric-loc">
-                          {provider.city || provider.area || "—"}
+                          {provider.city ||
+                            provider.area ||
+                            provider.pincode ||
+                            "—"}
                         </p>
                       </div>
                     </div>

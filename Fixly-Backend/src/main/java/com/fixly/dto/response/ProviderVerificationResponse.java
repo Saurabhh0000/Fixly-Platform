@@ -21,6 +21,12 @@ public class ProviderVerificationResponse {
 
     private double pricePerVisit;
 
+    private String city;
+
+    private String area;
+
+    private String pincode;
+
     private String panCardNumber;
 
     private String aadhaarNumber;

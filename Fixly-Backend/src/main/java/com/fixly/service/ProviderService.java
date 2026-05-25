@@ -36,4 +36,8 @@ public interface ProviderService {
 	ProviderStatusResponse getProviderStatus(
 			Long userId);
 
+	void updateAvailability(
+			Long providerId,
+			boolean available);
+
 }

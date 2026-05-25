@@ -58,6 +58,7 @@ const ProviderDashboard = () => {
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [available, setAvailable] = useState(true);
 
   const { user } = useContext(AuthContext);
   const providerId = user?.providerId;
@@ -68,6 +69,11 @@ const ProviderDashboard = () => {
       setLoading(true);
       const res = await fixlyApi.get(`/api/bookings/provider/${providerId}`);
       setBookings(Array.isArray(res.data) ? res.data : []);
+      const providerRes = await fixlyApi.get(
+        `/api/providers/status/${providerId}`,
+      );
+
+      setAvailable(providerRes.data.available);
     } catch (err) {
       if (err?.response?.status === 401) return;
       toast.error("Unable to load bookings. Please refresh.", {
@@ -122,6 +128,24 @@ const ProviderDashboard = () => {
   const handleFilter = (key) => {
     setFilter(key);
     setPage(1);
+  };
+
+  const toggleAvailability = async () => {
+    try {
+      const newValue = !available;
+
+      await fixlyApi.put(
+        `/api/providers/${providerId}/availability?available=${newValue}`,
+      );
+
+      setAvailable(newValue);
+
+      toast.success(newValue ? "You are now available" : "You are now offline");
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message || "Failed to update availability",
+      );
+    }
   };
 
   /* ===== ACTIONS ===== */
@@ -216,6 +240,22 @@ const ProviderDashboard = () => {
               <span className="pd-hero-rating-lbl">Avg Rating</span>
             </div>
           </div>
+        </div>
+
+        <div className="availability-toggle">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={available}
+              onChange={toggleAvailability}
+            />
+
+            <span className="slider"></span>
+          </label>
+
+          <span className="availability-text">
+            {available ? "Available" : "Offline"}
+          </span>
         </div>
 
         {/* ===== STATS ===== */}

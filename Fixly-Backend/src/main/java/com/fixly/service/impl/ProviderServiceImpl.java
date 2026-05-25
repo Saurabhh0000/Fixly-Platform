@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
-
+import com.fixly.entity.Address;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fixly.enums.ProviderStatus;
@@ -22,6 +22,7 @@ import com.fixly.dto.request.ProviderRegisterRequest;
 import com.fixly.dto.response.ProviderResponse;
 import com.fixly.dto.response.ProviderSearchResponse;
 import com.fixly.dto.response.ProviderStatusResponse;
+import com.fixly.entity.Address;
 import com.fixly.entity.ServiceCategory;
 import com.fixly.entity.ServiceProvider;
 import com.fixly.entity.User;
@@ -324,9 +325,36 @@ public class ProviderServiceImpl implements ProviderService {
 		return mapToResponse(provider);
 	}
 
+	@Override
+	public void updateAvailability(
+			Long providerId,
+			boolean available) {
+
+		ServiceProvider provider = providerRepository
+				.findById(providerId)
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"Provider not found"));
+
+		// ❌ Suspended provider
+		// cannot become available
+
+		if (provider.getStatus() == ProviderStatus.SUSPENDED) {
+
+			throw new BadRequestException(
+					"Suspended provider cannot change availability");
+		}
+
+		provider.setAvailable(available);
+
+		providerRepository.save(provider);
+	}
+
 	private ProviderVerificationResponse mapToVerificationResponse(ServiceProvider provider) {
 
 		ProviderVerificationResponse response = new ProviderVerificationResponse();
+		Address address = provider.getUser()
+				.getAddresses()
+				.get(0);
 
 		response.setProviderId(provider.getProviderId());
 
@@ -350,6 +378,14 @@ public class ProviderServiceImpl implements ProviderService {
 
 		response.setPricePerVisit(
 				provider.getPricePerVisit());
+
+		response.setCity(address.getCity());
+
+		response.setArea(
+				address.getArea());
+
+		response.setPincode(
+				address.getPincode());
 
 		response.setPanCardNumber(
 				provider.getPanCardNumber());

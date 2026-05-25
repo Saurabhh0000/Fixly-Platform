@@ -18,81 +18,84 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 🔐 Password Encoder
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        // 🔐 Password Encoder
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
+        @Bean
+        public WebSecurityCustomizer webSecurityCustomizer() {
 
-        return (web) -> web.ignoring()
-                .requestMatchers("/uploads/**");
-    }
+                return (web) -> web.ignoring()
+                                .requestMatchers("/uploads/**");
+        }
 
-    // 🔐 Authentication Manager
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+        // 🔐 Authentication Manager
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        AuthenticationConfiguration config) throws Exception {
+                return config.getAuthenticationManager();
+        }
 
-    // 🔐 Security Rules
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // 🔐 Security Rules
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .cors(withDefaults())
-                .csrf(csrf -> csrf.disable())
+                http
+                                .cors(withDefaults())
+                                .csrf(csrf -> csrf.disable())
 
-                .authorizeHttpRequests(auth -> auth
+                                .authorizeHttpRequests(auth -> auth
 
-                        /* ================= PUBLIC ================= */
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/addresses/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/uploads/**")
-                        .permitAll()
-                        /* ================= AUTHENTICATED (ALL ROLES) ================= */
+                                                /* ================= PUBLIC ================= */
+                                                .requestMatchers("/api/auth/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/addresses/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
+                                                .requestMatchers(
+                                                                HttpMethod.GET,
+                                                                "/uploads/**")
+                                                .permitAll()
+                                                /* ================= AUTHENTICATED (ALL ROLES) ================= */
 
-                        .requestMatchers("/api/users/change-password").authenticated()
+                                                .requestMatchers("/api/users/change-password").authenticated()
 
-                        /* ================= USER ================= */
-                        .requestMatchers(
-                                "/api/dashboard/user",
-                                "/api/bookings/user/**",
-                                "/api/providers/register",
-                                "/api/providers/status/**")
-                        .hasRole("USER")
+                                                /* ================= USER ================= */
+                                                .requestMatchers(
+                                                                "/api/dashboard/user",
+                                                                "/api/bookings/user/**",
+                                                                "/api/providers/register",
+                                                                "/api/providers/status/**")
+                                                .hasRole("USER")
 
-                        /* ================= PROVIDER ================= */
-                        .requestMatchers(
-                                "/api/dashboard/provider",
-                                "/api/bookings/provider/**")
-                        .hasRole("PROVIDER")
+                                                /* ================= PROVIDER ================= */
+                                                .requestMatchers(
+                                                                "/api/dashboard/provider",
+                                                                "/api/bookings/provider/**",
+                                                                "/api/providers/*/availability")
+                                                .hasRole("PROVIDER")
 
-                        /* ================= ADMIN ================= */
-                        .requestMatchers("/api/categories/**", "/api/admin/providers/**").hasRole("ADMIN")
+                                                /* ================= ADMIN ================= */
+                                                .requestMatchers("/api/categories/**", "/api/admin/providers/**")
+                                                .hasRole("ADMIN")
 
-                        /* ================= PREFLIGHT ================= */
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                                /* ================= PREFLIGHT ================= */
+                                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        .anyRequest().authenticated())
-                .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint((request, response, authException) -> {
-                    response.setStatus(401);
-                    response.setContentType("application/json");
-                    response.getWriter().write("""
-                                {
-                                  "error": "UNAUTHORIZED",
-                                  "message": "Authentication required"
-                                }
-                            """);
-                }));
+                                                .anyRequest().authenticated())
+                                .httpBasic(httpBasic -> httpBasic
+                                                .authenticationEntryPoint((request, response, authException) -> {
+                                                        response.setStatus(401);
+                                                        response.setContentType("application/json");
+                                                        response.getWriter().write("""
+                                                                            {
+                                                                              "error": "UNAUTHORIZED",
+                                                                              "message": "Authentication required"
+                                                                            }
+                                                                        """);
+                                                }));
 
-        return http.build();
-    }
+                return http.build();
+        }
 }
