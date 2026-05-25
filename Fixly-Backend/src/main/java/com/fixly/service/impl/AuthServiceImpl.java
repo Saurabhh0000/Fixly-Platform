@@ -87,51 +87,31 @@ public class AuthServiceImpl implements AuthService {
         response.setRole(user.getRole().name());
         response.setMessage("Login successful");
 
-        // ✅ PROVIDER ID ONLY IF USER IS PROVIDER
-        if (user.getRole() == Role.PROVIDER) {
+        // ================= PROVIDER STATUS CHECK =================
 
-            serviceProviderRepository
-                    .findByUser_UserId(user.getUserId())
-                    .ifPresent(provider -> {
+        serviceProviderRepository
+                .findByUser_UserId(user.getUserId())
+                .ifPresent(provider -> {
 
-                        // ✅ CHECK PROVIDER STATUS
+                    // ❌ SUSPENDED PROVIDER
 
-                        if (provider.getStatus() == ProviderStatus.PENDING) {
+                    if (provider.getStatus() == ProviderStatus.SUSPENDED) {
 
-                            throw new RuntimeException(
-                                    "Your provider account is pending approval");
-                        }
+                        throw new RuntimeException(
+                                "Your provider account is suspended");
+                    }
 
-                        if (provider.getStatus() == ProviderStatus.VERIFYING) {
+                    // ✅ APPROVED PROVIDER
 
-                            throw new RuntimeException(
-                                    "Your documents are under verification");
-                        }
-
-                        if (provider.getStatus() == ProviderStatus.REJECTED) {
-
-                            throw new RuntimeException(
-                                    "Your provider application was rejected");
-                        }
-
-                        if (provider.getStatus() == ProviderStatus.SUSPENDED) {
-
-                            throw new RuntimeException(
-                                    "Your provider account is suspended");
-                        }
-
-                        // ✅ ONLY APPROVED PROVIDERS CAN LOGIN
-
-                        if (provider.getStatus() != ProviderStatus.APPROVED) {
-
-                            throw new RuntimeException(
-                                    "Provider account not approved");
-                        }
+                    if (provider.getStatus() == ProviderStatus.APPROVED) {
 
                         response.setProviderId(
                                 provider.getProviderId());
-                    });
-        }
+
+                        response.setRole(
+                                Role.PROVIDER.name());
+                    }
+                });
 
         return response;
     }
