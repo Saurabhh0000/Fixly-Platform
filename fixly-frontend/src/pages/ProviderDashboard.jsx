@@ -242,20 +242,42 @@ const ProviderDashboard = () => {
           </div>
         </div>
 
-        <div className="availability-toggle">
-          <label className="switch">
-            <input
-              type="checkbox"
-              checked={available}
-              onChange={toggleAvailability}
+        <div
+          className="avail-wrap"
+          onClick={toggleAvailability}
+          role="button"
+          aria-pressed={available}
+          aria-label={available ? "Go offline" : "Go available"}>
+          {/* Icon ring */}
+          <div
+            className={`avail-icon-ring ${available ? "avail-ring-on" : "avail-ring-off"}`}>
+            {available ? <FaBolt /> : <FaTimesCircle />}
+          </div>
+
+          {/* Text */}
+          <div className="avail-text">
+            <p className="avail-label">
+              {available
+                ? "You're live and accepting bookings"
+                : "You're offline — not taking bookings"}
+            </p>
+            <p className="avail-sub">
+              {available
+                ? "Customers can find and book your services right now"
+                : "Go available to start receiving new booking requests"}
+            </p>
+          </div>
+
+          {/* Pulsing dot + track */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div
+              className={`avail-dot ${available ? "avail-dot-on" : "avail-dot-off"}`}
             />
-
-            <span className="slider"></span>
-          </label>
-
-          <span className="availability-text">
-            {available ? "Available" : "Offline"}
-          </span>
+            <div
+              className={`avail-track ${available ? "avail-track-on" : "avail-track-off"}`}>
+              <div className="avail-thumb" />
+            </div>
+          </div>
         </div>
 
         {/* ===== STATS ===== */}

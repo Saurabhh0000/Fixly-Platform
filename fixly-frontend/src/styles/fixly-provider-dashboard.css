@@ -117,22 +117,87 @@
   letter-spacing: .07em; color: #94a3b8;
 }
 
-.availability-toggle{
+/* ===== AVAILABILITY TOGGLE ===== */
+.avail-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 24px 22px;
+  padding: 14px 18px;
+  background: #fff;
+  border: 1.5px solid #e4e9f0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+.avail-wrap:hover { border-color: #bbf7d0; box-shadow: 0 4px 14px rgba(22,163,74,.08); }
 
-  display:flex;
+.avail-icon-ring {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.35s, border-color 0.35s;
+}
+.avail-ring-on  { background: #dcfce7; border: 1.5px solid #86efac; color: #15803d; }
+.avail-ring-off { background: #f1f5f9; border: 1.5px solid #e2e8f0; color: #94a3b8; }
+.avail-icon-ring svg { font-size: 20px; width: 20px; height: 20px; }
 
-  align-items:center;
-
-  gap:12px;
-
-  margin-top:18px;
+.avail-text { flex: 1; min-width: 0; }
+.avail-label {
+  font-size: 14px; font-weight: 700;
+  color: #0f172a; margin: 0 0 2px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+.avail-sub {
+  font-size: 12px; color: #64748b; margin: 0; line-height: 1.45;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
-.availability-text{
+.avail-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%; flex-shrink: 0;
+  transition: background 0.3s;
+}
+.avail-dot-on  { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.2); animation: avail-pulse 2s infinite; }
+.avail-dot-off { background: #cbd5e1; }
+@keyframes avail-pulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+  50%      { box-shadow: 0 0 0 6px rgba(34,197,94,0.05); }
+}
 
-  font-weight:700;
+.avail-track {
+  width: 52px; height: 28px;
+  border-radius: 14px; flex-shrink: 0;
+  position: relative; cursor: pointer;
+  transition: background 0.3s;
+}
+.avail-track-on  { background: #16a34a; }
+.avail-track-off { background: #cbd5e1; }
+.avail-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 22px; height: 22px;
+  border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+.avail-track-on .avail-thumb { transform: translateX(24px); }
 
-  color:#0f172a;
+@media (max-width: 768px) {
+  .avail-wrap { margin: 0 16px 18px; padding: 12px 14px; gap: 12px; }
+}
+@media (max-width: 600px) {
+  .avail-wrap { margin: 0 14px 16px; padding: 11px 13px; gap: 10px; }
+  .avail-icon-ring { width: 36px; height: 36px; }
+  .avail-label { font-size: 13px; }
+  .avail-sub { font-size: 11px; }
+  .avail-track { width: 46px; height: 25px; }
+  .avail-thumb { width: 19px; height: 19px; }
+  .avail-track-on .avail-thumb { transform: translateX(21px); }
+}
+@media (max-width: 380px) {
+  .avail-wrap { margin: 0 12px 14px; }
 }
 /* ================================================================
    FILTER BAR — glassmorphism
