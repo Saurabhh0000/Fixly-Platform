@@ -451,11 +451,25 @@ public class ProviderServiceImpl implements ProviderService {
 		response.setProviderId(
 				provider.getProviderId());
 
+		// ✅ Safe full name
+
 		response.setFullName(
-				provider.getUser().getFullName());
+
+				provider.getUser() != null
+
+						? provider.getUser().getFullName()
+
+						: "Unknown");
+
+		// ✅ Safe category
 
 		response.setCategory(
-				provider.getCategory().getName());
+
+				provider.getCategory() != null
+
+						? provider.getCategory().getName()
+
+						: "N/A");
 
 		response.setExperienceYears(
 				provider.getExperienceYears());
@@ -487,7 +501,7 @@ public class ProviderServiceImpl implements ProviderService {
 
 						: "PENDING");
 
-		// ✅ SAFE ADDRESS CHECK
+		// ✅ SAFE ADDRESS
 
 		if (
 
