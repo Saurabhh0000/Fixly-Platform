@@ -11,6 +11,10 @@ import {
   FaStar,
   FaMapMarkerAlt,
   FaSadTear,
+  FaBolt,
+  FaUserCheck,
+  FaChevronDown,
+  FaFilter,
 } from "react-icons/fa";
 import "../styles/fixly-search.css";
 import UserLayout from "../layouts/UserLayout";
@@ -31,13 +35,13 @@ const SearchResults = () => {
 
   const navigate = useNavigate();
 
-  /* ================= SYNC URL PARAMS → STATE ================= */
+  /* ─── sync URL → state ─── */
   useEffect(() => {
     setSearchCity(city);
     setSearchCategory(category);
   }, [city, category]);
 
-  /* ================= LOAD DROPDOWNS ================= */
+  /* ─── load dropdowns ─── */
   useEffect(() => {
     const loadFilters = async () => {
       try {
@@ -45,7 +49,6 @@ const SearchResults = () => {
           fixlyApi.get("/api/addresses/cities"),
           fixlyApi.get("/api/categories"),
         ]);
-
         setCities(cityRes.data || []);
         setCategories(catRes.data || []);
       } catch (err) {
@@ -54,23 +57,18 @@ const SearchResults = () => {
         setCategories([]);
       }
     };
-
     loadFilters();
   }, []);
 
-  /* ================= FETCH PROVIDERS ================= */
+  /* ─── fetch providers ─── */
   useEffect(() => {
     const fetchProviders = async () => {
       if (!city || !category) return;
-
       setLoading(true);
       try {
         const res = await fixlyApi.get(
-          `/api/providers/search?city=${encodeURIComponent(
-            city
-          )}&category=${encodeURIComponent(category)}`
+          `/api/providers/search?city=${encodeURIComponent(city)}&category=${encodeURIComponent(category)}`,
         );
-
         setProviders(res.data || []);
       } catch (err) {
         console.error("Provider fetch error", err);
@@ -79,34 +77,30 @@ const SearchResults = () => {
         setLoading(false);
       }
     };
-
     fetchProviders();
   }, [city, category]);
 
-  /* ================= SEARCH ================= */
+  /* ─── search action ─── */
   const handleSearch = () => {
     if (!searchCity || !searchCategory) return;
-
-    setParams({
-      city: searchCity,
-      category: searchCategory, // ✅ DO NOT TRANSFORM
-    });
+    setParams({ city: searchCity, category: searchCategory });
   };
 
   const handleBook = (provider) => {
     navigate("/book", { state: provider });
   };
 
+  /* ─── full-page loader ─── */
   if (loading) {
     return (
-      <div className="page-loader">
-        <div className="logo-loader">
-          <div className="logo-stack">
-            <div className="spinner-ring"></div>
-            <div className="logo-circle">F</div>
+      <div className="fs-page-loader">
+        <div className="fs-loader-inner">
+          <div className="fs-loader-ring" />
+          <div className="fs-loader-logo">
+            <FaBolt />
           </div>
-          <p>Loading Fixly…</p>
         </div>
+        <p>Finding best providers near you…</p>
       </div>
     );
   }
@@ -114,109 +108,167 @@ const SearchResults = () => {
   return (
     <UserLayout>
       <div className="fixly-search">
-        {/* ================= HERO ================= */}
-        <div className="search-hero">
-          <h1>Find Trusted Service Professionals</h1>
-          <p>Verified experts • Transparent pricing • Real customer ratings</p>
-
-          <div className="trust-badges">
-            <div>
-              <FaShieldAlt /> Verified
+        {/* ══════════ HERO ══════════ */}
+        <section className="fs-hero">
+          <div className="fs-hero-inner">
+            <div className="fs-hero-badge">
+              <FaBolt />
+              <span>Fixly Service Network</span>
             </div>
-            <div>
-              <FaStar /> Rated
-            </div>
-            <div>
-              <FaClock /> Quick Response
-            </div>
-          </div>
-        </div>
-
-        {/* ================= SEARCH BAR ================= */}
-        <div className="search-box">
-          {/* CITY */}
-          <div className="search-input">
-            <FaCity />
-            <select
-              value={searchCity}
-              onChange={(e) => setSearchCity(e.target.value)}>
-              <option value="">Select City</option>
-              {cities.map((c, i) => (
-                <option key={i} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* CATEGORY */}
-          <div className="search-input">
-            <FaTools />
-            <select
-              value={searchCategory}
-              onChange={(e) => setSearchCategory(e.target.value)}>
-              <option value="">Select Category</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.name}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button onClick={handleSearch}>
-            <FaSearch /> Search
-          </button>
-        </div>
-
-        {/* ================= SUMMARY ================= */}
-        {!loading && city && category && (
-          <div className="search-summary">
-            <FaMapMarkerAlt />
-            Showing <strong>{category}</strong> services in{" "}
-            <strong>{city}</strong>
-          </div>
-        )}
-
-        {/* ================= LOADING ================= */}
-        {loading && (
-          <div className="search-loading">
-            <div className="spinner" />
-            <p>Finding best providers near you…</p>
-          </div>
-        )}
-
-        {/* ================= EMPTY ================= */}
-        {!loading && city && category && providers.length === 0 && (
-          <div className="search-empty">
-            <FaSadTear />
-            <h3>No providers found</h3>
+            <h1>
+              Find Trusted <span>Service Professionals</span>
+            </h1>
             <p>
-              We couldn’t find <strong>{category}</strong> services in{" "}
-              <strong>{city}</strong>.
+              Verified experts · Transparent pricing · Real customer ratings
             </p>
-            <span>Try another city or service category</span>
-          </div>
-        )}
 
-        {/* ================= RESULTS ================= */}
-        {!loading && providers.length > 0 && (
-          <>
-            <h4 className="search-count">
-              {providers.length} providers available
-            </h4>
-
-            <div className="search-grid">
-              {providers.map((p) => (
-                <ProviderCard
-                  key={p.providerId}
-                  provider={p}
-                  onBook={handleBook}
-                />
-              ))}
+            <div className="fs-trust-strip">
+              <div className="fs-trust-pill">
+                <FaShieldAlt />
+                <span>Identity Verified</span>
+              </div>
+              <div className="fs-trust-pill">
+                <FaStar />
+                <span>Customer Rated</span>
+              </div>
+              <div className="fs-trust-pill">
+                <FaClock />
+                <span>Quick Response</span>
+              </div>
+              <div className="fs-trust-pill">
+                <FaUserCheck />
+                <span>Background Checked</span>
+              </div>
             </div>
-          </>
-        )}
+          </div>
+        </section>
+
+        {/* ══════════ SEARCH BAR ══════════ */}
+        <section className="fs-search-wrap">
+          <div className="fs-search-card">
+            <div className="fs-search-label">
+              <FaFilter />
+              <span>Filter Providers</span>
+            </div>
+
+            <div className="fs-search-row">
+              {/* City */}
+              <div className="fs-input-group">
+                <div className="fs-input-icon">
+                  <FaCity />
+                </div>
+                <div className="fs-input-body">
+                  <span className="fs-input-label">City</span>
+                  <select
+                    value={searchCity}
+                    onChange={(e) => setSearchCity(e.target.value)}>
+                    <option value="">Select your city</option>
+                    {cities.map((c, i) => (
+                      <option key={i} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <FaChevronDown className="fs-select-arrow" />
+              </div>
+
+              <div className="fs-search-divider" />
+
+              {/* Category */}
+              <div className="fs-input-group">
+                <div className="fs-input-icon">
+                  <FaTools />
+                </div>
+                <div className="fs-input-body">
+                  <span className="fs-input-label">Service</span>
+                  <select
+                    value={searchCategory}
+                    onChange={(e) => setSearchCategory(e.target.value)}>
+                    <option value="">Select a service</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <FaChevronDown className="fs-select-arrow" />
+              </div>
+
+              {/* Button */}
+              <button className="fs-search-btn" onClick={handleSearch}>
+                <FaSearch />
+                <span>Search</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════ BODY ══════════ */}
+        <section className="fs-body">
+          {/* Summary pill */}
+          {!loading && city && category && (
+            <div className="fs-summary">
+              <FaMapMarkerAlt />
+              <span>
+                Showing <strong>{category}</strong> services in{" "}
+                <strong>{city}</strong>
+              </span>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!loading && city && category && providers.length === 0 && (
+            <div className="fs-empty">
+              <div className="fs-empty-icon">
+                <FaSadTear />
+              </div>
+              <h3>No providers found</h3>
+              <p>
+                We couldn't find <strong>{category}</strong> professionals in{" "}
+                <strong>{city}</strong> right now.
+              </p>
+              <span>Try a different city or service category.</span>
+            </div>
+          )}
+
+          {/* Results */}
+          {!loading && providers.length > 0 && (
+            <>
+              <div className="fs-results-header">
+                <div className="fs-count-badge">
+                  <FaUserCheck />
+                  <span>{providers.length} providers available</span>
+                </div>
+              </div>
+
+              <div className="fs-grid">
+                {providers.map((p) => (
+                  <ProviderCard
+                    key={p.providerId}
+                    provider={p}
+                    onBook={handleBook}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Landing placeholder (no search yet) */}
+          {!city && !category && (
+            <div className="fs-landing-hint">
+              <div className="fs-hint-icon">
+                <FaSearch />
+              </div>
+              <h3>Start your search</h3>
+              <p>
+                Select a city and service category above to find verified
+                professionals near you.
+              </p>
+            </div>
+          )}
+        </section>
       </div>
     </UserLayout>
   );
