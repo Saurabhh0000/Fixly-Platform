@@ -33,14 +33,10 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 			LOWER(a.city)
 			LIKE LOWER(CONCAT('%', :city, '%'))
 
-			AND (
+			AND p.status IN (
 
-			    p.status =
-			    com.fixly.enums.ProviderStatus.APPROVED
+			    com.fixly.enums.ProviderStatus.APPROVED,
 
-			    OR
-
-			    p.status =
 			    com.fixly.enums.ProviderStatus.SUSPENDED
 			)
 
