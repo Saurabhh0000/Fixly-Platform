@@ -71,10 +71,14 @@ const Login = () => {
         default:
           navigate("/user/dashboard");
       }
-    } catch {
-      toast.error("Invalid email or password. Please try again.", {
-        duration: 4000,
-      });
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message || "Invalid email or password",
+
+        {
+          duration: 4000,
+        },
+      );
     } finally {
       setLoading(false);
     }
