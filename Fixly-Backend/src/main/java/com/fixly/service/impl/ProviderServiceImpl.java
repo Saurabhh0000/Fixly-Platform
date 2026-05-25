@@ -462,8 +462,12 @@ public class ProviderServiceImpl implements ProviderService {
 						.countByBookingProviderProviderId(
 								provider.getProviderId()));
 
+		// ✅ Availability
+
 		response.setAvailable(
 				provider.isAvailable());
+
+		// ✅ Status
 
 		response.setStatus(
 
@@ -473,10 +477,16 @@ public class ProviderServiceImpl implements ProviderService {
 
 						: "PENDING");
 
+		// ✅ SAFE ADDRESS CHECK
+
 		if (
 
-		provider.getUser()
-				.getAddresses() != null
+		provider.getUser() != null
+
+				&&
+
+				provider.getUser()
+						.getAddresses() != null
 
 				&&
 
