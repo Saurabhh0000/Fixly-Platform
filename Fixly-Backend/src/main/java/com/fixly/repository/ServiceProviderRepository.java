@@ -17,8 +17,11 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 
 	@Query("""
 
-			SELECT p
+			SELECT DISTINCT p
 			FROM ServiceProvider p
+
+			JOIN p.user u
+			JOIN u.addresses a
 
 			WHERE
 
@@ -27,9 +30,7 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 
 			AND
 
-			LOWER(
-			p.user.addresses[0].city
-			)
+			LOWER(a.city)
 			LIKE LOWER(CONCAT('%', :city, '%'))
 
 			AND (
