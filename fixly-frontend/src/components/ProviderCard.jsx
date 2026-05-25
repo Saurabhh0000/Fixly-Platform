@@ -75,13 +75,20 @@ const ProviderCard = ({ provider, onBook }) => {
           </div>
 
           <div className="pc-badge-row">
-            {provider.available ? (
+            {provider.status === "SUSPENDED" ? (
+              <span className="pc-badge pc-badge-offline">
+                <FaClock />
+                Currently Unavailable
+              </span>
+            ) : provider.available ? (
               <span className="pc-badge pc-badge-online">
-                <FaCheckCircle /> Available Now
+                <FaCheckCircle />
+                Available Now
               </span>
             ) : (
               <span className="pc-badge pc-badge-offline">
-                <FaClock /> Unavailable
+                <FaClock />
+                Offline
               </span>
             )}
 

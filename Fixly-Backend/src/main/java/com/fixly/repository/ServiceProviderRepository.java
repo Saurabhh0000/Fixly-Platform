@@ -1,6 +1,5 @@
 package com.fixly.repository;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -14,27 +13,41 @@ import com.fixly.entity.ServiceProvider;
 @Repository
 public interface ServiceProviderRepository extends JpaRepository<ServiceProvider, Long> {
 
-    boolean existsByUserUserId(Long userId);
+	boolean existsByUserUserId(Long userId);
 
-    @Query("""
-    	    SELECT DISTINCT sp
-    	    FROM ServiceProvider sp
-    	    JOIN sp.user u
-    	    LEFT JOIN u.addresses a
-    	    WHERE (sp.available = true OR sp.available IS NULL)
-    	      AND LOWER(TRIM(sp.category.name)) = LOWER(TRIM(:category))
-    	      AND (
-    	           a IS NULL
-    	           OR LOWER(TRIM(a.city)) = LOWER(TRIM(:city))
-    	      )
-    	""")
-    	List<ServiceProvider> searchProviders(
-    	    @Param("category") String category,
-    	    @Param("city") String city
-    	);
-    
-    Optional<ServiceProvider> findByUser_UserId(Long userId);
+	@Query("""
 
+			SELECT p
+			FROM ServiceProvider p
 
+			WHERE
+
+			LOWER(p.category.name)
+			LIKE LOWER(CONCAT('%', :category, '%'))
+
+			AND
+
+			LOWER(
+			p.user.addresses[0].city
+			)
+			LIKE LOWER(CONCAT('%', :city, '%'))
+
+			AND (
+
+			    p.status =
+			    com.fixly.enums.ProviderStatus.APPROVED
+
+			    OR
+
+			    p.status =
+			    com.fixly.enums.ProviderStatus.SUSPENDED
+			)
+
+			""")
+	List<ServiceProvider> searchProviders(
+			@Param("category") String category,
+			@Param("city") String city);
+
+	Optional<ServiceProvider> findByUser_UserId(Long userId);
 
 }
