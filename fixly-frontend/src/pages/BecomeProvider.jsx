@@ -230,7 +230,7 @@ const BecomeProvider = () => {
 
   /* ── Timeline ── */
   const renderTimeline = () => {
-    if (!providerStatus) return null;
+    if (!providerStatus?.status) return null;
     const status = providerStatus.status;
 
     const steps = [
@@ -342,7 +342,7 @@ const BecomeProvider = () => {
             </div>
 
             {/* Timeline (when status exists and not re-applying) */}
-            {providerStatus &&
+            {providerStatus?.status &&
               !(providerStatus.status === "REJECTED" && showReapplyForm) && (
                 <div className="section-divider">{renderTimeline()}</div>
               )}
@@ -371,7 +371,7 @@ const BecomeProvider = () => {
             )}
 
             {/* Form */}
-            {(!providerStatus ||
+            {(!providerStatus?.status ||
               (providerStatus?.status === "REJECTED" && showReapplyForm)) && (
               <div className="bp-form">
                 {/* Category */}
