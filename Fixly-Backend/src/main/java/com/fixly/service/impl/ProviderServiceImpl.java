@@ -202,13 +202,17 @@ public class ProviderServiceImpl implements ProviderService {
 	}
 
 	@Override
-	public ProviderStatusResponse getProviderStatus(
-			Long userId) {
+	public ProviderStatusResponse getProviderStatus(Long userId) {
 
-		ServiceProvider provider = providerRepository
-				.findByUser_UserId(userId)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"Provider Not Found"));
+		ServiceProvider provider =
+
+				providerRepository
+						.findByUser_UserId(userId)
+
+						.orElseThrow(() ->
+
+						new ResourceNotFoundException(
+								"Provider not found"));
 
 		ProviderStatusResponse response = new ProviderStatusResponse();
 
@@ -216,10 +220,7 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getProviderId());
 
 		response.setStatus(
-
-				provider.getStatus() != null
-						? provider.getStatus().name()
-						: "PENDING");
+				provider.getStatus().name());
 
 		response.setAvailable(
 				provider.isAvailable());
