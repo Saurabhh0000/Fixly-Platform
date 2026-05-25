@@ -9,8 +9,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fixly.enums.ProviderStatus;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +16,6 @@ import com.fixly.dto.request.ProviderRegisterRequest;
 import com.fixly.dto.response.ProviderResponse;
 import com.fixly.dto.response.ProviderSearchResponse;
 import com.fixly.dto.response.ProviderStatusResponse;
-import com.fixly.entity.Address;
 import com.fixly.entity.ServiceCategory;
 import com.fixly.entity.ServiceProvider;
 import com.fixly.entity.User;

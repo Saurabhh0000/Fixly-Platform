@@ -18,51 +18,46 @@ import com.fixly.dto.request.ServiceCategoryRequest;
 import com.fixly.dto.response.ServiceCategoryResponse;
 import com.fixly.service.ServiceCategoryService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/categories")
 @CrossOrigin
 public class ServiceCategoryController {
-	
+
 	@Autowired
 	private ServiceCategoryService categoryService;
-	
-    // ADMIN
+
+	// ADMIN
 
 	@PostMapping
-	public ResponseEntity<ServiceCategoryResponse> create(@RequestBody ServiceCategoryRequest request)
-	{
+	public ResponseEntity<ServiceCategoryResponse> create(@RequestBody ServiceCategoryRequest request) {
 		ServiceCategoryResponse response = categoryService.create(request);
 		return ResponseEntity.ok(response);
 	}
 
 	// PUBLIC
-	
+
 	@GetMapping
-	public ResponseEntity<List<ServiceCategoryResponse>> getAll()
-	{
+	public ResponseEntity<List<ServiceCategoryResponse>> getAll() {
 		List<ServiceCategoryResponse> list = categoryService.getAll();
 		return ResponseEntity.ok(list);
 	}
-	
+
 	// ADMIN
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<ServiceCategoryResponse> update(@PathVariable Long id, @RequestBody ServiceCategoryRequest request)
-	{
+	public ResponseEntity<ServiceCategoryResponse> update(@PathVariable Long id,
+			@RequestBody ServiceCategoryRequest request) {
 		ServiceCategoryResponse update = categoryService.update(id, request);
 		return ResponseEntity.ok(update);
-		
+
 	}
-	
-	// ADMIN 
-	
+
+	// ADMIN
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> delete(@PathVariable Long id)
-	{
+	public ResponseEntity<String> delete(@PathVariable Long id) {
 		categoryService.delete(id);
-		
+
 		return ResponseEntity.ok("Category deleted successfully");
 	}
 }
