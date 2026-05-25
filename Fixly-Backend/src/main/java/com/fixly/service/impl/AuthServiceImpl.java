@@ -16,6 +16,7 @@ import com.fixly.enums.Role;
 import com.fixly.repository.ServiceProviderRepository;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.AuthService;
+import com.fixly.exception.BadRequestException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -97,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
 
                     if (provider.getStatus() == ProviderStatus.SUSPENDED) {
 
-                        throw new RuntimeException(
+                        throw new BadRequestException(
                                 "Your provider account is suspended");
                     }
 
