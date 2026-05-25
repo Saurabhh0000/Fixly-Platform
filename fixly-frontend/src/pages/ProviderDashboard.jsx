@@ -70,7 +70,7 @@ const ProviderDashboard = () => {
       const res = await fixlyApi.get(`/api/bookings/provider/${providerId}`);
       setBookings(Array.isArray(res.data) ? res.data : []);
       const providerRes = await fixlyApi.get(
-        `/api/providers/status/${providerId}`,
+        `/api/providers/status/${user.id}`,
       );
 
       setAvailable(providerRes.data.available);
