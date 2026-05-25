@@ -433,31 +433,73 @@ public class ProviderServiceImpl implements ProviderService {
 		}
 	}
 
-	private ProviderSearchResponse mapToSearchResponse(ServiceProvider provider) {
+	private ProviderSearchResponse mapToSearchResponse(
+			ServiceProvider provider) {
 
 		ProviderSearchResponse response = new ProviderSearchResponse();
 
-		response.setProviderId(provider.getProviderId());
-		response.setFullName(provider.getUser().getFullName());
-		response.setCategory(provider.getCategory().getName());
-		response.setExperienceYears(provider.getExperienceYears());
-		response.setPricePerVisit(provider.getPricePerVisit());
-		// ⭐ Ratings
-		response.setRating(provider.getRating());
+		response.setProviderId(
+				provider.getProviderId());
+
+		response.setFullName(
+				provider.getUser().getFullName());
+
+		response.setCategory(
+				provider.getCategory().getName());
+
+		response.setExperienceYears(
+				provider.getExperienceYears());
+
+		response.setPricePerVisit(
+				provider.getPricePerVisit());
+
+		response.setRating(
+				provider.getRating());
+
 		response.setRatingCount(
-				reviewRepository.countByBookingProviderProviderId(provider.getProviderId()));
-		// 🟢 Availability
-		response.setAvailable(provider.isAvailable());
 
-		// pick first address (same city guaranteed)
-		var address = provider.getUser()
-				.getAddresses()
-				.get(0);
+				reviewRepository
+						.countByBookingProviderProviderId(
+								provider.getProviderId()));
 
-		response.setCity(address.getCity());
-		response.setArea(address.getArea());
+		response.setAvailable(
+				provider.isAvailable());
 
-		response.setPincode(address.getPincode());
+		response.setStatus(
+
+				provider.getStatus() != null
+
+						? provider.getStatus().name()
+
+						: "PENDING");
+
+		if (
+
+		provider.getUser()
+				.getAddresses() != null
+
+				&&
+
+				!provider.getUser()
+						.getAddresses()
+						.isEmpty()
+
+		) {
+
+			var address = provider.getUser()
+					.getAddresses()
+					.get(0);
+
+			response.setCity(
+					address.getCity());
+
+			response.setArea(
+					address.getArea());
+
+			response.setPincode(
+					address.getPincode());
+		}
+
 		return response;
 	}
 
