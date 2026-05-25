@@ -65,9 +65,16 @@ public class SecurityConfig {
                                                 .requestMatchers(
                                                                 "/api/dashboard/user",
                                                                 "/api/bookings/user/**",
-                                                                "/api/providers/register",
-                                                                "/api/providers/status/**")
+                                                                "/api/providers/register")
                                                 .hasRole("USER")
+
+                                                /* ================= USER + PROVIDER ================= */
+
+                                                .requestMatchers(
+                                                                "/api/providers/status/**")
+                                                .hasAnyRole(
+                                                                "USER",
+                                                                "PROVIDER")
 
                                                 /* ================= PROVIDER ================= */
                                                 .requestMatchers(
