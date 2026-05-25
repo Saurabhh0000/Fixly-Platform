@@ -183,6 +183,7 @@ public class ProviderServiceImpl implements ProviderService {
 	}
 
 	@Override
+	@Transactional
 	public List<ProviderSearchResponse> searchProviders(
 			String category,
 			String city) {
@@ -195,6 +196,7 @@ public class ProviderServiceImpl implements ProviderService {
 	}
 
 	@Override
+	@Transactional
 	public ProviderStatusResponse getProviderStatus(Long userId) {
 
 		ProviderStatusResponse response = new ProviderStatusResponse();
@@ -218,6 +220,7 @@ public class ProviderServiceImpl implements ProviderService {
 	}
 
 	@Override
+	@Transactional
 	public List<ProviderVerificationResponse> getAllProviders() {
 
 		return providerRepository.findAll()

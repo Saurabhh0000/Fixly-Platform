@@ -16,32 +16,28 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 	boolean existsByUserUserId(Long userId);
 
 	@Query("""
+			    SELECT DISTINCT p
+			    FROM ServiceProvider p
 
-			SELECT DISTINCT p
-			FROM ServiceProvider p
+			    JOIN FETCH p.category c
+			    JOIN FETCH p.user u
+			    JOIN FETCH u.addresses a
 
-			JOIN p.user u
-			JOIN u.addresses a
+			    WHERE
 
-			WHERE
+			    LOWER(c.name)
+			    LIKE LOWER(CONCAT('%', :category, '%'))
 
-			LOWER(p.category.name)
-			LIKE LOWER(CONCAT('%', :category, '%'))
+			    AND
 
-			AND
+			    LOWER(a.city)
+			    LIKE LOWER(CONCAT('%', :city, '%'))
 
-			LOWER(a.city)
-			LIKE LOWER(CONCAT('%', :city, '%'))
-
-			AND (
-
-			    p.status = 'APPROVED'
-
-			    OR
-
-			    p.status = 'SUSPENDED'
-			)
-
+			    AND (
+			        p.status = 'APPROVED'
+			        OR
+			        p.status = 'SUSPENDED'
+			    )
 			""")
 	List<ServiceProvider> searchProviders(
 			@Param("category") String category,
