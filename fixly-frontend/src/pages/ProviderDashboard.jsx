@@ -12,6 +12,7 @@ import {
   FaClock,
   FaRupeeSign,
   FaStar,
+  FaPhoneAlt,
   FaHourglassHalf,
 } from "react-icons/fa";
 import fixlyApi from "../api/fixlyApi";
