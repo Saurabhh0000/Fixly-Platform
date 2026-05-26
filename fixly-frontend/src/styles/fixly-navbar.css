@@ -3,8 +3,7 @@
    Zero global overrides. No Bootstrap dependency.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
 /* ================= NAVBAR BAR ================= */
 .fnav-bar {
   position: sticky;
