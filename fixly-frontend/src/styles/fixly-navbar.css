@@ -52,7 +52,7 @@
 
 /* "Fix" — white bold text */
 .fnav-logo-fix {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: "Nunito", sans-serif;
   font-size: 1.55rem;
   font-weight: 900;
   color: #090909;
@@ -68,7 +68,7 @@
   padding: 5px 10px;
   margin-left: 1px;
   border-radius: 7px;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: "Nunito", sans-serif;
   font-size: 1.55rem;
   font-weight: 900;
   background: #63ed93;
