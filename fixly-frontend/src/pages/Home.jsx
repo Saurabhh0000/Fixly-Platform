@@ -58,24 +58,35 @@ const Home = () => {
   const [cities, setCities] = useState([]);
   const [searchCity, setSearchCity] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
+
   /* ── Parallax for How It Works steps ── */
   useEffect(() => {
     const handleScroll = () => {
       const section = document.getElementById("fh-how");
       if (!section) return;
+
       const rect = section.getBoundingClientRect();
+      const viewH = window.innerHeight;
+
+      // progress: 0 when section bottom enters view, 1 when it leaves top
       const progress = Math.max(
         0,
-        Math.min(1, 1 - rect.bottom / (window.innerHeight + rect.height)),
+        Math.min(1, 1 - rect.bottom / (viewH + rect.height)),
       );
-      const offsets = [-22, 0, 22]; // each step shifts differently
-      offsets.forEach((offset, i) => {
+
+      // different offset multipliers per step for the stagger effect
+      const multipliers = [-28, 0, 28];
+
+      multipliers.forEach((mult, i) => {
         const el = document.getElementById(`fh-step-${i + 1}`);
-        if (el)
-          el.style.setProperty("--fh-parallax-y", `${progress * offset}px`);
+        if (el) {
+          el.style.transform = `translateY(${progress * mult}px)`;
+        }
       });
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // run once on mount in case section is already in view
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

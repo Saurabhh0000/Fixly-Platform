@@ -488,14 +488,6 @@
 .fh-how-header { text-align: center; margin-bottom: 64px; }
 
 /* Step track */
-.fh-steps {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 0;
-  flex-wrap: wrap;
-  position: relative;
-}
 
 /* Horizontal connecting line */
 .fh-steps::before {
@@ -510,6 +502,7 @@
   pointer-events: none;
 }
 
+/* ← ONLY ONE .fh-step block, no transform, no transition */
 .fh-step {
   flex: 1;
   min-width: 200px;
@@ -519,9 +512,7 @@
   align-items: center;
   text-align: center;
   padding: 0 20px;
-  /* parallax handled in JS via CSS variable */
-  transform: translateY(var(--fh-parallax-y, 0px));
-  transition: transform 0.1s linear;
+  will-change: transform;
 }
 
 .fh-step-num {
@@ -577,7 +568,6 @@
 }
 .fh-step-desc { font-size: 0.85rem; color: var(--fh-text-muted); line-height: 1.68; margin: 0; }
 
-/* Old connector — hidden (replaced by ::before) */
 .fh-step-connector { display: none; }
 
 /* ════════════════════════════════════════
