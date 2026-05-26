@@ -45,10 +45,8 @@
 .fnav-logo-badge {
   display: inline-flex;
   align-items: center;
-  border-radius: 14px;
   padding: 6px 8px 6px 14px;
   gap: 0;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.32);
   line-height: 1;
 }
 
@@ -73,7 +71,8 @@
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 1.55rem;
   font-weight: 900;
-  color: #15803d;
+  background: #63ed93;
+  color: #14532d;
   letter-spacing: -.03em;
   line-height: 1;
 }
