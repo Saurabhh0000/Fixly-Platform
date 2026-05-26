@@ -2,8 +2,7 @@
    FIXLY HOME v2 — Scoped .fh-* prefix only.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 /* ── Variables ── */
 :root {
   --fh-green:        #16a34a;
@@ -27,8 +26,8 @@
   --fh-r-xl: 22px;
   --fh-r-2xl:28px;
 
-  --fh-font:    'DM Sans', system-ui, sans-serif;
-  --fh-display: 'Syne', system-ui, sans-serif;
+  --fh-font:    'Plus Jakarta Sans', system-ui, sans-serif;
+  --fh-display: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
 .fh-hero,
