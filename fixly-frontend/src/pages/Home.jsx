@@ -58,6 +58,26 @@ const Home = () => {
   const [cities, setCities] = useState([]);
   const [searchCity, setSearchCity] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
+  /* ── Parallax for How It Works steps ── */
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = document.getElementById("fh-how");
+      if (!section) return;
+      const rect = section.getBoundingClientRect();
+      const progress = Math.max(
+        0,
+        Math.min(1, 1 - rect.bottom / (window.innerHeight + rect.height)),
+      );
+      const offsets = [-22, 0, 22]; // each step shifts differently
+      offsets.forEach((offset, i) => {
+        const el = document.getElementById(`fh-step-${i + 1}`);
+        if (el)
+          el.style.setProperty("--fh-parallax-y", `${progress * offset}px`);
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     // /api/categories — public endpoint
@@ -97,6 +117,7 @@ const Home = () => {
         <div className="fh-blob fh-blob-1" />
         <div className="fh-blob fh-blob-2" />
         <div className="fh-blob fh-blob-3" />
+        <div className="fh-blob fh-blob-4" />
 
         <Container className="fh-hero-container">
           {/* badge */}
@@ -300,21 +321,25 @@ const Home = () => {
       {/* ══════════════════════════════════════
           HOW IT WORKS
       ══════════════════════════════════════ */}
-      <section className="fh-how-section">
+      <section className="fh-how-section" id="fh-how">
         <Container>
-          <div className="fh-section-badge">
-            <FaCheckCircle />
-            <span>Simple Process</span>
+          <div className="fh-how-header">
+            {" "}
+            {/* ← wrap badge + title + sub */}
+            <div className="fh-section-badge">
+              <FaCheckCircle />
+              <span>Simple Process</span>
+            </div>
+            <h2 className="fh-section-title">
+              How <span className="fh-title-green">Fixly</span> Works
+            </h2>
+            <p className="fh-section-sub">
+              Three easy steps to get a professional at your door.
+            </p>
           </div>
-          <h2 className="fh-section-title">
-            How <span className="fh-title-green">Fixly</span> Works
-          </h2>
-          <p className="fh-section-sub">
-            Three easy steps to get a professional at your door.
-          </p>
 
-          <div className="fh-steps">
-            <div className="fh-step">
+          <div className="fh-steps" id="fh-steps">
+            <div className="fh-step" id="fh-step-1">
               <div className="fh-step-num">01</div>
               <div className="fh-step-icon">
                 <FaSearch />
@@ -325,8 +350,8 @@ const Home = () => {
                 providers.
               </p>
             </div>
-            <div className="fh-step-connector" />
-            <div className="fh-step">
+            {/* no connector div needed — CSS handles the line */}
+            <div className="fh-step" id="fh-step-2">
               <div className="fh-step-num">02</div>
               <div className="fh-step-icon">
                 <FaCalendarCheck />
@@ -336,8 +361,7 @@ const Home = () => {
                 Pick a date and address. Confirm your booking in seconds.
               </p>
             </div>
-            <div className="fh-step-connector" />
-            <div className="fh-step">
+            <div className="fh-step" id="fh-step-3">
               <div className="fh-step-num">03</div>
               <div className="fh-step-icon">
                 <FaHome />
