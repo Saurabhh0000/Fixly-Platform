@@ -50,6 +50,7 @@ public class SecurityConfig {
 
                                                 /* ================= PUBLIC ================= */
                                                 .requestMatchers("/api/auth/**").permitAll()
+                                                .requestMatchers("/actuator/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/addresses/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
