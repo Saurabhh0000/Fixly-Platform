@@ -11,24 +11,20 @@ import {
   FiEye,
   FiFileText,
   FiTool,
-  FiCreditCard,
   FiUser,
   FiHelpCircle,
-  FiCheckCircle,
   FiAward,
   FiArrowRight,
   FiActivity,
-  FiThumbsUp,
-  FiRefreshCw,
   FiStar,
+  FiRefreshCw,
+  FiZap,
 } from "react-icons/fi";
 
 import { AuthContext } from "../context/AuthContext";
 import "../styles/help-support.css";
 import UserLayout from "../layouts/UserLayout";
 import ProviderLayout from "../layouts/ProviderLayout";
-
-/* ── Data ─────────────────────────────────────────────────────── */
 
 const USER_CATEGORIES = [
   {
@@ -41,13 +37,13 @@ const USER_CATEGORIES = [
     id: "cancellations",
     icon: <FiRefreshCw />,
     title: "Service Cancellations",
-    desc: "Understand cancellation policies and what happens with your payment.",
+    desc: "Understand cancellation policies and how your payment is handled.",
   },
   {
     id: "account",
     icon: <FiShield />,
     title: "Account & Password Help",
-    desc: "Reset your password, update profile details, and manage account settings.",
+    desc: "Reset your password, update profile details, manage security settings.",
   },
   {
     id: "reviews",
@@ -65,7 +61,7 @@ const USER_CATEGORIES = [
     id: "contact",
     icon: <FiMail />,
     title: "Contact Support",
-    desc: "Reach our team by email or phone. We're available Monday to Saturday.",
+    desc: "Reach our team by email or phone. Available Monday to Saturday.",
     isCta: true,
   },
 ];
@@ -99,7 +95,7 @@ const PROVIDER_CATEGORIES = [
     id: "bookings",
     icon: <FiCalendar />,
     title: "Bookings & Customers",
-    desc: "Manage incoming bookings, communicate with clients, and handle reschedules.",
+    desc: "Manage incoming bookings, communicate with clients, handle reschedules.",
   },
   {
     id: "ratings",
@@ -176,23 +172,21 @@ const PROVIDER_FAQS = [
   },
 ];
 
-/* ── Sub-components ───────────────────────────────────────────── */
-
 function CategoryCard({ cat }) {
   return (
     <article
-      className={`hs-cat-card${cat.isCta ? " hs-cat-card--cta" : ""}`}
+      className={"hs-card" + (cat.isCta ? " hs-card--cta" : "")}
       tabIndex={0}
       role="button"
       aria-label={cat.title}>
-      <div className="hs-cat-icon" aria-hidden>
-        {cat.icon}
+      <div className="hs-card-icon-wrap" aria-hidden>
+        <span className="hs-card-icon">{cat.icon}</span>
       </div>
-      <div className="hs-cat-body">
-        <h3 className="hs-cat-title">{cat.title}</h3>
-        <p className="hs-cat-desc">{cat.desc}</p>
+      <div className="hs-card-body">
+        <h3 className="hs-card-title">{cat.title}</h3>
+        <p className="hs-card-desc">{cat.desc}</p>
       </div>
-      <span className="hs-cat-arrow" aria-hidden>
+      <span className="hs-card-arrow" aria-hidden>
         <FiArrowRight />
       </span>
     </article>
@@ -202,29 +196,28 @@ function CategoryCard({ cat }) {
 function FaqItem({ item, index, isOpen, onToggle }) {
   const bodyRef = useRef(null);
   const [height, setHeight] = useState(0);
-
   useEffect(() => {
-    if (bodyRef.current) {
-      setHeight(isOpen ? bodyRef.current.scrollHeight : 0);
-    }
+    if (bodyRef.current) setHeight(isOpen ? bodyRef.current.scrollHeight : 0);
   }, [isOpen]);
-
   return (
-    <div className={`hs-faq-item${isOpen ? " hs-faq-open" : ""}`}>
+    <div className={"hs-faq" + (isOpen ? " hs-faq--open" : "")}>
       <button
         className="hs-faq-trigger"
         onClick={onToggle}
         aria-expanded={isOpen}
-        aria-controls={`faq-body-${index}`}>
+        aria-controls={"faq-body-" + index}>
+        <span className="hs-faq-num" aria-hidden>
+          {String(index + 1).padStart(2, "0")}
+        </span>
         <span className="hs-faq-q">{item.q}</span>
         <span className="hs-faq-chevron" aria-hidden>
           <FiChevronDown />
         </span>
       </button>
       <div
-        id={`faq-body-${index}`}
+        id={"faq-body-" + index}
         className="hs-faq-body"
-        style={{ maxHeight: `${height}px` }}
+        style={{ maxHeight: height + "px" }}
         ref={bodyRef}
         role="region">
         <p className="hs-faq-answer">{item.a}</p>
@@ -236,11 +229,12 @@ function FaqItem({ item, index, isOpen, onToggle }) {
 function ContactCard({ role }) {
   const isProvider = role === "PROVIDER";
   return (
-    <div className="hs-contact-card">
-      <div className="hs-contact-header">
-        <span className="hs-contact-icon" aria-hidden>
-          <FiCheckCircle />
-        </span>
+    <div className="hs-contact">
+      <div className="hs-contact-glow" aria-hidden />
+      <div className="hs-contact-head">
+        <div className="hs-contact-badge" aria-hidden>
+          <FiZap />
+        </div>
         <div>
           <h3 className="hs-contact-title">
             {isProvider ? "Provider Support" : "Customer Support"}
@@ -248,17 +242,19 @@ function ContactCard({ role }) {
           <p className="hs-contact-sub">We're here to help.</p>
         </div>
       </div>
-
       <ul className="hs-contact-list" aria-label="Contact details">
         <li className="hs-contact-row">
           <span className="hs-contact-row-icon" aria-hidden>
             <FiMail />
           </span>
           <div>
-            <span className="hs-contact-row-label">Email</span>
+            <span className="hs-contact-lbl">Email</span>
             <a
-              href={`mailto:${isProvider ? "providers@fixly.in" : "support@fixly.in"}`}
-              className="hs-contact-row-val hs-contact-link">
+              href={
+                "mailto:" +
+                (isProvider ? "providers@fixly.in" : "support@fixly.in")
+              }
+              className="hs-contact-val hs-contact-link">
               {isProvider ? "providers@fixly.in" : "support@fixly.in"}
             </a>
           </div>
@@ -268,10 +264,10 @@ function ContactCard({ role }) {
             <FiPhone />
           </span>
           <div>
-            <span className="hs-contact-row-label">Phone</span>
+            <span className="hs-contact-lbl">Phone</span>
             <a
               href="tel:+919876543210"
-              className="hs-contact-row-val hs-contact-link">
+              className="hs-contact-val hs-contact-link">
               +91 98765 43210
             </a>
           </div>
@@ -281,8 +277,8 @@ function ContactCard({ role }) {
             <FiClock />
           </span>
           <div>
-            <span className="hs-contact-row-label">Hours</span>
-            <span className="hs-contact-row-val">Mon – Sat, 9 AM – 6 PM</span>
+            <span className="hs-contact-lbl">Hours</span>
+            <span className="hs-contact-val">Mon – Sat, 9 AM – 6 PM</span>
           </div>
         </li>
       </ul>
@@ -293,13 +289,13 @@ function ContactCard({ role }) {
 function RoleChip({ role }) {
   return (
     <div className="hs-role-chip">
-      <FiUser className="hs-role-chip-icon" aria-hidden />
+      <FiUser className="hs-role-icon" aria-hidden />
       <div>
-        <strong className="hs-role-chip-label">
+        <strong className="hs-role-label">
           Viewing as {role === "USER" ? "Customer" : "Provider"}
         </strong>
-        <p className="hs-role-chip-sub">
-          Help content is tailored for your account type.
+        <p className="hs-role-sub">
+          Content is tailored for your account type.
         </p>
       </div>
     </div>
@@ -317,7 +313,7 @@ function EmptyState({ loggedIn }) {
       </h2>
       <p className="hs-empty-body">
         {loggedIn
-          ? "We couldn't load your help content. Please refresh the page or try again."
+          ? "We couldn't load your help content. Please refresh the page."
           : "Sign in to see help articles and FAQs tailored to your account type."}
       </p>
       <button className="hs-empty-btn">
@@ -326,8 +322,6 @@ function EmptyState({ loggedIn }) {
     </main>
   );
 }
-
-/* ── Main Component ───────────────────────────────────────────── */
 
 export default function HelpSupport() {
   const { user } = useContext(AuthContext);
@@ -338,7 +332,6 @@ export default function HelpSupport() {
   const isUser = user?.role === "USER";
   const isProvider = user?.role === "PROVIDER";
   const hasRole = isUser || isProvider;
-
   const categories = isUser
     ? USER_CATEGORIES
     : isProvider
@@ -346,7 +339,6 @@ export default function HelpSupport() {
       : [];
   const faqs = isUser ? USER_FAQS : isProvider ? PROVIDER_FAQS : [];
   const roleLabel = isUser ? "Customer" : isProvider ? "Provider" : "";
-
   const filtered = query.trim()
     ? categories.filter(
         (c) =>
@@ -356,35 +348,31 @@ export default function HelpSupport() {
     : categories;
 
   if (!hasRole) return <EmptyState loggedIn={!!user} />;
-
   const Layout = isProvider ? ProviderLayout : UserLayout;
 
   return (
     <Layout>
       <div className="hs-root">
-        {/* ── Hero ─────────────────────────────────────────────── */}
         <header className="hs-hero">
-          <div className="hs-hero-bg" aria-hidden />
+          <div className="hs-hero-grid" aria-hidden />
+          <div className="hs-hero-glow" aria-hidden />
           <div className="hs-hero-inner">
-            {/* Wordmark */}
-            <div className="hs-wordmark" aria-label="Fixly">
-              <FiTool className="hs-wordmark-icon" aria-hidden />
-              <span className="hs-wordmark-fix">Fix</span>
-              <span className="hs-wordmark-ly">ly</span>
+            <div className="hs-eyebrow">
+              <FiTool className="hs-eyebrow-icon" aria-hidden />
+              <span>Fixly Support</span>
             </div>
-
-            <h1 className="hs-hero-title">Help &amp; Support</h1>
+            <h1 className="hs-hero-title">
+              Help &amp; <em className="hs-title-accent">Support</em>
+            </h1>
             <p className="hs-hero-sub">
               Find answers to common questions and get assistance when you need
               it.
             </p>
-
-            {/* Search */}
             <div className="hs-search-wrap">
               <label htmlFor="hs-search" className="hs-sr-only">
                 Search help topics
               </label>
-              <FiSearch className="hs-search-icon" aria-hidden />
+              <FiSearch className="hs-search-prefix" aria-hidden />
               <input
                 id="hs-search"
                 ref={searchRef}
@@ -407,30 +395,49 @@ export default function HelpSupport() {
                 </button>
               )}
             </div>
+            <div
+              className="hs-hero-pills"
+              role="list"
+              aria-label="Contact options">
+              <a
+                href="mailto:support@fixly.in"
+                className="hs-pill"
+                role="listitem">
+                <FiMail className="hs-pill-icon" aria-hidden />
+                support@fixly.in
+              </a>
+              <a href="tel:+919876543210" className="hs-pill" role="listitem">
+                <FiPhone className="hs-pill-icon" aria-hidden />
+                +91 98765 43210
+              </a>
+              <span className="hs-pill hs-pill--muted" role="listitem">
+                <FiClock className="hs-pill-icon" aria-hidden />
+                Mon – Sat, 9 AM – 6 PM
+              </span>
+            </div>
           </div>
         </header>
 
-        {/* ── Body ─────────────────────────────────────────────── */}
         <main className="hs-page" id="main-content">
           <div className="hs-layout">
-            {/* Main column */}
             <div className="hs-col-main">
-              {/* Categories */}
-              <section className="hs-section" aria-labelledby="hs-cat-title">
+              <section className="hs-section" aria-labelledby="hs-cat-heading">
                 <div className="hs-section-hdr">
-                  <h2 id="hs-cat-title" className="hs-section-title">
-                    {query
-                      ? `Results for "${query}"`
-                      : `${roleLabel} Help Topics`}
-                  </h2>
-                  <span className="hs-section-count">
+                  <div>
+                    <span className="hs-section-eyebrow">Browse topics</span>
+                    <h2 id="hs-cat-heading" className="hs-section-title">
+                      {query
+                        ? 'Results for "' + query + '"'
+                        : roleLabel + " Help Topics"}
+                    </h2>
+                  </div>
+                  <span className="hs-count-chip">
                     {filtered.length}{" "}
                     {filtered.length === 1 ? "topic" : "topics"}
                   </span>
                 </div>
-
                 {filtered.length > 0 ? (
-                  <div className="hs-cat-grid">
+                  <div className="hs-grid">
                     {filtered.map((cat) => (
                       <CategoryCard key={cat.id} cat={cat} />
                     ))}
@@ -451,18 +458,19 @@ export default function HelpSupport() {
                 )}
               </section>
 
-              {/* FAQs */}
               {!query && (
-                <section className="hs-section" aria-labelledby="hs-faq-title">
+                <section
+                  className="hs-section"
+                  aria-labelledby="hs-faq-heading">
                   <div className="hs-section-hdr">
-                    <h2 id="hs-faq-title" className="hs-section-title">
-                      Frequently Asked Questions
-                    </h2>
-                    <span className="hs-section-count">
-                      {faqs.length} answers
-                    </span>
+                    <div>
+                      <span className="hs-section-eyebrow">Self-service</span>
+                      <h2 id="hs-faq-heading" className="hs-section-title">
+                        Frequently Asked Questions
+                      </h2>
+                    </div>
+                    <span className="hs-count-chip">{faqs.length} answers</span>
                   </div>
-
                   <div className="hs-faq-list">
                     {faqs.map((item, i) => (
                       <FaqItem
@@ -470,9 +478,7 @@ export default function HelpSupport() {
                         item={item}
                         index={i}
                         isOpen={openFaq === i}
-                        onToggle={() =>
-                          setOpenFaq((prev) => (prev === i ? null : i))
-                        }
+                        onToggle={() => setOpenFaq((p) => (p === i ? null : i))}
                       />
                     ))}
                   </div>
@@ -480,7 +486,6 @@ export default function HelpSupport() {
               )}
             </div>
 
-            {/* Sidebar */}
             <aside className="hs-col-side" aria-label="Contact information">
               <ContactCard role={user.role} />
               <RoleChip role={user.role} />
