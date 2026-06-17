@@ -29,7 +29,7 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import "../styles/help-support.css";
 import UserLayout from "../layouts/UserLayout";
-
+import ProviderLayout from "../layouts/ProviderLayout";
 /* ── Data ───────────────────────────────────────────────────── */
 
 const USER_CATEGORIES = [
@@ -310,33 +310,49 @@ function FaqItem({ item, index, isOpen, onToggle }) {
   );
 }
 
-function ContactCard() {
-  const rows = [
-    {
-      icon: <FiMail />,
-      label: "Email",
-      value: "support@fixly.in",
-      color: "#16a34a",
-    },
-    {
-      icon: <FiPhone />,
-      label: "Phone",
-      value: "+91 98765 43210",
-      color: "#15803d",
-    },
-    {
-      icon: <FiClock />,
-      label: "Working Hours",
-      value: "Mon – Sat, 9 AM – 9 PM IST",
-      color: "#16a34a",
-    },
-    {
-      icon: <FiZap />,
-      label: "Response Time",
-      value: "Typically under 2 hours",
-      color: "#15803d",
-    },
-  ];
+function ContactCard({ role }) {
+  const rows =
+    role === "PROVIDER"
+      ? [
+          {
+            icon: <FiMail />,
+            label: "Provider Support",
+            value: "providers@fixly.in",
+            color: "#16a34a",
+          },
+          {
+            icon: <FiPhone />,
+            label: "Provider Helpline",
+            value: "+91 98765 43210",
+            color: "#15803d",
+          },
+          {
+            icon: <FiClock />,
+            label: "Working Hours",
+            value: "Mon - Sat, 9 AM - 6 PM",
+            color: "#16a34a",
+          },
+        ]
+      : [
+          {
+            icon: <FiMail />,
+            label: "Customer Support",
+            value: "support@fixly.in",
+            color: "#16a34a",
+          },
+          {
+            icon: <FiPhone />,
+            label: "Customer Helpline",
+            value: "+91 98765 43210",
+            color: "#15803d",
+          },
+          {
+            icon: <FiClock />,
+            label: "Working Hours",
+            value: "Mon - Sat, 9 AM - 6 PM",
+            color: "#16a34a",
+          },
+        ];
   return (
     <div className="fhs-contact-card">
       <div className="fhs-contact-card-bg" aria-hidden />
@@ -345,7 +361,9 @@ function ContactCard() {
           <FiCheckCircle />
         </span>
         <div>
-          <h3 className="fhs-contact-heading">Still need help?</h3>
+          <h3 className="fhs-contact-heading">
+            {role === "PROVIDER" ? "Provider Support" : "Customer Support"}
+          </h3>
           <p className="fhs-contact-sub">Our team is ready to assist you.</p>
         </div>
       </div>
@@ -438,9 +456,9 @@ export default function HelpSupport() {
   }
 
   if (!hasRole) return <EmptyState loggedIn={!!user} />;
-
+  const Layout = user?.role === "PROVIDER" ? ProviderLayout : UserLayout;
   return (
-    <UserLayout>
+    <Layout>
       <div className="fhs-root">
         {/* ── Hero ───────────────────────────────────────────── */}
         <header className="fhs-hero" role="banner">
@@ -589,12 +607,12 @@ export default function HelpSupport() {
             <aside
               className="fhs-col-side"
               aria-label="Support contact information">
-              <ContactCard />
+              <ContactCard role={user.role} />
               <RoleChip role={user.role} />
             </aside>
           </div>
         </main>
       </div>
-    </UserLayout>
+    </Layout>
   );
 }
