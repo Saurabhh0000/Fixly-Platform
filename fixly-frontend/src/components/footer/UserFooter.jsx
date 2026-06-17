@@ -53,7 +53,7 @@ const UserFooter = () => {
             <FaUser /> Profile
           </span>
 
-          <span onClick={() => toast("Help & Support coming soon 🚧")}>
+          <span onClick={() => navigate("/help-support")}>
             <FaHeadset /> Help & Support
           </span>
         </div>
