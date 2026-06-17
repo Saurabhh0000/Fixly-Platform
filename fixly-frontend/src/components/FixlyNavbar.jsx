@@ -265,8 +265,8 @@ const FixlyNavbar = () => {
                   </button>
 
                   <button
-                    className="fnav-dd-item fnav-dd-item-disabled"
-                    disabled>
+                    className="fnav-dd-item"
+                    onClick={() => go("/help-support")}>
                     <span className="fnav-dd-icon fnav-icon-teal">
                       <FaQuestionCircle />
                     </span>
@@ -361,8 +361,16 @@ const FixlyNavbar = () => {
               onClick={() => go("/change-password")}>
               <FaKey className="fnav-ml-icon fnav-ml-violet" /> Change Password
             </button>
+
             <button className="fnav-mobile-link" onClick={() => go("/profile")}>
               <FaCog className="fnav-ml-icon fnav-ml-slate" /> Settings
+            </button>
+
+            <button
+              className="fnav-mobile-link"
+              onClick={() => go("/help-support")}>
+              <FaQuestionCircle className="fnav-ml-icon" />
+              Help & Support
             </button>
           </div>
 

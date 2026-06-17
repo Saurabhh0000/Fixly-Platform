@@ -16,6 +16,7 @@ import Unauthorized from "./pages/Unauthorized";
 import ChangePassword from "./pages/ChangePassword";
 import Profile from "./pages/Profile";
 import AdminProviderRequests from "./pages/AdminProviderRequests";
+import HelpSupport from "./pages/HelpSupport";
 
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -48,6 +49,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ChangePassword />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/help-support"
+            element={
+              <PrivateRoute>
+                <HelpSupport />
               </PrivateRoute>
             }
           />
