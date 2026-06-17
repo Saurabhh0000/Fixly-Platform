@@ -26,7 +26,7 @@ import {
   FiThumbsUp,
 } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
-import "./help-support.css";
+import "../styles/help-support.css";
 
 /* ── Data ───────────────────────────────────────────────────── */
 
