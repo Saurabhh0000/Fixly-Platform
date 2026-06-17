@@ -25,8 +25,10 @@ import {
   FiActivity,
   FiThumbsUp,
 } from "react-icons/fi";
+
 import { AuthContext } from "../context/AuthContext";
 import "../styles/help-support.css";
+import UserLayout from "../layouts/UserLayout";
 
 /* ── Data ───────────────────────────────────────────────────── */
 
@@ -438,158 +440,161 @@ export default function HelpSupport() {
   if (!hasRole) return <EmptyState loggedIn={!!user} />;
 
   return (
-    <div className="fhs-root">
-      {/* ── Hero ───────────────────────────────────────────── */}
-      <header className="fhs-hero" role="banner">
-        <div className="fhs-hero-gradient" aria-hidden />
-        <div className="fhs-hero-grid-bg" aria-hidden />
+    <UserLayout>
+      <div className="fhs-root">
+        {/* ── Hero ───────────────────────────────────────────── */}
+        <header className="fhs-hero" role="banner">
+          <div className="fhs-hero-gradient" aria-hidden />
+          <div className="fhs-hero-grid-bg" aria-hidden />
 
-        <div className="fhs-hero-inner">
-          <FixlyLogo />
-          <OnlinePill />
+          <div className="fhs-hero-inner">
+            <FixlyLogo />
+            <OnlinePill />
 
-          <h1 className="fhs-hero-title">
-            Help &amp; Support
-            <br />
-            <span className="fhs-hero-title-em">Center</span>
-          </h1>
+            <h1 className="fhs-hero-title">
+              Help &amp; Support
+              <br />
+              <span className="fhs-hero-title-em">Center</span>
+            </h1>
 
-          <p className="fhs-hero-sub">
-            Get instant assistance, find answers, and manage your Fixly
-            experience with confidence — whether you're a customer or a service
-            professional.
-          </p>
+            <p className="fhs-hero-sub">
+              Get instant assistance, find answers, and manage your Fixly
+              experience with confidence — whether you're a customer or a
+              service professional.
+            </p>
 
-          {/* Search */}
-          <div className="fhs-search-shell">
-            <label htmlFor="fhs-search" className="fhs-sr-only">
-              Search help articles
-            </label>
-            <FiSearch className="fhs-search-prefix" aria-hidden />
-            <input
-              id="fhs-search"
-              ref={searchInputRef}
-              className="fhs-search-input"
-              type="search"
-              placeholder="Search help articles, topics, FAQs…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              autoComplete="off"
-            />
-            {query && (
-              <button
-                className="fhs-search-clear"
-                onClick={() => {
-                  setQuery("");
-                  searchInputRef.current?.focus();
-                }}
-                aria-label="Clear search">
-                <FiX />
-              </button>
-            )}
-          </div>
-
-          <QuickActions />
-        </div>
-
-        {/* Decorative art */}
-        <div className="fhs-hero-art" aria-hidden>
-          <div className="fhs-art-ring fhs-ring-1" />
-          <div className="fhs-art-ring fhs-ring-2" />
-          <div className="fhs-art-ring fhs-ring-3" />
-          <div className="fhs-art-center">
-            <FiTool />
-          </div>
-          <div className="fhs-art-orbit fhs-orbit-1">
-            <FiShield />
-          </div>
-          <div className="fhs-art-orbit fhs-orbit-2">
-            <FiStar />
-          </div>
-          <div className="fhs-art-orbit fhs-orbit-3">
-            <FiCheckCircle />
-          </div>
-        </div>
-      </header>
-
-      {/* ── Page body ──────────────────────────────────────── */}
-      <main className="fhs-page" id="main-content">
-        <div className="fhs-layout">
-          {/* Left / main column */}
-          <div className="fhs-col-main">
-            {/* Categories */}
-            <section className="fhs-section" aria-labelledby="cat-heading">
-              <div className="fhs-section-hdr">
-                <h2 id="cat-heading" className="fhs-section-title">
-                  {query
-                    ? `Results for "${query}"`
-                    : `${roleLabel} Help Topics`}
-                </h2>
-                <span className="fhs-section-badge">
-                  {filtered.length} {filtered.length === 1 ? "topic" : "topics"}
-                </span>
-              </div>
-
-              {filtered.length > 0 ? (
-                <div className="fhs-cat-grid">
-                  {filtered.map((cat) => (
-                    <CategoryCard key={cat.id} cat={cat} />
-                  ))}
-                </div>
-              ) : (
-                <div className="fhs-no-results" role="status">
-                  <FiSearch aria-hidden />
-                  <p>
-                    No topics matched <strong>"{query}"</strong>. Try a broader
-                    search term or{" "}
-                    <button
-                      className="fhs-link-btn"
-                      onClick={() => setQuery("")}>
-                      clear the search
-                    </button>
-                    .
-                  </p>
-                </div>
+            {/* Search */}
+            <div className="fhs-search-shell">
+              <label htmlFor="fhs-search" className="fhs-sr-only">
+                Search help articles
+              </label>
+              <FiSearch className="fhs-search-prefix" aria-hidden />
+              <input
+                id="fhs-search"
+                ref={searchInputRef}
+                className="fhs-search-input"
+                type="search"
+                placeholder="Search help articles, topics, FAQs…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                autoComplete="off"
+              />
+              {query && (
+                <button
+                  className="fhs-search-clear"
+                  onClick={() => {
+                    setQuery("");
+                    searchInputRef.current?.focus();
+                  }}
+                  aria-label="Clear search">
+                  <FiX />
+                </button>
               )}
-            </section>
+            </div>
 
-            {/* FAQ */}
-            {!query && (
-              <section className="fhs-section" aria-labelledby="faq-heading">
+            <QuickActions />
+          </div>
+
+          {/* Decorative art */}
+          <div className="fhs-hero-art" aria-hidden>
+            <div className="fhs-art-ring fhs-ring-1" />
+            <div className="fhs-art-ring fhs-ring-2" />
+            <div className="fhs-art-ring fhs-ring-3" />
+            <div className="fhs-art-center">
+              <FiTool />
+            </div>
+            <div className="fhs-art-orbit fhs-orbit-1">
+              <FiShield />
+            </div>
+            <div className="fhs-art-orbit fhs-orbit-2">
+              <FiStar />
+            </div>
+            <div className="fhs-art-orbit fhs-orbit-3">
+              <FiCheckCircle />
+            </div>
+          </div>
+        </header>
+
+        {/* ── Page body ──────────────────────────────────────── */}
+        <main className="fhs-page" id="main-content">
+          <div className="fhs-layout">
+            {/* Left / main column */}
+            <div className="fhs-col-main">
+              {/* Categories */}
+              <section className="fhs-section" aria-labelledby="cat-heading">
                 <div className="fhs-section-hdr">
-                  <h2 id="faq-heading" className="fhs-section-title">
-                    Frequently Asked Questions
+                  <h2 id="cat-heading" className="fhs-section-title">
+                    {query
+                      ? `Results for "${query}"`
+                      : `${roleLabel} Help Topics`}
                   </h2>
                   <span className="fhs-section-badge">
-                    {faqs.length} answers
+                    {filtered.length}{" "}
+                    {filtered.length === 1 ? "topic" : "topics"}
                   </span>
                 </div>
 
-                <div className="fhs-faq-list" role="list">
-                  {faqs.map((item, i) => (
-                    <div role="listitem" key={i}>
-                      <FaqItem
-                        item={item}
-                        index={i}
-                        isOpen={openFaq === i}
-                        onToggle={() => handleFaqToggle(i)}
-                      />
-                    </div>
-                  ))}
-                </div>
+                {filtered.length > 0 ? (
+                  <div className="fhs-cat-grid">
+                    {filtered.map((cat) => (
+                      <CategoryCard key={cat.id} cat={cat} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="fhs-no-results" role="status">
+                    <FiSearch aria-hidden />
+                    <p>
+                      No topics matched <strong>"{query}"</strong>. Try a
+                      broader search term or{" "}
+                      <button
+                        className="fhs-link-btn"
+                        onClick={() => setQuery("")}>
+                        clear the search
+                      </button>
+                      .
+                    </p>
+                  </div>
+                )}
               </section>
-            )}
-          </div>
 
-          {/* Right / sidebar */}
-          <aside
-            className="fhs-col-side"
-            aria-label="Support contact information">
-            <ContactCard />
-            <RoleChip role={user.role} />
-          </aside>
-        </div>
-      </main>
-    </div>
+              {/* FAQ */}
+              {!query && (
+                <section className="fhs-section" aria-labelledby="faq-heading">
+                  <div className="fhs-section-hdr">
+                    <h2 id="faq-heading" className="fhs-section-title">
+                      Frequently Asked Questions
+                    </h2>
+                    <span className="fhs-section-badge">
+                      {faqs.length} answers
+                    </span>
+                  </div>
+
+                  <div className="fhs-faq-list" role="list">
+                    {faqs.map((item, i) => (
+                      <div role="listitem" key={i}>
+                        <FaqItem
+                          item={item}
+                          index={i}
+                          isOpen={openFaq === i}
+                          onToggle={() => handleFaqToggle(i)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+
+            {/* Right / sidebar */}
+            <aside
+              className="fhs-col-side"
+              aria-label="Support contact information">
+              <ContactCard />
+              <RoleChip role={user.role} />
+            </aside>
+          </div>
+        </main>
+      </div>
+    </UserLayout>
   );
 }
