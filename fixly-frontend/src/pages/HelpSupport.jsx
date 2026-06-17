@@ -172,6 +172,220 @@ const PROVIDER_FAQS = [
   },
 ];
 
+/* ── Hero Artwork ────────────────────────────────────────────── */
+const RING_LABELS = [
+  { label: "Users", angle: 0, ring: 1 },
+  { label: "Providers", angle: 51.4, ring: 1 },
+  { label: "Services", angle: 102.8, ring: 1 },
+  { label: "Bookings", angle: 154.3, ring: 1 },
+  { label: "Reviews", angle: 205.7, ring: 1 },
+  { label: "Trust", angle: 257.1, ring: 1 },
+  { label: "Payments", angle: 308.6, ring: 1 },
+  { label: "Support", angle: 360, ring: 1 },
+];
+
+function HeroArtwork() {
+  const cx = 210;
+  const cy = 220;
+  const rings = [148, 108, 72, 44, 22];
+
+  return (
+    <div className="hs-hero-art" aria-hidden="true">
+      <svg
+        className="hs-hero-art-svg"
+        viewBox="0 0 420 440"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="artGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#22c55e" stopOpacity="0.20" />
+            <stop offset="55%" stopColor="#22c55e" stopOpacity="0.04" />
+            <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#4ade80" stopOpacity="0.40" />
+            <stop offset="100%" stopColor="#4ade80" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* Ambient glow */}
+        <ellipse cx={cx} cy={cy} rx="190" ry="190" fill="url(#artGlow)" />
+
+        {/* Concentric rings — solid outlines */}
+        {rings.map((r, i) => (
+          <circle
+            key={r}
+            cx={cx}
+            cy={cy}
+            r={r}
+            stroke={`rgba(34,197,94,${0.08 + i * 0.04})`}
+            strokeWidth="0.75"
+          />
+        ))}
+
+        {/* Dashed decorative rings on 2nd and 4th */}
+        <circle
+          cx={cx}
+          cy={cy}
+          r={rings[1]}
+          stroke="rgba(74,222,128,0.18)"
+          strokeWidth="0.75"
+          strokeDasharray="2 16"
+          strokeLinecap="round"
+        />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={rings[3]}
+          stroke="rgba(74,222,128,0.22)"
+          strokeWidth="0.75"
+          strokeDasharray="2 10"
+          strokeLinecap="round"
+        />
+
+        {/* Outer orbit ring with node dots */}
+        <circle
+          cx={cx}
+          cy={cy}
+          r={rings[0]}
+          stroke="rgba(34,197,94,0.14)"
+          strokeWidth="0.75"
+          strokeDasharray="1 20"
+          strokeLinecap="round"
+        />
+
+        {/* 7 orbital nodes on outermost ring */}
+        {RING_LABELS.slice(0, 7).map(({ label, angle }) => {
+          const rad = (angle * Math.PI) / 180;
+          const nx = cx + rings[0] * Math.sin(rad);
+          const ny = cy - rings[0] * Math.cos(rad);
+          const lx = cx + (rings[0] + 22) * Math.sin(rad);
+          const ly = cy - (rings[0] + 22) * Math.cos(rad);
+          const anchor =
+            Math.abs(rad - Math.PI) < 0.3 || Math.abs(rad) < 0.3
+              ? "middle"
+              : rad > Math.PI
+                ? "end"
+                : "start";
+          return (
+            <g key={label} className="hs-art-node">
+              {/* Spoke */}
+              <line
+                x1={cx + rings[2] * Math.sin(rad)}
+                y1={cy - rings[2] * Math.cos(rad)}
+                x2={nx}
+                y2={ny}
+                stroke="rgba(34,197,94,0.12)"
+                strokeWidth="0.5"
+              />
+              {/* Node dot */}
+              <circle cx={nx} cy={ny} r="3.5" fill="rgba(74,222,128,0.60)" />
+              <circle cx={nx} cy={ny} r="1.5" fill="#4ade80" />
+              {/* Label */}
+              <text
+                x={lx}
+                y={ly + 4}
+                textAnchor={anchor}
+                fill="rgba(255,255,255,0.28)"
+                fontSize="9"
+                fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                fontWeight="600"
+                letterSpacing="0.06em">
+                {label.toUpperCase()}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Animated orbit dot — ring 1 */}
+        <circle r="3" fill="#22c55e" opacity="0.80">
+          <animateMotion
+            dur="20s"
+            repeatCount="indefinite"
+            path={`M ${cx} ${cy - rings[0]} a ${rings[0]} ${rings[0]} 0 1 1 -0.01 0`}
+          />
+        </circle>
+
+        {/* Animated orbit dot — ring 2, opposite direction */}
+        <circle r="2.5" fill="#4ade80" opacity="0.55">
+          <animateMotion
+            dur="15s"
+            repeatCount="indefinite"
+            path={`M ${cx} ${cy + rings[1]} a ${rings[1]} ${rings[1]} 0 1 0 0.01 0`}
+          />
+        </circle>
+
+        {/* Animated orbit dot — ring 3 */}
+        <circle r="2" fill="#86efac" opacity="0.50">
+          <animateMotion
+            dur="11s"
+            repeatCount="indefinite"
+            path={`M ${cx + rings[2]} ${cy} a ${rings[2]} ${rings[2]} 0 1 1 -0.01 0`}
+          />
+        </circle>
+
+        {/* Core glow */}
+        <circle cx={cx} cy={cy} r="22" fill="url(#coreGlow)" />
+        <circle cx={cx} cy={cy} r="9" fill="rgba(74,222,128,0.35)" />
+        <circle cx={cx} cy={cy} r="4.5" fill="rgba(74,222,128,0.70)" />
+        <circle cx={cx} cy={cy} r="2" fill="#4ade80" />
+
+        {/* Center label */}
+        <text
+          x={cx}
+          y={cy + 24}
+          textAnchor="middle"
+          fill="rgba(255,255,255,0.22)"
+          fontSize="8.5"
+          fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+          fontWeight="700"
+          letterSpacing="0.10em">
+          FIXLY
+        </text>
+
+        {/* Cross-hairs at center */}
+        <line
+          x1={cx - 14}
+          y1={cy}
+          x2={cx + 14}
+          y2={cy}
+          stroke="rgba(74,222,128,0.15)"
+          strokeWidth="0.5"
+        />
+        <line
+          x1={cx}
+          y1={cy - 14}
+          x2={cx}
+          y2={cy + 14}
+          stroke="rgba(74,222,128,0.15)"
+          strokeWidth="0.5"
+        />
+
+        {/* Scattered micro-dots — static atmosphere */}
+        {[
+          [330, 60],
+          [380, 140],
+          [340, 310],
+          [80, 340],
+          [50, 160],
+          [110, 80],
+          [370, 260],
+          [60, 280],
+        ].map(([x, y], i) => (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={i % 2 === 0 ? 1.5 : 1}
+            fill={`rgba(74,222,128,${0.2 + (i % 3) * 0.08})`}
+          />
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ── Category Card ───────────────────────────────────────────── */
 function CategoryCard({ cat }) {
   return (
     <article
@@ -193,12 +407,15 @@ function CategoryCard({ cat }) {
   );
 }
 
+/* ── FAQ Item ────────────────────────────────────────────────── */
 function FaqItem({ item, index, isOpen, onToggle }) {
   const bodyRef = useRef(null);
   const [height, setHeight] = useState(0);
+
   useEffect(() => {
     if (bodyRef.current) setHeight(isOpen ? bodyRef.current.scrollHeight : 0);
   }, [isOpen]);
+
   return (
     <div className={"hs-faq" + (isOpen ? " hs-faq--open" : "")}>
       <button
@@ -226,6 +443,7 @@ function FaqItem({ item, index, isOpen, onToggle }) {
   );
 }
 
+/* ── Contact Card ────────────────────────────────────────────── */
 function ContactCard({ role }) {
   const isProvider = role === "PROVIDER";
   return (
@@ -286,10 +504,13 @@ function ContactCard({ role }) {
   );
 }
 
+/* ── Role Chip ───────────────────────────────────────────────── */
 function RoleChip({ role }) {
   return (
     <div className="hs-role-chip">
-      <FiUser className="hs-role-icon" aria-hidden />
+      <div className="hs-role-icon-wrap" aria-hidden>
+        <FiUser />
+      </div>
       <div>
         <strong className="hs-role-label">
           Viewing as {role === "USER" ? "Customer" : "Provider"}
@@ -302,6 +523,7 @@ function RoleChip({ role }) {
   );
 }
 
+/* ── Empty State ─────────────────────────────────────────────── */
 function EmptyState({ loggedIn }) {
   return (
     <main className="hs-empty">
@@ -323,6 +545,7 @@ function EmptyState({ loggedIn }) {
   );
 }
 
+/* ── Page ────────────────────────────────────────────────────── */
 export default function HelpSupport() {
   const { user } = useContext(AuthContext);
   const [query, setQuery] = useState("");
@@ -353,82 +576,98 @@ export default function HelpSupport() {
   return (
     <Layout>
       <div className="hs-root">
+        {/* ── Hero ──────────────────────────────────────────── */}
         <header className="hs-hero">
           <div className="hs-hero-grid" aria-hidden />
           <div className="hs-hero-glow" aria-hidden />
+
           <div className="hs-hero-inner">
-            <div className="hs-eyebrow">
-              <FiTool className="hs-eyebrow-icon" aria-hidden />
-              <span>Fixly Support</span>
+            {/* Left */}
+            <div className="hs-hero-left">
+              <div className="hs-eyebrow">
+                <FiTool className="hs-eyebrow-icon" aria-hidden />
+                <span>Fixly Support</span>
+              </div>
+
+              <h1 className="hs-hero-title">
+                Help &amp;
+                <br />
+                <em className="hs-title-accent">Support</em>
+              </h1>
+
+              <p className="hs-hero-sub">
+                Find answers to common questions and get assistance when you
+                need it.
+              </p>
+
+              <div className="hs-search-wrap">
+                <label htmlFor="hs-search" className="hs-sr-only">
+                  Search help topics
+                </label>
+                <FiSearch className="hs-search-prefix" aria-hidden />
+                <input
+                  id="hs-search"
+                  ref={searchRef}
+                  className="hs-search"
+                  type="search"
+                  placeholder="Search help topics…"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  autoComplete="off"
+                />
+                {query && (
+                  <button
+                    className="hs-search-clear"
+                    onClick={() => {
+                      setQuery("");
+                      searchRef.current?.focus();
+                    }}
+                    aria-label="Clear search">
+                    <FiX />
+                  </button>
+                )}
+              </div>
+
+              <div
+                className="hs-hero-pills"
+                role="list"
+                aria-label="Contact options">
+                <a
+                  href="mailto:support@fixly.in"
+                  className="hs-pill"
+                  role="listitem">
+                  <FiMail className="hs-pill-icon" aria-hidden />
+                  support@fixly.in
+                </a>
+                <a href="tel:+919876543210" className="hs-pill" role="listitem">
+                  <FiPhone className="hs-pill-icon" aria-hidden />
+                  +91 98765 43210
+                </a>
+                <span className="hs-pill hs-pill--muted" role="listitem">
+                  <FiClock className="hs-pill-icon" aria-hidden />
+                  Mon – Sat, 9 AM – 6 PM
+                </span>
+              </div>
             </div>
-            <h1 className="hs-hero-title">
-              Help &amp; <em className="hs-title-accent">Support</em>
-            </h1>
-            <p className="hs-hero-sub">
-              Find answers to common questions and get assistance when you need
-              it.
-            </p>
-            <div className="hs-search-wrap">
-              <label htmlFor="hs-search" className="hs-sr-only">
-                Search help topics
-              </label>
-              <FiSearch className="hs-search-prefix" aria-hidden />
-              <input
-                id="hs-search"
-                ref={searchRef}
-                className="hs-search"
-                type="search"
-                placeholder="Search help topics…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                autoComplete="off"
-              />
-              {query && (
-                <button
-                  className="hs-search-clear"
-                  onClick={() => {
-                    setQuery("");
-                    searchRef.current?.focus();
-                  }}
-                  aria-label="Clear search">
-                  <FiX />
-                </button>
-              )}
-            </div>
-            <div
-              className="hs-hero-pills"
-              role="list"
-              aria-label="Contact options">
-              <a
-                href="mailto:support@fixly.in"
-                className="hs-pill"
-                role="listitem">
-                <FiMail className="hs-pill-icon" aria-hidden />
-                support@fixly.in
-              </a>
-              <a href="tel:+919876543210" className="hs-pill" role="listitem">
-                <FiPhone className="hs-pill-icon" aria-hidden />
-                +91 98765 43210
-              </a>
-              <span className="hs-pill hs-pill--muted" role="listitem">
-                <FiClock className="hs-pill-icon" aria-hidden />
-                Mon – Sat, 9 AM – 6 PM
-              </span>
-            </div>
+
+            {/* Right — decorative artwork */}
+            <HeroArtwork />
           </div>
         </header>
 
+        {/* ── Page body ─────────────────────────────────────── */}
         <main className="hs-page" id="main-content">
           <div className="hs-layout">
             <div className="hs-col-main">
+              {/* Category section */}
               <section className="hs-section" aria-labelledby="hs-cat-heading">
                 <div className="hs-section-hdr">
                   <div>
                     <span className="hs-section-eyebrow">Browse topics</span>
                     <h2 id="hs-cat-heading" className="hs-section-title">
                       {query
-                        ? 'Results for "' + query + '"'
-                        : roleLabel + " Help Topics"}
+                        ? `Results for "${query}"`
+                        : `${roleLabel} Help Topics`}
                     </h2>
                   </div>
                   <span className="hs-count-chip">
@@ -436,6 +675,7 @@ export default function HelpSupport() {
                     {filtered.length === 1 ? "topic" : "topics"}
                   </span>
                 </div>
+
                 {filtered.length > 0 ? (
                   <div className="hs-grid">
                     {filtered.map((cat) => (
@@ -458,6 +698,7 @@ export default function HelpSupport() {
                 )}
               </section>
 
+              {/* FAQ section */}
               {!query && (
                 <section
                   className="hs-section"
@@ -486,6 +727,7 @@ export default function HelpSupport() {
               )}
             </div>
 
+            {/* Sidebar */}
             <aside className="hs-col-side" aria-label="Contact information">
               <ContactCard role={user.role} />
               <RoleChip role={user.role} />
