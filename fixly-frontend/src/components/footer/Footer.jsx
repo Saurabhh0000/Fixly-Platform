@@ -7,16 +7,22 @@ import AdminFooter from "./AdminFooter";
 
 const Footer = () => {
   const { user } = useContext(AuthContext);
-
-  if (!user) return <HomeFooter />;
+  if (!user?.role) {
+    return <HomeFooter />;
+  }
 
   switch (user.role) {
     case "ADMIN":
       return <AdminFooter />;
+
     case "PROVIDER":
       return <ProviderFooter />;
-    default:
+
+    case "USER":
       return <UserFooter />;
+
+    default:
+      return <HomeFooter />;
   }
 };
 
