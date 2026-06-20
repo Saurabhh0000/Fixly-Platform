@@ -7,6 +7,7 @@ import AdminFooter from "./AdminFooter";
 
 const Footer = () => {
   const { user } = useContext(AuthContext);
+  console.log("Search Page User:", user);
   if (!user?.role) {
     return <HomeFooter />;
   }
