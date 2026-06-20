@@ -17,7 +17,7 @@ import {
   FaFilter,
 } from "react-icons/fa";
 import "../styles/fixly-search.css";
-import UserLayout from "../layouts/UserLayout";
+import PublicLayout from "../layouts/PublicLayout";
 
 const SearchResults = () => {
   const [providers, setProviders] = useState([]);
@@ -106,7 +106,7 @@ const SearchResults = () => {
   }
 
   return (
-    <UserLayout>
+    <PublicLayout>
       <div className="fixly-search">
         {/* ══════════ HERO ══════════ */}
         <section className="fs-hero">
@@ -270,7 +270,7 @@ const SearchResults = () => {
           )}
         </section>
       </div>
-    </UserLayout>
+    </PublicLayout>
   );
 };
 
