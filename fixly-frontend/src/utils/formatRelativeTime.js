@@ -5,8 +5,13 @@
 export function formatRelativeTime(dateString) {
   if (!dateString) return "";
 
+    console.log("API Date:", dateString);
+
   const date = new Date(dateString);
   const now = new Date();
+
+  console.log("Parsed Date:", date);
+  console.log("Now:", now);
   const seconds = Math.floor((now - date) / 1000);
 
   if (seconds < 60) return "Just now";
