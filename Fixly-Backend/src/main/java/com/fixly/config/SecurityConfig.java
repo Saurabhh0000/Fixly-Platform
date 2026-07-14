@@ -60,7 +60,8 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 /* ================= AUTHENTICATED (ALL ROLES) ================= */
 
-                                                .requestMatchers("/api/users/change-password").authenticated()
+                                                .requestMatchers("/api/users/change-password", "/api/notifications/**")
+                                                .authenticated()
 
                                                 /* ================= USER ================= */
                                                 .requestMatchers(
