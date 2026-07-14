@@ -296,19 +296,13 @@
 }
 
 /* ================= MOBILE TRIGGER WRAPPER =================
-   Mirrors .fnav-hamburger's breakpoint: hidden on desktop
-   (where the bell already lives inside .fnav-desktop-links),
-   shown once that link row collapses at ≤900px. */
+   No longer needs its own media query — visibility is controlled
+   by the parent .fnav-mobile-controls wrapper in fixly-navbar.css. */
 .fnotif-mobile-trigger {
-  display: none;
+  display: flex;
+  align-items: center;
 }
 
-@media (max-width: 900px) {
-  .fnotif-mobile-trigger {
-    display: flex;
-    align-items: center;
-  }
-}
 
 /* ================= RESPONSIVE ================= */
 @media (max-width:480px){

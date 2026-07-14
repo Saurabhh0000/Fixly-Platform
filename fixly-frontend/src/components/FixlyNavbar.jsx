@@ -20,7 +20,6 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import "../styles/fixly-navbar.css";
-// ✅ ADDED: notification bell
 import NotificationBell from "./notifications/NotificationBell";
 
 const FixlyNavbar = () => {
@@ -119,13 +118,15 @@ const FixlyNavbar = () => {
             </Link>
           </div>
 
-          {/* MOBILE HAMBURGER */}
-          <button
-            className="fnav-hamburger"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu">
-            {mobileOpen ? <FaTimes /> : <FaBars />}
-          </button>
+          {/* MOBILE HAMBURGER (no bell — user isn't logged in) */}
+          <div className="fnav-mobile-controls">
+            <button
+              className="fnav-hamburger"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu">
+              {mobileOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          </div>
         </div>
 
         {/* MOBILE DRAWER */}
@@ -202,8 +203,7 @@ const FixlyNavbar = () => {
             </Link>
           )}
 
-          {/* ✅ ADDED: notification bell — sits between existing nav links
-              and the profile dropdown, doesn't touch any existing markup */}
+          {/* Notification bell (desktop) */}
           <NotificationBell />
 
           {/* PROFILE DROPDOWN */}
@@ -300,20 +300,21 @@ const FixlyNavbar = () => {
           </div>
         </div>
 
-        {/* ✅ ADDED: compact bell for mobile widths (fnav-desktop-links is
-            hidden ≤900px, so mobile users get their own trigger here,
-            right before the hamburger — matches existing icon-button sizing) */}
-        <div className="fnotif-mobile-trigger">
-          <NotificationBell />
-        </div>
+        {/* MOBILE-ONLY CLUSTER: bell + hamburger grouped together so
+            flex space-between treats them as one right-aligned unit
+            instead of centering the bell between logo and hamburger. */}
+        <div className="fnav-mobile-controls">
+          <div className="fnotif-mobile-trigger">
+            <NotificationBell />
+          </div>
 
-        {/* MOBILE HAMBURGER */}
-        <button
-          className="fnav-hamburger"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu">
-          {mobileOpen ? <FaTimes /> : <FaBars />}
-        </button>
+          <button
+            className="fnav-hamburger"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu">
+            {mobileOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
       </div>
 
       {/* ===== MOBILE DRAWER ===== */}

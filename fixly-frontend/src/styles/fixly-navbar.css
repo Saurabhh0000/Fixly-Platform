@@ -141,7 +141,7 @@
 
 /* ================= HAMBURGER ================= */
 .fnav-hamburger {
-  display: none;
+  display: flex; /* visibility now controlled by parent .fnav-mobile-controls */
   background: none; border: none; cursor: pointer;
   color: #334155; font-size: 1.15rem;
   width: 38px; height: 38px; border-radius: 9px;
@@ -151,6 +151,24 @@
 }
 .fnav-hamburger:hover { background: #f0fdf4; color: #15803d; }
 
+/* ================= MOBILE CONTROLS CLUSTER =================
+   Groups the notification bell + hamburger together so flex
+   space-between treats them as ONE unit on the right, instead
+   of centering the bell between the logo and hamburger. */
+.fnav-mobile-controls {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ======================================================
+   RESPONSIVE — show hamburger cluster at ≤ 900px
+   ====================================================== */
+@media (max-width: 900px) {
+  .fnav-desktop-links   { display: none; }
+  .fnav-mobile-controls { display: flex; }
+}
 /* ================= PROFILE TRIGGER ================= */
 .fnav-profile-wrap { position: relative; }
 

@@ -9,7 +9,9 @@ const NotificationDropdown = ({
   onClose,
 }) => {
   const navigate = useNavigate();
-  const latest = notifications.slice(0, 5);
+  // Show more than fits in max-height so the panel actually scrolls
+  // instead of clipping the list at 5 items.
+  const latest = notifications.slice(0, 20);
   const hasUnread = notifications.some((n) => !n.read);
 
   const goToAll = () => {
