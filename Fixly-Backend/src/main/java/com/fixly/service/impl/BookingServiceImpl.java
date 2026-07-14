@@ -16,6 +16,7 @@ import com.fixly.entity.Booking;
 import com.fixly.entity.ServiceProvider;
 import com.fixly.entity.User;
 import com.fixly.enums.BookingStatus;
+import com.fixly.enums.NotificationType;
 import com.fixly.exception.BadRequestException;
 import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.AddressRepository;
@@ -71,7 +72,8 @@ public class BookingServiceImpl implements BookingService {
 				provider.getUser().getUserId(),
 				"New Booking",
 				user.getFullName() + " booked your " +
-						provider.getCategory().getName() + " service.");
+						provider.getCategory().getName() + " service.",
+				NotificationType.BOOKING);
 
 		return mapToResponse(save);
 	}
@@ -97,7 +99,8 @@ public class BookingServiceImpl implements BookingService {
 				"Booking Accepted",
 				"Your booking has been accepted. Your service verification OTP is "
 						+ booking.getOtp()
-						+ ". Please share it only after the service is completed.");
+						+ ". Please share it only after the service is completed.",
+				NotificationType.BOOKING);
 
 		return mapToResponse(saved);
 	}
@@ -121,12 +124,14 @@ public class BookingServiceImpl implements BookingService {
 		notificationService.send(
 				booking.getUser().getUserId(),
 				"Service Completed",
-				"Your service has been completed successfully.");
+				"Your service has been completed successfully.",
+				NotificationType.BOOKING);
 
 		notificationService.send(
 				booking.getProvider().getUser().getUserId(),
 				"Job Completed",
-				"The booking has been marked as completed.");
+				"The booking has been marked as completed.",
+				NotificationType.BOOKING);
 
 		return mapToResponse(save);
 	}
@@ -148,7 +153,14 @@ public class BookingServiceImpl implements BookingService {
 		notificationService.send(
 				booking.getUser().getUserId(),
 				"Booking Cancelled",
-				"Your booking has been cancelled.");
+				"Your booking has been cancelled.",
+				NotificationType.BOOKING);
+
+		notificationService.send(
+				booking.getProvider().getUser().getUserId(),
+				"Booking Cancelled",
+				booking.getUser().getFullName() + " cancelled the booking.",
+				NotificationType.BOOKING);
 
 		return mapToResponse(save);
 	}

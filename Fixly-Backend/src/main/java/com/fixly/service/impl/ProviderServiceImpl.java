@@ -20,6 +20,7 @@ import com.fixly.entity.ServiceCategory;
 import com.fixly.entity.ServiceProvider;
 import com.fixly.entity.User;
 import com.fixly.dto.response.ProviderVerificationResponse;
+import com.fixly.enums.NotificationType;
 import com.fixly.enums.ProviderStatus;
 import com.fixly.enums.Role;
 import com.fixly.exception.BadRequestException;
@@ -112,14 +113,16 @@ public class ProviderServiceImpl implements ProviderService {
 				notificationService.send(
 						1L,
 						"Provider Re-Application",
-						user.getFullName() + " has re-applied after rejection.");
+						user.getFullName() + " has re-applied after rejection.",
+						NotificationType.PROVIDER);
 
 				notificationService.send(
 						1L,
 						"New Provider Application",
 						user.getFullName() + " applied as a "
 								+ category.getName()
-								+ " provider.");
+								+ " provider.",
+						NotificationType.PROVIDER);
 
 				return mapToResponse(updated);
 			}
@@ -268,7 +271,8 @@ public class ProviderServiceImpl implements ProviderService {
 		notificationService.send(
 				user.getUserId(),
 				"Application Approved 🎉",
-				"Congratulations! Your provider application has been approved. You can now login as a Provider.");
+				"Congratulations! Your provider application has been approved. You can now login as a Provider.",
+				NotificationType.PROVIDER);
 
 		return mapToResponse(provider);
 	}
@@ -288,7 +292,7 @@ public class ProviderServiceImpl implements ProviderService {
 		notificationService.send(
 				provider.getUser().getUserId(),
 				"Documents Under Verification",
-				"Your provider documents are currently being verified by the Fixly team.");
+				"Your provider documents are currently being verified by the Fixly team.", NotificationType.PROVIDER);
 
 		return mapToResponse(provider);
 	}
@@ -310,7 +314,8 @@ public class ProviderServiceImpl implements ProviderService {
 		notificationService.send(
 				provider.getUser().getUserId(),
 				"Application Rejected",
-				"Your provider application was rejected. Please update your documents and apply again.");
+				"Your provider application was rejected. Please update your documents and apply again.",
+				NotificationType.PROVIDER);
 
 		return mapToResponse(provider);
 	}
@@ -332,7 +337,8 @@ public class ProviderServiceImpl implements ProviderService {
 		notificationService.send(
 				provider.getUser().getUserId(),
 				"Provider Account Suspended",
-				"Your provider account has been suspended. Please contact Fixly Support for assistance.");
+				"Your provider account has been suspended. Please contact Fixly Support for assistance.",
+				NotificationType.PROVIDER);
 
 		return mapToResponse(provider);
 	}
@@ -354,7 +360,8 @@ public class ProviderServiceImpl implements ProviderService {
 		notificationService.send(
 				provider.getUser().getUserId(),
 				"Provider Account Restored",
-				"Your provider account has been restored. You can start accepting bookings again.");
+				"Your provider account has been restored. You can start accepting bookings again.",
+				NotificationType.PROVIDER);
 
 		return mapToResponse(provider);
 	}

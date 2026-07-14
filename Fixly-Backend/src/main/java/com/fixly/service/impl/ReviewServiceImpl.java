@@ -9,6 +9,7 @@ import com.fixly.entity.Booking;
 import com.fixly.entity.Review;
 import com.fixly.entity.ServiceProvider;
 import com.fixly.enums.BookingStatus;
+import com.fixly.enums.NotificationType;
 import com.fixly.exception.BadRequestException;
 import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.BookingRepository;
@@ -60,7 +61,8 @@ public class ReviewServiceImpl implements ReviewService {
                 booking.getUser().getFullName()
                         + " rated you "
                         + request.getRating()
-                        + "★");
+                        + "★",
+                NotificationType.REVIEW);
 
         double newRating = (provider.getRating() + request.getRating()) / 2;
 

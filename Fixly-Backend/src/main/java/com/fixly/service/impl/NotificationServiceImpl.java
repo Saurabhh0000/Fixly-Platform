@@ -10,6 +10,8 @@ import com.fixly.repository.NotificationRepository;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.NotificationService;
 import com.fixly.entity.User;
+import com.fixly.enums.NotificationType;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -56,7 +58,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void send(Long userId, String title, String message) {
+    public void send(Long userId, String title, String message, NotificationType type) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -66,6 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setUser(user);
         notification.setTitle(title);
         notification.setMessage(message);
+        notification.setType(type);
 
         notificationRepository.save(notification);
     }

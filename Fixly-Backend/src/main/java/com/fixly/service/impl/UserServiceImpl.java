@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.fixly.dto.request.ChangePasswordRequest;
 import com.fixly.entity.User;
+import com.fixly.enums.NotificationType;
 import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.NotificationService;
@@ -43,7 +44,8 @@ public class UserServiceImpl implements UserService {
 		notificationService.send(
 				user.getUserId(),
 				"Password Changed",
-				"Your account password was changed successfully.");
+				"Your account password was changed successfully.",
+				NotificationType.ACCOUNT);
 	}
 
 	@Override

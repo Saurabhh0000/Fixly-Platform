@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.fixly.entity.Notification;
+import com.fixly.enums.NotificationType;
 
 @Service
 public interface NotificationService {
@@ -19,6 +20,6 @@ public interface NotificationService {
 
     long getUnreadCount(Long userId);
 
-    void send(Long userId, String title, String message);
+    void send(Long userId, String title, String message, NotificationType type);
 
 }

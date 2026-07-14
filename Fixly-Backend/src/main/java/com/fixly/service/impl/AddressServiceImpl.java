@@ -10,6 +10,7 @@ import com.fixly.dto.request.AddressRequest;
 import com.fixly.dto.response.AddressResponse;
 import com.fixly.entity.Address;
 import com.fixly.entity.User;
+import com.fixly.enums.NotificationType;
 import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.AddressRepository;
 import com.fixly.repository.UserRepository;
@@ -48,7 +49,8 @@ public class AddressServiceImpl implements AddressService {
 		notificationService.send(
 				user.getUserId(),
 				"New Address Added",
-				"Your address in " + saved.getArea() + ", " + saved.getCity() + " has been saved.");
+				"Your address in " + saved.getArea() + ", " + saved.getCity() + " has been saved.",
+				NotificationType.ADDRESS);
 
 		return mapToResponse(saved);
 	}

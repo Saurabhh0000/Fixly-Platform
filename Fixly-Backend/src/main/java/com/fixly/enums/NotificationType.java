@@ -4,7 +4,8 @@ public enum NotificationType {
     BOOKING,
     PROVIDER,
     REVIEW,
-    PAYMENT,
-    SYSTEM
+    ADDRESS,
+    CATEGORY,
+    ACCOUNT
 
 }
