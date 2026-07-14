@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import useNotifications from "../../hooks/useNotifications";
 import NotificationDropdown from "./NotificationDropdown";
-import "../../styles/notification.css";
+import "../../styles/notifications.css";
 
 const NotificationBell = () => {
   const [open, setOpen] = useState(false);
