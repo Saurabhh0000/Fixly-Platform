@@ -28,6 +28,7 @@ import com.fixly.repository.ReviewRepository;
 import com.fixly.repository.ServiceCategoryRepository;
 import com.fixly.repository.ServiceProviderRepository;
 import com.fixly.repository.UserRepository;
+import com.fixly.service.NotificationService;
 import com.fixly.service.ProviderService;
 
 import jakarta.transaction.Transactional;
@@ -46,6 +47,9 @@ public class ProviderServiceImpl implements ProviderService {
 
 	@Autowired
 	private ReviewRepository reviewRepository;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Transactional
 	@Override
@@ -104,6 +108,18 @@ public class ProviderServiceImpl implements ProviderService {
 
 				ServiceProvider updated = providerRepository.save(
 						provider);
+
+				notificationService.send(
+						1L,
+						"Provider Re-Application",
+						user.getFullName() + " has re-applied after rejection.");
+
+				notificationService.send(
+						1L,
+						"New Provider Application",
+						user.getFullName() + " applied as a "
+								+ category.getName()
+								+ " provider.");
 
 				return mapToResponse(updated);
 			}
@@ -249,6 +265,11 @@ public class ProviderServiceImpl implements ProviderService {
 
 		providerRepository.save(provider);
 
+		notificationService.send(
+				user.getUserId(),
+				"Application Approved 🎉",
+				"Congratulations! Your provider application has been approved. You can now login as a Provider.");
+
 		return mapToResponse(provider);
 	}
 
@@ -263,6 +284,11 @@ public class ProviderServiceImpl implements ProviderService {
 		provider.setStatus(ProviderStatus.VERIFYING);
 
 		providerRepository.save(provider);
+
+		notificationService.send(
+				provider.getUser().getUserId(),
+				"Documents Under Verification",
+				"Your provider documents are currently being verified by the Fixly team.");
 
 		return mapToResponse(provider);
 	}
@@ -281,6 +307,11 @@ public class ProviderServiceImpl implements ProviderService {
 
 		providerRepository.save(provider);
 
+		notificationService.send(
+				provider.getUser().getUserId(),
+				"Application Rejected",
+				"Your provider application was rejected. Please update your documents and apply again.");
+
 		return mapToResponse(provider);
 	}
 
@@ -298,6 +329,11 @@ public class ProviderServiceImpl implements ProviderService {
 
 		providerRepository.save(provider);
 
+		notificationService.send(
+				provider.getUser().getUserId(),
+				"Provider Account Suspended",
+				"Your provider account has been suspended. Please contact Fixly Support for assistance.");
+
 		return mapToResponse(provider);
 	}
 
@@ -314,6 +350,11 @@ public class ProviderServiceImpl implements ProviderService {
 		provider.setAvailable(true);
 
 		providerRepository.save(provider);
+
+		notificationService.send(
+				provider.getUser().getUserId(),
+				"Provider Account Restored",
+				"Your provider account has been restored. You can start accepting bookings again.");
 
 		return mapToResponse(provider);
 	}

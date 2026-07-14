@@ -14,52 +14,60 @@ import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.AddressRepository;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.AddressService;
+import com.fixly.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AddressServiceImpl implements AddressService{
-	
+public class AddressServiceImpl implements AddressService {
+
 	@Autowired
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private AddressRepository addressRepo;
 
+	@Autowired
+	private NotificationService notificationService;
+
 	@Override
 	public AddressResponse addAddress(Long id, AddressRequest request) {
-		
-		User user = userRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("User Not Found"));
-		
+
+		User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+
 		Address newAddress = new Address();
-		
+
 		newAddress.setCity(request.getCity());
 		newAddress.setArea(request.getArea());
 		newAddress.setPincode(request.getPincode());
 		newAddress.setUser(user);
-		
+
 		Address saved = addressRepo.save(newAddress);
-		
+
+		notificationService.send(
+				user.getUserId(),
+				"New Address Added",
+				"Your address in " + saved.getArea() + ", " + saved.getCity() + " has been saved.");
+
 		return mapToResponse(saved);
 	}
 
 	@Override
 	public List<AddressResponse> getUserAddress(Long id) {
-		
+
 		List<Address> userId = addressRepo.findByUserUserId(id);
-		
+
 		return userId.stream().map(this::mapToResponse).collect(Collectors.toList());
 	}
-	
-	private AddressResponse mapToResponse(Address address)
-	{
+
+	private AddressResponse mapToResponse(Address address) {
 		AddressResponse response = new AddressResponse();
 		response.setId(address.getAddressId());
 		response.setCity(address.getCity());
 		response.setArea(address.getArea());
 		response.setPincode(address.getPincode());
-		
+
 		return response;
 	}
 

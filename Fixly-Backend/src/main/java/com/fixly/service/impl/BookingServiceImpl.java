@@ -23,6 +23,7 @@ import com.fixly.repository.BookingRepository;
 import com.fixly.repository.ServiceProviderRepository;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.BookingService;
+import com.fixly.service.NotificationService;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -38,6 +39,9 @@ public class BookingServiceImpl implements BookingService {
 
 	@Autowired
 	private AddressRepository addressRepository;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	// USER creates booking
 
@@ -63,6 +67,12 @@ public class BookingServiceImpl implements BookingService {
 
 		Booking save = bookingRepository.save(booking);
 
+		notificationService.send(
+				provider.getUser().getUserId(),
+				"New Booking",
+				user.getFullName() + " booked your " +
+						provider.getCategory().getName() + " service.");
+
 		return mapToResponse(save);
 	}
 
@@ -82,6 +92,13 @@ public class BookingServiceImpl implements BookingService {
 
 		Booking saved = bookingRepository.save(booking);
 
+		notificationService.send(
+				booking.getUser().getUserId(),
+				"Booking Accepted",
+				"Your booking has been accepted. Your service verification OTP is "
+						+ booking.getOtp()
+						+ ". Please share it only after the service is completed.");
+
 		return mapToResponse(saved);
 	}
 
@@ -100,6 +117,17 @@ public class BookingServiceImpl implements BookingService {
 		booking.setOtp(null);
 
 		Booking save = bookingRepository.save(booking);
+
+		notificationService.send(
+				booking.getUser().getUserId(),
+				"Service Completed",
+				"Your service has been completed successfully.");
+
+		notificationService.send(
+				booking.getProvider().getUser().getUserId(),
+				"Job Completed",
+				"The booking has been marked as completed.");
+
 		return mapToResponse(save);
 	}
 
@@ -116,6 +144,11 @@ public class BookingServiceImpl implements BookingService {
 		booking.setOtp(null);
 
 		Booking save = bookingRepository.save(booking);
+
+		notificationService.send(
+				booking.getUser().getUserId(),
+				"Booking Cancelled",
+				"Your booking has been cancelled.");
 
 		return mapToResponse(save);
 	}

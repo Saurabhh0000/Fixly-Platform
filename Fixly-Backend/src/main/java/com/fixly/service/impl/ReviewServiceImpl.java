@@ -14,45 +14,55 @@ import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.BookingRepository;
 import com.fixly.repository.ReviewRepository;
 import com.fixly.repository.ServiceProviderRepository;
+import com.fixly.service.NotificationService;
 import com.fixly.service.ReviewService;
 
 @Service
-public class ReviewServiceImpl implements ReviewService{
-	
-	@Autowired
-	private BookingRepository bookingRepositroy;
-	
-	@Autowired
-	private ReviewRepository reviewReposiotry;
-	
-	@Autowired
+public class ReviewServiceImpl implements ReviewService {
+
+    @Autowired
+    private BookingRepository bookingRepositroy;
+
+    @Autowired
+    private ReviewRepository reviewReposiotry;
+
+    @Autowired
     private ServiceProviderRepository providerRepo;
 
+    @Autowired
+    private NotificationService notificationService;
 
-	@Override
-	public ReviewResponse addReview(ReviewRequest request) {
-		Booking booking = bookingRepositroy.findById(request.getBookingId()).orElseThrow(()-> new ResourceNotFoundException("Booking Not Found !"));
-		
-		if (!booking.getStatus().equals(BookingStatus.COMPLETED)) 
-		{
+    @Override
+    public ReviewResponse addReview(ReviewRequest request) {
+        Booking booking = bookingRepositroy.findById(request.getBookingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Booking Not Found !"));
+
+        if (!booking.getStatus().equals(BookingStatus.COMPLETED)) {
             throw new BadRequestException("You can review only completed jobs");
         }
-		if (reviewReposiotry.existsByBookingBookingId(booking.getBookingId())) {
+        if (reviewReposiotry.existsByBookingBookingId(booking.getBookingId())) {
             throw new BadRequestException("Review already submitted");
         }
-		
-		Review review = new Review();
+
+        Review review = new Review();
         review.setBooking(booking);
         review.setRating(request.getRating());
         review.setComment(request.getComment());
 
         reviewReposiotry.save(review);
 
-
         // ⭐ Update provider rating
         ServiceProvider provider = booking.getProvider();
-        double newRating =
-            (provider.getRating() + request.getRating()) / 2;
+
+        notificationService.send(
+                provider.getUser().getUserId(),
+                "New Review",
+                booking.getUser().getFullName()
+                        + " rated you "
+                        + request.getRating()
+                        + "★");
+
+        double newRating = (provider.getRating() + request.getRating()) / 2;
 
         provider.setRating(newRating);
         providerRepo.save(provider);
@@ -61,7 +71,7 @@ public class ReviewServiceImpl implements ReviewService{
         response.setRating(review.getRating());
         response.setComment(review.getComment());
         response.setCustomerName(booking.getUser().getFullName());
-		return response;
-	}
+        return response;
+    }
 
 }
