@@ -177,14 +177,29 @@
   flex-shrink: 0;
 }
 
-.fnotif-icon-booking  { background: #dbeafe; color: #1d4ed8; }
-.fnotif-icon-review   { background: #fef9c3; color: #a16207; }
-.fnotif-icon-provider { background: #ede9fe; color: #5b21b6; }
-.fnotif-icon-approval { background: #dcfce7; color: #15803d; }
-.fnotif-icon-rejection{ background: #fee2e2; color: #dc2626; }
-.fnotif-icon-suspended{ background: #ffedd5; color: #c2410c; }
-.fnotif-icon-completed{ background: #ccfbf1; color: #0f766e; }
-.fnotif-icon-default  { background: #f1f5f9; color: #475569; }
+.fnotif-icon-booking     { background: #dbeafe; color: #1d4ed8; }
+.fnotif-icon-review      { background: #fef9c3; color: #a16207; }
+.fnotif-icon-provider    { background: #ede9fe; color: #5b21b6; }
+
+.fnotif-icon-address     { background: #d1fae5; color: #047857; }
+
+.fnotif-icon-category    { background: #ecfccb; color: #4d7c0f; }
+
+.fnotif-icon-account     { background: #e0f2fe; color: #0369a1; }
+
+.fnotif-icon-verifying   { background: #f3e8ff; color: #7e22ce; }
+
+.fnotif-icon-approval    { background: #dcfce7; color: #15803d; }
+
+.fnotif-icon-rejection   { background: #fee2e2; color: #dc2626; }
+
+.fnotif-icon-suspended   { background: #ffedd5; color: #c2410c; }
+
+.fnotif-icon-unsuspended { background: #dcfce7; color: #16a34a; }
+
+.fnotif-icon-completed   { background: #ccfbf1; color: #0f766e; }
+
+.fnotif-icon-default     { background: #f1f5f9; color: #475569; }
 
 .fnotif-item-body {
   display: flex;
