@@ -86,6 +86,11 @@
 
 /* ================= HEADER ================= */
 .fnotif-dd-head {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #fff;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -250,6 +255,11 @@
 
 /* ================= FOOTER ================= */
 .fnotif-dd-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: #fff;
+
   padding: 10px;
   border-top: 1px solid #f1f5f9;
 }
@@ -301,13 +311,20 @@
 }
 
 /* ================= RESPONSIVE ================= */
-@media (max-width: 480px) {
-  .fnotif-dropdown {
-    position: fixed;
-    right: 10px;
-    left: 10px;
-    width: auto;
-    max-width: none;
-    top: 68px;
-  }
+@media (max-width:480px){
+
+.fnotif-dropdown{
+    position:fixed;
+
+    top:64px;
+    right:12px;
+
+    left:auto;
+
+    width:340px;
+    max-width:calc(100vw - 24px);
+
+    border-radius:16px;
+}
+
 }
