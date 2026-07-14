@@ -3,7 +3,7 @@ package com.fixly.dto.response;
 import com.fixly.enums.NotificationType;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -24,5 +24,5 @@ public class NotificationResponse {
 
     private boolean read;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }
