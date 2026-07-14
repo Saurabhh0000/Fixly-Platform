@@ -26,7 +26,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> getUserNotifications(Long userId) {
-        return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        return notificationRepository.findByUserUserIdOrderByCreatedAtDesc(userId);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void markAllAsRead(Long userId) {
 
-        List<Notification> notifications = notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        List<Notification> notifications = notificationRepository.findByUserUserIdOrderByCreatedAtDesc(userId);
 
         notifications.forEach(n -> n.setRead(true));
 
@@ -52,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public long getUnreadCount(Long userId) {
-        return notificationRepository.countByUserIdAndReadFalse(userId);
+        return notificationRepository.countByUserUserIdAndReadFalse(userId);
     }
 
     @Override
