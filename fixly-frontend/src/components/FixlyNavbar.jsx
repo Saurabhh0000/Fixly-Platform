@@ -20,6 +20,8 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import "../styles/fixly-navbar.css";
+// ✅ ADDED: notification bell
+import NotificationBell from "./notifications/NotificationBell";
 
 const FixlyNavbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -200,6 +202,10 @@ const FixlyNavbar = () => {
             </Link>
           )}
 
+          {/* ✅ ADDED: notification bell — sits between existing nav links
+              and the profile dropdown, doesn't touch any existing markup */}
+          <NotificationBell />
+
           {/* PROFILE DROPDOWN */}
           <div className="fnav-profile-wrap" ref={profileRef}>
             <button
@@ -292,6 +298,13 @@ const FixlyNavbar = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* ✅ ADDED: compact bell for mobile widths (fnav-desktop-links is
+            hidden ≤900px, so mobile users get their own trigger here,
+            right before the hamburger — matches existing icon-button sizing) */}
+        <div className="fnotif-mobile-trigger">
+          <NotificationBell />
         </div>
 
         {/* MOBILE HAMBURGER */}
