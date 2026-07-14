@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.fixly.dto.response.NotificationResponse;
 import com.fixly.entity.Notification;
 import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.NotificationRepository;
@@ -27,8 +28,25 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<Notification> getUserNotifications(Long userId) {
-        return notificationRepository.findByUserUserIdOrderByCreatedAtDesc(userId);
+    public List<NotificationResponse> getUserNotifications(Long userId) {
+
+        return notificationRepository
+                .findByUserUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private NotificationResponse mapToResponse(Notification n) {
+        return NotificationResponse.builder()
+                .id(n.getId())
+                .title(n.getTitle())
+                .message(n.getMessage())
+                .type(n.getType())
+                .referenceId(n.getReferenceId())
+                .read(n.isRead())
+                .createdAt(n.getCreatedAt())
+                .build();
     }
 
     @Override

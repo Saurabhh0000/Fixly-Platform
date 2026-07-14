@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.fixly.dto.response.NotificationResponse;
 import com.fixly.entity.Notification;
 import com.fixly.entity.User;
 import com.fixly.service.NotificationService;
@@ -21,7 +22,7 @@ public class NotificationController {
     private final UserService userService;
 
     @GetMapping
-    public List<Notification> getNotifications(Authentication authentication) {
+    public List<NotificationResponse> getNotifications(Authentication authentication) {
 
         User user = userService.findByEmail(authentication.getName());
 

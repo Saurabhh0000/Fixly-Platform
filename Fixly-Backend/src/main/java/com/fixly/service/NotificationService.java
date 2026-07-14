@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.fixly.dto.response.NotificationResponse;
 import com.fixly.entity.Notification;
 import com.fixly.enums.NotificationType;
 
@@ -12,7 +13,7 @@ public interface NotificationService {
 
     Notification create(Notification notification);
 
-    List<Notification> getUserNotifications(Long userId);
+    List<NotificationResponse> getUserNotifications(Long userId);
 
     Notification markAsRead(Long notificationId);
 
