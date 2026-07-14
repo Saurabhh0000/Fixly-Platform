@@ -2,6 +2,7 @@ package com.fixly.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,17 +23,17 @@ public class NotificationController {
     private final UserService userService;
 
     @GetMapping
-    public List<NotificationResponse> getNotifications(Authentication authentication) {
+    public ResponseEntity<List<NotificationResponse>> getNotifications(Authentication authentication) {
 
         User user = userService.findByEmail(authentication.getName());
 
-        return notificationService.getUserNotifications(user.getUserId());
+        return ResponseEntity.ok(notificationService.getUserNotifications(user.getUserId()));
     }
 
     @PutMapping("/{id}/read")
-    public Notification markAsRead(@PathVariable Long id) {
+    public ResponseEntity<NotificationResponse> markAsRead(@PathVariable Long id) {
 
-        return notificationService.markAsRead(id);
+        return ResponseEntity.ok(notificationService.markAsRead(id));
     }
 
     @PutMapping("/read-all")

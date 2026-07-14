@@ -15,7 +15,7 @@ public interface NotificationService {
 
     List<NotificationResponse> getUserNotifications(Long userId);
 
-    Notification markAsRead(Long notificationId);
+    NotificationResponse markAsRead(Long notificationId);
 
     void markAllAsRead(Long userId);
 

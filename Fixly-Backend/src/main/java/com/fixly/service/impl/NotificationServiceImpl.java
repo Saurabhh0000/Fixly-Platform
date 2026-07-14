@@ -37,6 +37,19 @@ public class NotificationServiceImpl implements NotificationService {
                 .toList();
     }
 
+    @Override
+    public NotificationResponse markAsRead(Long notificationId) {
+
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
+
+        notification.setRead(true);
+
+        Notification saved = notificationRepository.save(notification);
+
+        return mapToResponse(saved);
+    }
+
     private NotificationResponse mapToResponse(Notification n) {
         return NotificationResponse.builder()
                 .id(n.getId())
@@ -47,17 +60,6 @@ public class NotificationServiceImpl implements NotificationService {
                 .read(n.isRead())
                 .createdAt(n.getCreatedAt())
                 .build();
-    }
-
-    @Override
-    public Notification markAsRead(Long notificationId) {
-
-        Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new RuntimeException("Notification not found"));
-
-        notification.setRead(true);
-
-        return notificationRepository.save(notification);
     }
 
     @Override
