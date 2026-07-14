@@ -125,13 +125,13 @@ public class BookingServiceImpl implements BookingService {
 				booking.getUser().getUserId(),
 				"Service Completed",
 				"Your service has been completed successfully.",
-				NotificationType.BOOKING);
+				NotificationType.COMPLETED);
 
 		notificationService.send(
 				booking.getProvider().getUser().getUserId(),
 				"Job Completed",
 				"The booking has been marked as completed.",
-				NotificationType.BOOKING);
+				NotificationType.COMPLETED);
 
 		return mapToResponse(save);
 	}

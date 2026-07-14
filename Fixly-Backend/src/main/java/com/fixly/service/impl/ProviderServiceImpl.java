@@ -272,7 +272,7 @@ public class ProviderServiceImpl implements ProviderService {
 				user.getUserId(),
 				"Application Approved 🎉",
 				"Congratulations! Your provider application has been approved. You can now login as a Provider.",
-				NotificationType.PROVIDER);
+				NotificationType.APPROVAL);
 
 		return mapToResponse(provider);
 	}
@@ -292,7 +292,7 @@ public class ProviderServiceImpl implements ProviderService {
 		notificationService.send(
 				provider.getUser().getUserId(),
 				"Documents Under Verification",
-				"Your provider documents are currently being verified by the Fixly team.", NotificationType.PROVIDER);
+				"Your provider documents are currently being verified by the Fixly team.", NotificationType.VERIFYING);
 
 		return mapToResponse(provider);
 	}
@@ -315,7 +315,7 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getUser().getUserId(),
 				"Application Rejected",
 				"Your provider application was rejected. Please update your documents and apply again.",
-				NotificationType.PROVIDER);
+				NotificationType.REJECTION);
 
 		return mapToResponse(provider);
 	}
@@ -338,7 +338,7 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getUser().getUserId(),
 				"Provider Account Suspended",
 				"Your provider account has been suspended. Please contact Fixly Support for assistance.",
-				NotificationType.PROVIDER);
+				NotificationType.SUSPENDED);
 
 		return mapToResponse(provider);
 	}
@@ -361,7 +361,7 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getUser().getUserId(),
 				"Provider Account Restored",
 				"Your provider account has been restored. You can start accepting bookings again.",
-				NotificationType.PROVIDER);
+				NotificationType.UNSUSPENDED);
 
 		return mapToResponse(provider);
 	}

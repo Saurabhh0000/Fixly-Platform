@@ -6,6 +6,12 @@ public enum NotificationType {
     REVIEW,
     ADDRESS,
     CATEGORY,
-    ACCOUNT
+    ACCOUNT,
+    VERIFYING,
+    APPROVAL,
+    REJECTION,
+    SUSPENDED,
+    UNSUSPENDED,
+    COMPLETED
 
 }
