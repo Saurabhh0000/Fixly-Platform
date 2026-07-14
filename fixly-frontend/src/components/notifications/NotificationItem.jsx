@@ -8,7 +8,7 @@ import {
   FaCheck,
   FaBell,
 } from "react-icons/fa";
-import { formatRelativeTime } from "../../utils/timeAgo";
+import { formatRelativeTime } from "../../utils/formatRelativeTime";
 
 // Maps each backend notification "type" to an icon + color class
 const ICON_MAP = {
