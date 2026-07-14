@@ -11,6 +11,9 @@ const NotificationBell = () => {
   const { notifications, unreadCount, loading, markAsRead, markAllAsRead } =
     useNotifications();
 
+  console.log("Notifications:", notifications);
+  console.log("Unread Count:", unreadCount);
+
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
