@@ -9,10 +9,10 @@
 
 .pst-wrapper {
   min-height: 100vh;
-  background: #f0f4f8;
+  background: #f4f7fb;
   display: flex;
   justify-content: center;
-  padding: 28px 16px 56px;
+  padding: 32px 16px 60px;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   box-sizing: border-box;
 }
@@ -21,10 +21,10 @@
 
 .pst-container {
   width: 100%;
-  max-width: 860px;
+  max-width: 880px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 /* ================= PAGE HEADER ================= */
@@ -33,25 +33,25 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .pst-page-title-icon {
   width: 46px;
   height: 46px;
-  border-radius: 12px;
-  background: #1e40af;
+  border-radius: 13px;
+  background: linear-gradient(160deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   font-size: 1.05rem;
   flex-shrink: 0;
-  box-shadow: 0 4px 14px rgba(30, 64, 175, 0.28);
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
 }
 
 .pst-page-title {
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0 0 3px;
@@ -59,33 +59,49 @@
 }
 
 .pst-page-sub {
-  font-size: 0.82rem;
+  font-size: 0.83rem;
   color: #64748b;
   margin: 0;
+  font-weight: 500;
 }
 
 /* ================= HERO CARD ================= */
 
 .pst-hero-card {
-  background: linear-gradient(135deg, #1e40af 0%, #2563eb 55%, #0ea5e9 100%);
-  border-radius: 18px;
-  padding: 22px 24px;
+  background: linear-gradient(160deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
+  border-radius: 20px;
+  padding: 24px 26px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 8px 28px rgba(22, 163, 74, 0.28);
   position: relative;
   overflow: hidden;
 }
 
-/* subtle shine overlay */
 .pst-hero-card::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 0%, transparent 55%);
+  top: -40px;
+  right: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+}
+
+.pst-hero-card::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  left: 10%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
   pointer-events: none;
 }
 
@@ -94,15 +110,16 @@
   align-items: center;
   gap: 16px;
   position: relative;
+  z-index: 1;
 }
 
 /* AVATAR */
 .pst-avatar {
-  width: 66px;
-  height: 66px;
+  width: 68px;
+  height: 68px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.38);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,7 +127,7 @@
 }
 
 .pst-avatar-letter {
-  font-size: 1.7rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: #ffffff;
   line-height: 1;
@@ -119,10 +136,10 @@
 }
 
 .pst-hero-name {
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 8px;
+  margin: 0 0 9px;
   letter-spacing: -0.01em;
 }
 
@@ -130,12 +147,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 4px 11px;
   border-radius: 20px;
   letter-spacing: 0.03em;
 }
@@ -144,32 +161,33 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  padding: 7px 14px;
+  padding: 8px 15px;
   border-radius: 20px;
   position: relative;
+  z-index: 1;
   transition: background 0.18s ease;
   cursor: default;
 }
 
 .pst-verified-tag:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.26);
 }
 
 .pst-verified-tag svg {
-  color: #86efac;
+  color: #d9f99d;
 }
 
 /* ================= INFO / SECTION CARD ================= */
 
 .pst-card {
   background: #ffffff;
-  border-radius: 16px;
-  padding: 22px 22px 24px;
+  border-radius: 18px;
+  padding: 24px 24px 26px;
   border: 1.5px solid #e4e9f0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   transition: box-shadow 0.18s ease, border-color 0.18s ease;
@@ -177,37 +195,38 @@
 }
 
 .pst-card:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
-  border-color: #cbd5e1;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+  border-color: #d6dee8;
 }
 
 .pst-card-editable {
-  border-color: #ddd6fe;
+  border-color: #e5dcfb;
 }
 
 .pst-card-editable:hover {
-  border-color: #a78bfa;
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.07);
+  border-color: #c4b5fd;
+  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.08);
 }
 
-/* CARD HEADER */
+/* CARD HEADER — icon + title block + optional tag/button, wraps on mobile */
 .pst-card-header {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 13px;
   margin-bottom: 20px;
-  padding-bottom: 16px;
+  padding-bottom: 17px;
   border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
 }
 
 .pst-card-header-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   flex-shrink: 0;
 }
 
@@ -215,8 +234,13 @@
 .pst-card-header-icon.green  { background: #dcfce7; color: #15803d; }
 .pst-card-header-icon.violet { background: #ede9fe; color: #5b21b6; }
 
+.pst-card-header > div:not([class]) {
+  flex: 1;
+  min-width: 160px;
+}
+
 .pst-card-title {
-  font-size: 1rem;
+  font-size: 1.02rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0 0 3px;
@@ -224,11 +248,50 @@
 }
 
 .pst-card-subtitle {
-  font-size: 0.78rem;
+  font-size: 0.79rem;
   color: #94a3b8;
   margin: 0;
   font-weight: 500;
   line-height: 1.4;
+}
+
+/* PRIMARY TAG — permanent address */
+.pst-primary-tag {
+  align-self: flex-start;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* ADD BUTTON — inside alt-address header */
+.pst-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #5b21b6, #7c3aed);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 16px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(124, 58, 237, 0.28);
+  transition: box-shadow 0.18s ease, transform 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pst-add-btn:hover {
+  box-shadow: 0 5px 18px rgba(124, 58, 237, 0.4);
+  transform: translateY(-1px);
 }
 
 /* ================= FORM GRIDS ================= */
@@ -279,7 +342,7 @@
   gap: 10px;
   background: #f8fafc;
   border: 1.5px solid #e8edf4;
-  border-radius: 10px;
+  border-radius: 11px;
   padding: 11px 14px;
   transition: border-color 0.18s ease, background 0.18s ease;
   cursor: default;
@@ -311,7 +374,7 @@
   gap: 10px;
   background: #f8fafc;
   border: 1.5px solid #dde3ed;
-  border-radius: 10px;
+  border-radius: 11px;
   padding: 11px 14px;
   transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
@@ -344,15 +407,135 @@
   font-weight: 400;
 }
 
-/* ================= SAVE ROW ================= */
+/* ================= SAVED ALTERNATIVE ADDRESS LIST ================= */
 
-.pst-save-row {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
+.pst-addr-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-/* ================= SAVE BUTTON ================= */
+.pst-addr-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #faf5ff;
+  border: 1.5px solid #ede9fe;
+  border-radius: 13px;
+  padding: 14px 15px;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.pst-addr-card:hover {
+  border-color: #c4b5fd;
+  background: #f5edff;
+}
+
+.pst-addr-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #ede9fe;
+  color: #5b21b6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.pst-addr-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pst-addr-card-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #7c3aed;
+}
+
+.pst-addr-card-text {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* ================= EMPTY STATE ================= */
+
+.pst-addr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 34px 20px;
+  border: 1.5px dashed #e2d9fb;
+  border-radius: 14px;
+  background: #fbf9ff;
+  text-align: center;
+}
+
+.pst-addr-empty-icon {
+  font-size: 1.4rem;
+  color: #c4b5fd;
+}
+
+.pst-addr-empty p {
+  margin: 0;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+/* ================= LOADING SKELETON ================= */
+
+.pst-addr-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pst-skeleton-line {
+  height: 58px;
+  border-radius: 13px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 37%, #f1f5f9 63%);
+  background-size: 400% 100%;
+  animation: pst-shimmer 1.4s ease infinite;
+}
+
+@keyframes pst-shimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ================= ADD-ADDRESS FORM ================= */
+
+.pst-addr-form {
+  margin-top: 6px;
+  padding-top: 6px;
+  animation: pst-form-in 0.2s ease;
+}
+
+@keyframes pst-form-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pst-form-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ================= SAVE / CANCEL BUTTONS ================= */
 
 .pst-save-btn {
   display: inline-flex;
@@ -361,7 +544,7 @@
   background: linear-gradient(135deg, #5b21b6, #7c3aed);
   color: #ffffff;
   border: none;
-  border-radius: 10px;
+  border-radius: 11px;
   padding: 12px 22px;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 0.88rem;
@@ -372,19 +555,50 @@
   transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
 }
 
-.pst-save-btn:hover {
+.pst-save-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #4c1d95, #6d28d9);
   box-shadow: 0 6px 20px rgba(124, 58, 237, 0.42);
   transform: translateY(-1px);
 }
 
-.pst-save-btn:active {
+.pst-save-btn:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
 }
 
+.pst-save-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .pst-save-icon {
   font-size: 0.78rem;
+}
+
+.pst-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #f8fafc;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 11px;
+  padding: 12px 20px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.pst-cancel-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.pst-cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ======================================================
@@ -393,30 +607,34 @@
 
 @media (max-width: 768px) {
   .pst-wrapper {
-    padding: 20px 14px 44px;
+    padding: 22px 14px 48px;
   }
 
   .pst-grid-3 {
     grid-template-columns: 1fr 1fr;
   }
 
+  .pst-addr-list {
+    grid-template-columns: 1fr;
+  }
+
   .pst-hero-card {
-    padding: 18px 20px;
-    border-radius: 16px;
+    padding: 20px 22px;
+    border-radius: 18px;
   }
 
   .pst-avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
+    width: 58px;
+    height: 58px;
+    border-radius: 15px;
   }
 
   .pst-avatar-letter {
-    font-size: 1.4rem;
+    font-size: 1.45rem;
   }
 
   .pst-hero-name {
-    font-size: 1rem;
+    font-size: 1.02rem;
   }
 }
 
@@ -426,8 +644,8 @@
 
 @media (max-width: 600px) {
   .pst-wrapper {
-    padding: 14px 10px 40px;
-    background: #f0f4f8;
+    padding: 16px 10px 40px;
+    background: #f4f7fb;
   }
 
   .pst-container {
@@ -447,7 +665,7 @@
   }
 
   .pst-page-title {
-    font-size: 1.1rem;
+    font-size: 1.12rem;
   }
 
   .pst-page-sub {
@@ -458,29 +676,29 @@
   .pst-hero-card {
     flex-direction: column;
     align-items: flex-start;
-    padding: 16px;
+    padding: 17px;
     gap: 14px;
-    border-radius: 14px;
+    border-radius: 15px;
   }
 
   .pst-verified-tag {
-    font-size: 0.7rem;
-    padding: 5px 11px;
+    font-size: 0.71rem;
+    padding: 6px 12px;
   }
 
   .pst-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
   }
 
   .pst-avatar-letter {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
 
   .pst-hero-name {
-    font-size: 0.95rem;
-    margin-bottom: 6px;
+    font-size: 0.96rem;
+    margin-bottom: 7px;
   }
 
   /* All grids collapse to 1 column */
@@ -490,34 +708,45 @@
   }
 
   .pst-card {
-    padding: 16px 14px 18px;
-    border-radius: 14px;
+    padding: 17px 15px 19px;
+    border-radius: 15px;
   }
 
   .pst-card-header {
     margin-bottom: 16px;
-    padding-bottom: 13px;
+    padding-bottom: 14px;
   }
 
   .pst-card-header-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    font-size: 0.82rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    font-size: 0.84rem;
   }
 
   .pst-card-title {
-    font-size: 0.92rem;
+    font-size: 0.93rem;
   }
 
   .pst-card-subtitle {
-    font-size: 0.73rem;
+    font-size: 0.74rem;
+  }
+
+  .pst-primary-tag {
+    font-size: 0.64rem;
+    padding: 4px 9px;
+  }
+
+  .pst-add-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
   }
 
   .pst-readonly-box,
   .pst-input-wrap {
     padding: 10px 12px;
-    border-radius: 9px;
+    border-radius: 10px;
     gap: 8px;
   }
 
@@ -530,17 +759,37 @@
     font-size: 0.65rem;
   }
 
-  .pst-save-row {
-    justify-content: stretch;
-    margin-top: 16px;
+  .pst-addr-card {
+    padding: 12px 13px;
+    border-radius: 12px;
   }
 
-  .pst-save-btn {
+  .pst-addr-card-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 0.74rem;
+  }
+
+  .pst-addr-card-text {
+    font-size: 0.82rem;
+  }
+
+  .pst-addr-empty {
+    padding: 26px 16px;
+  }
+
+  .pst-form-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .pst-save-btn,
+  .pst-cancel-btn {
     width: 100%;
     justify-content: center;
     font-size: 0.86rem;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 11px;
   }
 }
 
@@ -550,15 +799,15 @@
 
 @media (max-width: 380px) {
   .pst-card {
-    padding: 14px 12px 16px;
+    padding: 15px 12px 17px;
   }
 
   .pst-page-title {
-    font-size: 1rem;
+    font-size: 1.02rem;
   }
 
   .pst-card-title {
-    font-size: 0.88rem;
+    font-size: 0.89rem;
   }
 
   .pst-readonly-box span,
@@ -566,12 +815,17 @@
     font-size: 0.8rem;
   }
 
-  .pst-save-btn {
+  .pst-save-btn,
+  .pst-cancel-btn {
     font-size: 0.82rem;
     padding: 11px 14px;
   }
 
   .pst-hero-left {
     gap: 12px;
+  }
+
+  .pst-addr-card-text {
+    font-size: 0.79rem;
   }
 }
