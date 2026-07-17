@@ -290,7 +290,7 @@ const BookService = () => {
               </div>
               <div className="fb-ph-name">{provider?.fullName || "—"}</div>
               <div className="fb-ph-service">
-                <FaTools /> {provider?.serviceName || "Home Service"}
+                <FaTools /> {provider?.category || "Home Service"}
               </div>
               <div className="fb-ph-divider" />
               <div className="fb-ph-price">
