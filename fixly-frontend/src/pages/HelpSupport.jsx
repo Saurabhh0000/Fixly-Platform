@@ -1,4 +1,5 @@
 import { useState, useContext, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   FiSearch,
   FiX,
@@ -19,6 +20,14 @@ import {
   FiStar,
   FiRefreshCw,
   FiZap,
+  FiCreditCard,
+  FiBell,
+  FiDollarSign,
+  FiUserPlus,
+  FiTrendingUp,
+  FiSettings,
+  FiAlertTriangle,
+  FiInfo,
 } from "react-icons/fi";
 
 import { AuthContext } from "../context/AuthContext";
@@ -26,95 +35,415 @@ import "../styles/help-support.css";
 import UserLayout from "../layouts/UserLayout";
 import ProviderLayout from "../layouts/ProviderLayout";
 
+/* ══════════════════════════════════════════════════════════════
+   CATEGORY DATA
+   Each category now carries a `detail` object that powers the
+   expanded accordion panel: intro copy, numbered steps, optional
+   notes/tips, and optional action links/buttons.
+   ══════════════════════════════════════════════════════════════ */
+
 const USER_CATEGORIES = [
   {
     id: "booking",
     icon: <FiCalendar />,
-    title: "Booking Issues",
-    desc: "Reschedule, cancel, or track your service appointments.",
+    title: "Booking Services",
+    desc: "Find a provider, choose a slot, and confirm your service in minutes.",
+    detail: {
+      intro:
+        "Booking a service on Fixly takes just a few taps. Search for the service you need, compare verified providers nearby, and lock in a time that works for you — no phone calls required.",
+      steps: [
+        "Tap “Book Service” and select a category (e.g. plumbing, electrical, cleaning).",
+        "Enter your address or confirm your saved location so we can show providers near you.",
+        "Browse available providers — filter by rating, price, or earliest availability.",
+        "Pick a time slot and add any notes about the job (access instructions, specific issue, etc.).",
+        "Review the estimated cost and confirm your booking. You'll get an instant confirmation.",
+      ],
+      notes: [
+        "Peak-hour slots (mornings and weekends) fill up quickly — book at least a day ahead when possible.",
+      ],
+      tips: [
+        "Add clear photos of the issue when booking; providers arrive better prepared and diagnose faster.",
+        "Save a default address in your profile to speed up future bookings.",
+      ],
+      links: [{ label: "Book a Service", to: "/search" }],
+    },
   },
   {
-    id: "cancellations",
-    icon: <FiRefreshCw />,
-    title: "Service Cancellations",
-    desc: "Understand cancellation policies and how your payment is handled.",
+    id: "booking-status",
+    icon: <FiActivity />,
+    title: "Booking Status",
+    desc: "Track every stage of your booking, from confirmed to completed.",
+    detail: {
+      intro:
+        "Every booking moves through a clear set of stages so you always know what's happening: Confirmed → Provider Assigned → In Progress → Completed. You can check the current stage at any time from My Bookings.",
+      steps: [
+        "Open “My Bookings” from the navigation bar.",
+        "Select the booking you want to check — the status pill at the top shows its current stage.",
+        "Tap the booking for a detailed timeline, including the provider's live ETA once they're en route.",
+        "You'll receive a notification automatically whenever the status changes.",
+      ],
+      notes: [
+        "If a booking stays “Provider Assigned” for longer than expected, you can message the provider directly or contact support.",
+      ],
+      tips: [
+        "Enable push notifications so you don't have to keep checking the app for updates.",
+      ],
+      links: [{ label: "Go to My Bookings", to: "/user/bookings" }],
+    },
   },
   {
-    id: "account",
-    icon: <FiShield />,
-    title: "Account & Password Help",
-    desc: "Reset your password, update profile details, manage security settings.",
+    id: "payments",
+    icon: <FiCreditCard />,
+    title: "Payments",
+    desc: "Manage payment methods, view invoices, and understand pricing.",
+    detail: {
+      intro:
+        "Fixly supports UPI, debit/credit cards, and net banking. Payment is only captured once you confirm a booking, and every transaction is protected by encrypted, tokenised payment infrastructure.",
+      steps: [
+        "Go to Profile → Payment Methods to add or remove a card, UPI ID, or bank account.",
+        "During checkout, select your preferred payment method or use the saved default.",
+        "After payment, an invoice is generated automatically and emailed to you.",
+        "You can also download any past invoice from My Bookings → select booking → “View Invoice.”",
+      ],
+      notes: [
+        "We never store your raw card number — all payment data is tokenised through our PCI-DSS Level 1 compliant gateway.",
+      ],
+      tips: ["Set a default payment method to skip a step during checkout."],
+      links: [{ label: "Manage Payment Methods", to: "/profile" }],
+    },
   },
   {
     id: "reviews",
     icon: <FiStar />,
     title: "Reviews & Ratings",
     desc: "Leave feedback for a completed service or understand how ratings work.",
+    detail: {
+      intro:
+        "Your reviews help other customers choose the right provider and help great providers get discovered. You can rate and review any booking once it's marked complete.",
+      steps: [
+        "Go to My Bookings and find the completed service you want to review.",
+        "Tap “Leave a Review” and choose a star rating from 1 to 5.",
+        "Add a written comment describing your experience — be specific, it helps others.",
+        "Optionally attach photos of the completed work.",
+        "Submit — your review appears on the provider's profile within a few minutes.",
+      ],
+      notes: [
+        "Reviews can only be submitted for bookings you've actually completed, and can be edited once within 48 hours of posting.",
+      ],
+      tips: [
+        "Detailed reviews (what was fixed, how long it took, professionalism) are far more useful than a rating alone.",
+      ],
+      links: [{ label: "Go to My Bookings", to: "/user/bookings" }],
+    },
   },
   {
-    id: "faqs",
-    icon: <FiHelpCircle />,
-    title: "Frequently Asked Questions",
-    desc: "Quick answers to the most common questions from Fixly customers.",
+    id: "account",
+    icon: <FiShield />,
+    title: "Account & Profile",
+    desc: "Update your details, manage addresses, and secure your account.",
+    detail: {
+      intro:
+        "Your profile keeps your contact details, saved addresses, and security settings in one place. Keeping it up to date means faster bookings and accurate provider communication.",
+      steps: [
+        "Open the profile menu from the navbar and select “Settings.”",
+        "Update your name, phone number, or profile photo as needed.",
+        "Go to the Addresses section to add, edit, or remove a saved address.",
+        "Use “Change Password” to update your login credentials at any time.",
+      ],
+      notes: [
+        "If you change your registered phone number, you'll need to verify it with an OTP before it takes effect.",
+      ],
+      tips: [
+        "Save both a home and work address so switching booking locations only takes one tap.",
+      ],
+      links: [
+        { label: "Go to Profile Settings", to: "/profile" },
+        { label: "Change Password", to: "/change-password" },
+      ],
+    },
   },
   {
-    id: "contact",
+    id: "notifications",
+    icon: <FiBell />,
+    title: "Notifications",
+    desc: "Control how and when Fixly notifies you about bookings and offers.",
+    detail: {
+      intro:
+        "Fixly sends notifications for booking confirmations, provider updates, payment receipts, and occasional offers. You're always in control of what you receive and how.",
+      steps: [
+        "Go to Settings → Notification Preferences.",
+        "Toggle push, email, and SMS notifications independently for each category.",
+        "Booking-critical alerts (status changes, provider arrival) are recommended to keep enabled.",
+        "Promotional notifications can be turned off at any time without affecting booking alerts.",
+      ],
+      notes: [
+        "Disabling all notifications may cause you to miss time-sensitive updates like a provider's arrival window.",
+      ],
+      tips: [
+        "Keep push notifications on for bookings, but feel free to mute promotional emails if they're not useful to you.",
+      ],
+      links: [{ label: "Manage Notification Settings", to: "/profile" }],
+    },
+  },
+  {
+    id: "cancellations",
+    icon: <FiRefreshCw />,
+    title: "Cancellations",
+    desc: "Understand cancellation policies and how to cancel a booking.",
+    detail: {
+      intro:
+        "Plans change — you can cancel a booking directly from the app. What you're charged, if anything, depends on how close to the appointment time you cancel.",
+      steps: [
+        "Open My Bookings and select the appointment you want to cancel.",
+        "Tap “Cancel Booking” and choose a reason from the list.",
+        "Confirm the cancellation — you'll see the applicable refund amount before confirming.",
+        "You'll receive a confirmation email once the cancellation is processed.",
+      ],
+      notes: [
+        "Cancellations made more than 24 hours before the appointment are fully refunded. Cancellations within 24 hours may incur a partial fee.",
+      ],
+      tips: [
+        "If a provider hasn't been assigned yet, cancelling is instant and always free.",
+      ],
+      links: [{ label: "Go to My Bookings", to: "/user/bookings" }],
+    },
+  },
+  {
+    id: "refunds",
+    icon: <FiDollarSign />,
+    title: "Refunds",
+    desc: "See how refunds are calculated and when the money reaches you.",
+    detail: {
+      intro:
+        "When a refund is due — whether from a cancellation, a provider no-show, or a resolved complaint — it's processed automatically back to your original payment method.",
+      steps: [
+        "Refunds are triggered automatically after a qualifying cancellation or resolved support case.",
+        "Check the refund amount and status from My Bookings → select booking → “Refund Status.”",
+        "Card and net banking refunds settle within 3–5 business days.",
+        "UPI refunds are typically faster, usually within 1–2 business days.",
+      ],
+      notes: [
+        "If a refund doesn't appear after 5 business days, contact support with your booking ID for a manual check.",
+      ],
+      tips: [
+        "You'll always get an email the moment a refund is initiated — keep an eye on that inbox for the exact timeline.",
+      ],
+      links: [{ label: "Contact Support", href: "#hs-sidebar-contact" }],
+    },
+  },
+  {
+    id: "support",
     icon: <FiMail />,
-    title: "Contact Support",
+    title: "Support",
     desc: "Reach our team by email or phone. Available Monday to Saturday.",
-    isCta: true,
+    detail: {
+      intro:
+        "Can't find what you're looking for? Our support team is available Monday through Saturday and typically responds within a few hours.",
+      steps: [
+        "For account or booking-specific issues, email us with your booking ID for the fastest resolution.",
+        "For urgent issues (e.g. a provider who hasn't arrived), call our support line directly.",
+        "You can also browse the FAQs below — most common questions are answered there instantly.",
+      ],
+      notes: [],
+      tips: [
+        "Including screenshots and your booking ID in your email speeds up resolution significantly.",
+      ],
+      links: [
+        { label: "Email Support", href: "mailto:support@fixly.in" },
+        { label: "Call Support", href: "tel:+919876543210" },
+      ],
+    },
   },
 ];
 
 const PROVIDER_CATEGORIES = [
   {
+    id: "becoming-provider",
+    icon: <FiUserPlus />,
+    title: "Becoming a Provider",
+    desc: "Learn how the application and onboarding process works.",
+    detail: {
+      intro:
+        "Joining Fixly as a service provider takes a few steps: application, document verification, and profile setup. Most applicants are fully onboarded within a week.",
+      steps: [
+        "Go to “Become a Provider” from your account menu and fill out the application form.",
+        "Select your service category(ies) and specify your service area.",
+        "Submit the required documents (see Provider Verification below).",
+        "Once approved, complete your profile with a photo, bio, and pricing to go live.",
+      ],
+      notes: [
+        "Applications with incomplete or blurry document uploads are the most common cause of delay — double-check clarity before submitting.",
+      ],
+      tips: [
+        "A complete profile with a clear photo and detailed bio gets noticeably more bookings in the first month.",
+      ],
+      links: [{ label: "Start Your Application", to: "/become-provider" }],
+    },
+  },
+  {
     id: "verification",
     icon: <FiFileText />,
-    title: "Verification & Documents",
+    title: "Provider Verification",
     desc: "Upload your ID, trade certificates, and check your verification status.",
+    detail: {
+      intro:
+        "Verification protects both you and your customers. It confirms your identity and trade qualifications before your profile goes live on Fixly.",
+      steps: [
+        "Go to Provider Dashboard → Verification.",
+        "Upload a government-issued photo ID (Aadhaar, PAN, driving licence, or passport).",
+        "Upload your relevant trade certificate or licence, if applicable to your category.",
+        "Submit for review — standard verification takes 2–4 business days.",
+      ],
+      notes: [
+        "You'll receive an email the moment your profile is approved and live on Fixly. If more information is needed, we'll email you exactly what's missing.",
+      ],
+      tips: [
+        "Scan documents in good lighting with all four corners visible to avoid review delays.",
+      ],
+      links: [{ label: "Go to Verification", to: "/provider/dashboard" }],
+    },
   },
   {
-    id: "application",
-    icon: <FiActivity />,
-    title: "Application Status",
-    desc: "Track where your provider application stands and what's needed next.",
-  },
-  {
-    id: "reapply",
-    icon: <FiRefreshCw />,
-    title: "Reapply Process",
-    desc: "Understand how to resubmit your application after a rejection or lapse.",
+    id: "managing-bookings",
+    icon: <FiCalendar />,
+    title: "Managing Bookings",
+    desc: "Accept, reschedule, and communicate with clients on incoming jobs.",
+    detail: {
+      intro:
+        "Every new booking request appears in your Provider Dashboard. You can accept, propose a new time, or decline — and message the customer directly for any clarification.",
+      steps: [
+        "Open Provider Dashboard → Bookings to see incoming, upcoming, and completed jobs.",
+        "Tap a request to view job details, customer notes, and location.",
+        "Accept the booking, or propose an alternate time if the slot doesn't work.",
+        "Use in-app messaging to confirm access details before you head out.",
+        "Mark the job “Completed” once finished so the customer can review it.",
+      ],
+      notes: [
+        "Repeatedly declining or missing bookings can lower your visibility in search results.",
+      ],
+      tips: [
+        "Confirm arrival time with the customer an hour before to reduce no-shows on both sides.",
+      ],
+      links: [{ label: "Go to Provider Dashboard", to: "/provider/dashboard" }],
+    },
   },
   {
     id: "availability",
     icon: <FiEye />,
-    title: "Availability & Visibility",
+    title: "Availability",
     desc: "Set your working hours, service area, and control your listing status.",
+    detail: {
+      intro:
+        "Your availability calendar controls when customers can book you. Keeping it current is the single biggest factor in how often you appear in search.",
+      steps: [
+        "Go to Provider Dashboard → Availability.",
+        "Set your working days and hours for the upcoming week(s).",
+        "Adjust your service radius if you want to cover a wider or narrower area.",
+        "Use “Pause Profile” if you need to go temporarily offline (holiday, fully booked, etc.).",
+      ],
+      notes: [
+        "Profiles with no availability set for the coming week are automatically deprioritised in search results.",
+      ],
+      tips: [
+        "Update your calendar at the start of each week — a five-minute habit that noticeably increases bookings.",
+      ],
+      links: [{ label: "Manage Availability", to: "/provider/dashboard" }],
+    },
   },
   {
-    id: "bookings",
-    icon: <FiCalendar />,
-    title: "Bookings & Customers",
-    desc: "Manage incoming bookings, communicate with clients, handle reschedules.",
+    id: "earnings",
+    icon: <FiTrendingUp />,
+    title: "Earnings",
+    desc: "Understand payouts, timelines, and how to track your income.",
+    detail: {
+      intro:
+        "Your Earnings dashboard shows completed jobs, pending payouts, and full payment history, so you always know what's coming and when.",
+      steps: [
+        "Go to Provider Dashboard → Earnings to view your current balance and history.",
+        "Payouts are released 24 hours after a job is marked complete and the review window closes.",
+        "Funds are transferred to your registered bank account within 1–2 business days.",
+        "Download monthly statements for your records from the Earnings tab.",
+      ],
+      notes: [
+        "Make sure your bank details are correct in Account Management — incorrect details are the most common cause of delayed payouts.",
+      ],
+      tips: [
+        "Completing jobs promptly and closing the review window faster gets your payout released sooner.",
+      ],
+      links: [{ label: "View Earnings", to: "/provider/dashboard" }],
+    },
   },
   {
     id: "ratings",
     icon: <FiAward />,
-    title: "Ratings & Reviews",
-    desc: "Learn how your score is calculated and how to respond to client feedback.",
+    title: "Ratings",
+    desc: "Learn how your score is calculated and how to respond to feedback.",
+    detail: {
+      intro:
+        "Your public rating is a recency-weighted average of verified, post-service reviews — recent jobs count more than older ones, keeping your score reflective of your current work.",
+      steps: [
+        "A minimum of 5 completed jobs is required before a public rating appears on your profile.",
+        "Reviews from the last 90 days carry more weight than older reviews.",
+        "You can respond publicly to any review from Provider Dashboard → Reviews.",
+        "If you believe a review violates guidelines, you can flag it for our team to investigate.",
+      ],
+      notes: [
+        "Flagged reviews are reviewed within 3 business days using job photos, timestamps, and message history.",
+      ],
+      tips: [
+        "A brief, professional public reply to critical reviews often reassures future customers more than the review itself concerns them.",
+      ],
+      links: [{ label: "View Your Reviews", to: "/provider/dashboard" }],
+    },
   },
   {
-    id: "faqs",
-    icon: <FiHelpCircle />,
-    title: "Frequently Asked Questions",
-    desc: "Quick answers to the most common questions from Fixly providers.",
+    id: "provider-notifications",
+    icon: <FiBell />,
+    title: "Notifications",
+    desc: "Stay on top of new bookings, messages, and payout alerts.",
+    detail: {
+      intro:
+        "As a provider, timely notifications are critical — a missed booking alert can mean a lost job. Configure exactly what you're notified about and how.",
+      steps: [
+        "Go to Provider Dashboard → Settings → Notifications.",
+        "Keep “New Booking Requests” on push and SMS for the fastest response time.",
+        "Enable payout notifications to know the moment funds are transferred.",
+        "Customer message alerts can be set to push-only if you prefer a quieter inbox.",
+      ],
+      notes: [
+        "New booking requests typically expire if not accepted within a set response window — keep alerts on to avoid missing jobs.",
+      ],
+      tips: [
+        "Providers who respond to new requests within 15 minutes see meaningfully higher acceptance-to-booking rates.",
+      ],
+      links: [{ label: "Notification Settings", to: "/provider/dashboard" }],
+    },
   },
   {
-    id: "contact",
-    icon: <FiMail />,
-    title: "Contact Support",
-    desc: "Reach our provider-dedicated team by email or phone.",
-    isCta: true,
+    id: "account-management",
+    icon: <FiSettings />,
+    title: "Account Management",
+    desc: "Manage your business details, bank account, and login security.",
+    detail: {
+      intro:
+        "Your provider account settings cover everything from business information to payout details and login security — all in one place.",
+      steps: [
+        "Go to Provider Dashboard → Account Settings.",
+        "Update your business name, service categories, and contact details as needed.",
+        "Add or update your bank account details for payouts.",
+        "Use “Change Password” to keep your login secure, and enable two-factor login if available.",
+      ],
+      notes: [
+        "Changes to bank account details may trigger a short re-verification hold on your next payout for security.",
+      ],
+      tips: [
+        "Review your account details each quarter to make sure everything (bank, service area, categories) is current.",
+      ],
+      links: [
+        { label: "Go to Account Settings", to: "/provider/dashboard" },
+        { label: "Change Password", to: "/change-password" },
+      ],
+    },
   },
 ];
 
@@ -385,24 +714,128 @@ function HeroArtwork() {
   );
 }
 
-/* ── Category Card ───────────────────────────────────────────── */
-function CategoryCard({ cat }) {
+/* ── Category Accordion Card ─────────────────────────────────── */
+function CategoryCard({ cat, isOpen, onToggle }) {
+  const panelRef = useRef(null);
+  const [height, setHeight] = useState(0);
+  const triggerId = "cat-trigger-" + cat.id;
+  const panelId = "cat-panel-" + cat.id;
+
+  useEffect(() => {
+    if (panelRef.current) setHeight(isOpen ? panelRef.current.scrollHeight : 0);
+  }, [isOpen]);
+
+  // Re-measure if content reflows (e.g. window resize) while open
+  useEffect(() => {
+    if (!isOpen) return;
+    const onResize = () => {
+      if (panelRef.current) setHeight(panelRef.current.scrollHeight);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [isOpen]);
+
+  const {
+    intro,
+    steps = [],
+    notes = [],
+    tips = [],
+    links = [],
+  } = cat.detail || {};
+
   return (
     <article
-      className={"hs-card" + (cat.isCta ? " hs-card--cta" : "")}
-      tabIndex={0}
-      role="button"
-      aria-label={cat.title}>
-      <div className="hs-card-icon-wrap" aria-hidden>
-        <span className="hs-card-icon">{cat.icon}</span>
+      className={
+        "hs-card" +
+        (cat.isCta ? " hs-card--cta" : "") +
+        (isOpen ? " hs-card--open" : "")
+      }>
+      <button
+        type="button"
+        className="hs-card-trigger"
+        id={triggerId}
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}>
+        <div className="hs-card-icon-wrap" aria-hidden>
+          <span className="hs-card-icon">{cat.icon}</span>
+        </div>
+        <div className="hs-card-body">
+          <h3 className="hs-card-title">{cat.title}</h3>
+          <p className="hs-card-desc">{cat.desc}</p>
+        </div>
+        <span className="hs-card-chevron" aria-hidden>
+          <FiChevronDown />
+        </span>
+      </button>
+
+      <div
+        id={panelId}
+        className="hs-card-panel"
+        role="region"
+        aria-labelledby={triggerId}
+        style={{ maxHeight: height + "px" }}
+        ref={panelRef}>
+        <div className="hs-card-detail">
+          <p className="hs-detail-intro">{intro}</p>
+
+          {steps.length > 0 && (
+            <div className="hs-detail-block">
+              <h4 className="hs-detail-heading">Step-by-step</h4>
+              <ol className="hs-detail-steps">
+                {steps.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          {notes.length > 0 && (
+            <div className="hs-detail-notice hs-detail-notice--warning">
+              <FiAlertTriangle className="hs-detail-notice-icon" aria-hidden />
+              <div>
+                <span className="hs-detail-notice-label">Important</span>
+                {notes.map((n, i) => (
+                  <p key={i}>{n}</p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tips.length > 0 && (
+            <div className="hs-detail-notice hs-detail-notice--tip">
+              <FiInfo className="hs-detail-notice-icon" aria-hidden />
+              <div>
+                <span className="hs-detail-notice-label">Helpful tip</span>
+                {tips.map((t, i) => (
+                  <p key={i}>{t}</p>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {links.length > 0 && (
+            <div className="hs-detail-actions">
+              {links.map((l, i) =>
+                l.to ? (
+                  <Link key={i} to={l.to} className="hs-detail-btn">
+                    {l.label}
+                    <FiArrowRight aria-hidden />
+                  </Link>
+                ) : (
+                  <a
+                    key={i}
+                    href={l.href}
+                    className="hs-detail-btn hs-detail-btn--ghost">
+                    {l.label}
+                    <FiArrowRight aria-hidden />
+                  </a>
+                ),
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="hs-card-body">
-        <h3 className="hs-card-title">{cat.title}</h3>
-        <p className="hs-card-desc">{cat.desc}</p>
-      </div>
-      <span className="hs-card-arrow" aria-hidden>
-        <FiArrowRight />
-      </span>
     </article>
   );
 }
@@ -447,7 +880,7 @@ function FaqItem({ item, index, isOpen, onToggle }) {
 function ContactCard({ role }) {
   const isProvider = role === "PROVIDER";
   return (
-    <div className="hs-contact">
+    <div className="hs-contact" id="hs-sidebar-contact">
       <div className="hs-contact-glow" aria-hidden />
       <div className="hs-contact-head">
         <div className="hs-contact-badge" aria-hidden>
@@ -550,6 +983,7 @@ export default function HelpSupport() {
   const { user } = useContext(AuthContext);
   const [query, setQuery] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
+  const [openCategory, setOpenCategory] = useState(null);
   const searchRef = useRef(null);
 
   const isUser = user?.role === "USER";
@@ -679,7 +1113,14 @@ export default function HelpSupport() {
                 {filtered.length > 0 ? (
                   <div className="hs-grid">
                     {filtered.map((cat) => (
-                      <CategoryCard key={cat.id} cat={cat} />
+                      <CategoryCard
+                        key={cat.id}
+                        cat={cat}
+                        isOpen={openCategory === cat.id}
+                        onToggle={() =>
+                          setOpenCategory((p) => (p === cat.id ? null : cat.id))
+                        }
+                      />
                     ))}
                   </div>
                 ) : (

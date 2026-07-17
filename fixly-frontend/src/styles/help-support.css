@@ -28,6 +28,12 @@
   --hs-surf:   #f8fafc;
   --hs-white:  #ffffff;
 
+  /* Accent — used only for new notice callouts inside accordion panels */
+  --hs-amber-50:  #fffbeb;
+  --hs-amber-100: #fef3c7;
+  --hs-amber-500: #d97706;
+  --hs-amber-700: #92400e;
+
   /* Typography */
   --hs-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
@@ -65,6 +71,7 @@
   --hs-dur-fast: 0.14s;
   --hs-dur: 0.20s;
   --hs-dur-slow: 0.30s;
+  --hs-dur-accordion: 0.25s;
 }
 
 /* ── Reset ───────────────────────────────────────────────────── */
@@ -386,6 +393,7 @@
   display: grid;
   gap: 10px;
   grid-template-columns: 1fr;
+  align-items: start; /* prevents an expanded card from stretching its row-mates */
 }
 @media (min-width: 580px) {
   .hs-grid { grid-template-columns: repeat(2, 1fr); }
@@ -394,26 +402,35 @@
   .hs-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* ── Category card ───────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   CATEGORY CARD → ACCORDION
+   Structure: <article class="hs-card">
+                <button class="hs-card-trigger">…</button>
+                <div class="hs-card-panel"><div class="hs-card-detail">…</div></div>
+              </article>
+   ══════════════════════════════════════════════════════════════ */
+
+/* Card shell — border, radius, shadow, background. No longer itself
+   clickable; the trigger button inside handles interaction. */
 .hs-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 18px 16px 16px;
   background: var(--hs-white);
   border: 1px solid var(--hs-border);
   border-radius: var(--hs-r-lg);
-  cursor: pointer;
-  outline: none;
   box-shadow: var(--hs-shadow-xs);
+  position: relative;
+  overflow: hidden;
   transition:
-    transform var(--hs-dur) var(--hs-ease),
     border-color var(--hs-dur) var(--hs-ease),
     box-shadow var(--hs-dur) var(--hs-ease),
     background var(--hs-dur) var(--hs-ease);
-  position: relative;
-  overflow: hidden;
-  text-align: left;
+}
+
+/* When a card spans multiple grid columns (open on desktop), it takes
+   its own row so sibling cards reflow underneath instead of stretching. */
+@media (min-width: 580px) {
+  .hs-card--open {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Top accent bar */
@@ -427,21 +444,26 @@
   transform-origin: left center;
   transition: transform 0.22s var(--hs-ease);
   border-radius: var(--hs-r-lg) var(--hs-r-lg) 0 0;
+  z-index: 1;
 }
 
 .hs-card:hover,
-.hs-card:focus-visible {
-  transform: translateY(-2px);
+.hs-card:focus-within {
   border-color: var(--hs-g200);
   box-shadow: var(--hs-shadow-md), 0 0 0 1px rgba(34,197,94,0.06);
   background: #fafffe;
 }
 .hs-card:hover::before,
-.hs-card:focus-visible::before {
+.hs-card:focus-within::before,
+.hs-card--open::before {
   transform: scaleX(1);
 }
+.hs-card--open {
+  border-color: var(--hs-g200);
+  box-shadow: var(--hs-shadow-md), 0 0 0 1px rgba(34,197,94,0.06);
+}
 
-/* CTA card */
+/* CTA card variant (kept for any category still flagged isCta) */
 .hs-card--cta {
   background: var(--hs-g50);
   border-color: #c6f6d5;
@@ -450,8 +472,28 @@
   background: linear-gradient(90deg, var(--hs-g400), var(--hs-g200));
 }
 .hs-card--cta:hover,
-.hs-card--cta:focus-visible {
+.hs-card--cta:focus-within {
   background: #ecfdf5;
+}
+
+/* ── Trigger (clickable header row) ─────────────────────────── */
+.hs-card-trigger {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 16px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+  font-family: var(--hs-font);
+  -webkit-tap-highlight-color: transparent;
+}
+.hs-card-trigger:focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(34,197,94,0.35);
+  border-radius: var(--hs-r-lg);
 }
 
 /* Icon */
@@ -474,13 +516,13 @@
   transition: color var(--hs-dur);
 }
 .hs-card:hover .hs-card-icon-wrap,
-.hs-card:focus-visible .hs-card-icon-wrap {
+.hs-card--open .hs-card-icon-wrap {
   background: var(--hs-g500);
   border-color: var(--hs-g500);
   box-shadow: var(--hs-shadow-green);
 }
 .hs-card:hover .hs-card-icon,
-.hs-card:focus-visible .hs-card-icon {
+.hs-card--open .hs-card-icon {
   color: var(--hs-white);
 }
 
@@ -503,20 +545,190 @@
   line-height: 1.65;
 }
 
-/* Arrow */
-.hs-card-arrow {
-  font-size: 14px;
+/* Chevron (replaces the old static arrow — rotates open/closed) */
+.hs-card-chevron {
+  font-size: 15px;
   color: var(--hs-subtle);
   flex-shrink: 0;
   margin-top: 2px;
+  display: flex;
   transition:
-    transform var(--hs-dur) var(--hs-ease),
+    transform 0.22s var(--hs-ease),
     color var(--hs-dur);
 }
-.hs-card:hover .hs-card-arrow,
-.hs-card:focus-visible .hs-card-arrow {
-  transform: translateX(3px);
+.hs-card:hover .hs-card-chevron {
   color: var(--hs-g500);
+}
+.hs-card--open .hs-card-chevron {
+  transform: rotate(180deg);
+  color: var(--hs-g500);
+}
+
+/* ── Panel (animated expand/collapse) ───────────────────────── */
+.hs-card-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--hs-dur-accordion) var(--hs-ease-out);
+}
+
+.hs-card-detail {
+  padding: 2px 20px 22px 70px; /* left-aligns under the title, past the icon */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hs-detail-intro {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--hs-body);
+}
+
+.hs-detail-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hs-detail-heading {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hs-g600);
+}
+
+/* Numbered steps — styled counters instead of default list markers */
+.hs-detail-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  counter-reset: hs-step;
+}
+.hs-detail-steps li {
+  position: relative;
+  padding-left: 30px;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--hs-ink2);
+  counter-increment: hs-step;
+}
+.hs-detail-steps li::before {
+  content: counter(hs-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--hs-g100);
+  border: 1px solid var(--hs-g200);
+  color: var(--hs-g600);
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Notices — warnings and tips */
+.hs-detail-notice {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--hs-r-sm);
+  border: 1px solid;
+}
+.hs-detail-notice-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.hs-detail-notice-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.hs-detail-notice p {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: inherit;
+}
+.hs-detail-notice p + p {
+  margin-top: 4px;
+}
+
+.hs-detail-notice--warning {
+  background: var(--hs-amber-50);
+  border-color: var(--hs-amber-100);
+  color: var(--hs-amber-700);
+}
+.hs-detail-notice--warning .hs-detail-notice-icon,
+.hs-detail-notice--warning .hs-detail-notice-label {
+  color: var(--hs-amber-500);
+}
+
+.hs-detail-notice--tip {
+  background: var(--hs-g50);
+  border-color: var(--hs-g100);
+  color: var(--hs-g700);
+}
+.hs-detail-notice--tip .hs-detail-notice-icon,
+.hs-detail-notice--tip .hs-detail-notice-label {
+  color: var(--hs-g600);
+}
+
+/* Action buttons/links */
+.hs-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.hs-detail-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  color: var(--hs-white);
+  border: none;
+  padding: 9px 16px;
+  border-radius: var(--hs-r-sm);
+  font-family: var(--hs-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: opacity var(--hs-dur), transform var(--hs-dur), box-shadow var(--hs-dur);
+}
+.hs-detail-btn svg {
+  font-size: 12px;
+  transition: transform var(--hs-dur);
+}
+.hs-detail-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: var(--hs-shadow-green);
+}
+.hs-detail-btn:hover svg {
+  transform: translateX(2px);
+}
+
+.hs-detail-btn--ghost {
+  background: var(--hs-white);
+  color: var(--hs-g600);
+  border: 1.5px solid var(--hs-g200);
+}
+.hs-detail-btn--ghost:hover {
+  background: var(--hs-g50);
+  box-shadow: none;
 }
 
 /* ── No results ──────────────────────────────────────────────── */
@@ -671,6 +883,7 @@
   padding: 24px 22px;
   color: rgba(255,255,255,0.78);
   box-shadow: var(--hs-shadow-lg), 0 0 0 1px rgba(34,197,94,0.06);
+  scroll-margin-top: 24px; /* keeps the card clear of the viewport edge when jumped to */
 }
 .hs-contact-glow {
   position: absolute;
@@ -933,11 +1146,62 @@
   }
 }
 
+/* ── Accordion card — tablet & mobile spacing ───────────────── */
+@media (max-width: 899px) {
+  .hs-card-trigger {
+    padding: 16px 14px 14px;
+  }
+  .hs-card-detail {
+    padding: 2px 16px 20px 62px;
+  }
+}
+
+@media (max-width: 599px) {
+  .hs-card-trigger {
+    gap: 12px;
+    padding: 15px 13px 13px;
+  }
+  .hs-card-icon-wrap {
+    width: 36px;
+    height: 36px;
+  }
+  .hs-card-icon {
+    font-size: 15px;
+  }
+  .hs-card-title {
+    font-size: 13px;
+  }
+  .hs-card-desc {
+    font-size: 11.5px;
+  }
+  .hs-card-detail {
+    padding: 2px 14px 18px 14px; /* drop the icon-aligned indent on narrow screens */
+  }
+  .hs-detail-steps li {
+    padding-left: 26px;
+    font-size: 12px;
+  }
+  .hs-detail-steps li::before {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+  .hs-detail-actions {
+    flex-direction: column;
+  }
+  .hs-detail-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* ── Reduced motion ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .hs-card:hover      { transform: none; }
+  .hs-card::before    { transition: none; }
+  .hs-card-chevron    { transition: color var(--hs-dur); }
+  .hs-card-panel      { transition: none; }
   .hs-empty-btn:hover { transform: none; }
   .hs-faq-body        { transition: none; }
   .hs-faq-chevron     { transition: color var(--hs-dur); }
-  .hs-card::before    { transition: none; }
+  .hs-detail-btn:hover { transform: none; }
 }
