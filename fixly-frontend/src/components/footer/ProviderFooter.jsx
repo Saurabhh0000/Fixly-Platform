@@ -55,8 +55,8 @@ const ProviderFooter = () => {
       {/* BOTTOM */}
       <div className="provider-footer-bottom">
         <p>© {new Date().getFullYear()} Fixly • Provider Dashboard</p>
-        <p>
-          Empowering service professionals
+        <p className="footer-text">
+          <span>Empowering service professionals</span>
           <FaRocket className="footer-bottom-icon" />
         </p>
       </div>
