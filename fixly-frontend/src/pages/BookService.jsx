@@ -371,7 +371,7 @@ const BookService = () => {
                 <FaTools />
                 <div>
                   <span>Service</span>
-                  <strong>{provider?.serviceName || "Home Service"}</strong>
+                  <strong>{provider?.category || "Home Service"}</strong>
                 </div>
               </div>
               <div className="fb-os-sep" />
