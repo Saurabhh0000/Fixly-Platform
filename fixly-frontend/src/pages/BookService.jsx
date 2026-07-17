@@ -208,7 +208,7 @@ const BookService = () => {
               </div>
               <div className="fb-sd-body">
                 <span>Service</span>
-                <strong>{provider?.serviceName || "Home Service"}</strong>
+                <strong>{provider?.category || "Home Service"}</strong>
               </div>
             </div>
             <div className="fb-sd-row">
