@@ -97,7 +97,12 @@
   font-size: 0.75rem;
   color: #bbf7d0;
 }
-
+.footer-bottom-icon {
+  margin-right: 6px;
+  font-size: 0.9rem;
+  vertical-align: middle;
+  color: #22c55e;
+}
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
   .provider-footer-top {

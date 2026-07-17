@@ -6,6 +6,7 @@ import {
   FaFacebook,
   FaInstagram,
   FaTwitter,
+  FaRocket,
 } from "react-icons/fa";
 import "../../styles/fixly-provider-footer.css";
 
@@ -54,7 +55,10 @@ const ProviderFooter = () => {
       {/* BOTTOM */}
       <div className="provider-footer-bottom">
         <p>© {new Date().getFullYear()} Fixly • Provider Dashboard</p>
-        <p>Empowering service professionals 🚀</p>
+        <p>
+          Empowering service professionals
+          <FaRocket className="footer-bottom-icon" />
+        </p>
       </div>
     </footer>
   );
