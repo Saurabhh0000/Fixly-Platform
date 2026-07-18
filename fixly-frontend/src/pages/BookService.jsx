@@ -347,7 +347,7 @@ const BookService = () => {
                   <span>Provider</span>
                   <strong>{provider?.fullName}</strong>
                   <em>
-                    <FaTools /> {provider?.serviceName || "Home Service"}
+                    <FaTools /> {provider?.category || "Home Service"}
                   </em>
                 </div>
                 <div className="fb-ms-price">
