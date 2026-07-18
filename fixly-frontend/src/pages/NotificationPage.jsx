@@ -21,7 +21,11 @@ import {
   FaRedo,
   FaArrowRight,
   FaChevronDown,
+  FaChevronLeft,
+  FaChevronRight,
+  FaHome,
 } from "react-icons/fa";
+// ⚠️ Adjust this import path to match where your existing fixlyApi instance lives
 import fixlyApi from "../api/fixlyApi";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/NotificationPage.css";
@@ -58,6 +62,44 @@ function formatRelativeTime(dateString) {
 
   const years = Math.floor(days / 365);
   return `${years} year${years > 1 ? "s" : ""} ago`;
+}
+
+/** Buckets a date into Today / Yesterday / Earlier This Week / Earlier. */
+function getDateGroup(dateString) {
+  if (!dateString) return "Earlier";
+
+  const date = new Date(dateString);
+  const now = new Date();
+
+  const startOfDay = (d) =>
+    new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+
+  const todayStart = startOfDay(now);
+  const dateStart = startOfDay(date);
+  const dayMs = 86400000;
+
+  if (dateStart === todayStart) return "Today";
+  if (dateStart === todayStart - dayMs) return "Yesterday";
+  if (dateStart > todayStart - 7 * dayMs) return "Earlier This Week";
+  return "Earlier";
+}
+
+const GROUP_ORDER = ["Today", "Yesterday", "Earlier This Week", "Earlier"];
+
+/** Groups a list of notifications into ordered { label, items } buckets,
+ *  omitting any bucket that has no items. */
+function groupNotifications(list) {
+  const buckets = {
+    Today: [],
+    Yesterday: [],
+    "Earlier This Week": [],
+    Earlier: [],
+  };
+  list.forEach((n) => buckets[getDateGroup(n.createdAt)].push(n));
+  return GROUP_ORDER.filter((key) => buckets[key].length > 0).map((key) => ({
+    label: key,
+    items: buckets[key],
+  }));
 }
 
 /* Single source of truth for icon + badge color per notification type.
@@ -127,7 +169,8 @@ function getNotificationColor(type) {
   return { label: meta.label, color: meta.color, bg: meta.bg };
 }
 
-/* Filter chips shown on the page, in the requested order. */
+/* Filter chips shown on the page, in the requested order. Counts are
+   injected at render time from live notification data. */
 const FILTERS = [
   { key: "ALL", label: "All" },
   { key: "UNREAD", label: "Unread" },
@@ -141,6 +184,17 @@ const FILTERS = [
   { key: "SUSPENDED", label: "Suspended" },
   { key: "COMPLETED", label: "Completed" },
 ];
+
+/** Counts notifications per filter key, scoped to whatever the search
+ *  box currently matches, so counts stay live as the user types. */
+function getFilterCounts(list) {
+  const counts = { ALL: list.length, UNREAD: 0 };
+  list.forEach((n) => {
+    if (!n.read) counts.UNREAD += 1;
+    counts[n.type] = (counts[n.type] || 0) + 1;
+  });
+  return counts;
+}
 
 /* Maps a notification type to its optional call-to-action button.
    ⚠️ These target routes are best-guess based on the paths already used
@@ -186,6 +240,26 @@ function getNotificationAction(type, referenceId, role) {
   return ACTION_META[type] || null;
 }
 
+/** Builds a compact page-number list with ellipses for large page counts.
+ *  e.g. total=9, current=5 → [1, '…', 4, 5, 6, '…', 9] */
+function getPageNumbers(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const pages = new Set([1, total, current, current - 1, current + 1]);
+  const sortedPages = [...pages]
+    .filter((p) => p >= 1 && p <= total)
+    .sort((a, b) => a - b);
+
+  const result = [];
+  let prev = 0;
+  for (const p of sortedPages) {
+    if (prev && p - prev > 1) result.push("…");
+    result.push(p);
+    prev = p;
+  }
+  return result;
+}
+
 const PAGE_SIZE = 10;
 
 /* ══════════════════════════════════════════════════════════════
@@ -193,8 +267,7 @@ const PAGE_SIZE = 10;
    ══════════════════════════════════════════════════════════════ */
 
 function NotificationCard({ notification, role, onOpen }) {
-  const { id, title, message, type, read, createdAt, referenceId } =
-    notification;
+  const { title, message, type, read, createdAt, referenceId } = notification;
 
   const Icon = getNotificationIcon(type);
   const badge = getNotificationColor(type);
@@ -275,6 +348,56 @@ function SkeletonCard() {
   );
 }
 
+function Pagination({ currentPage, totalPages, onChange }) {
+  if (totalPages <= 1) return null;
+
+  const pages = getPageNumbers(currentPage, totalPages);
+
+  return (
+    <nav className="np-pagination" aria-label="Notifications pagination">
+      <button
+        type="button"
+        className="np-page-nav"
+        onClick={() => onChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        aria-label="Previous page">
+        <FaChevronLeft aria-hidden="true" />
+        <span className="np-page-nav-text">Previous</span>
+      </button>
+
+      <div className="np-page-numbers">
+        {pages.map((p, i) =>
+          p === "…" ? (
+            <span key={`ellipsis-${i}`} className="np-page-ellipsis">
+              …
+            </span>
+          ) : (
+            <button
+              key={p}
+              type="button"
+              className={`np-page-btn ${p === currentPage ? "np-page-btn-active" : ""}`}
+              onClick={() => onChange(p)}
+              aria-label={`Go to page ${p}`}
+              aria-current={p === currentPage ? "page" : undefined}>
+              {p}
+            </button>
+          ),
+        )}
+      </div>
+
+      <button
+        type="button"
+        className="np-page-nav"
+        onClick={() => onChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        aria-label="Next page">
+        <span className="np-page-nav-text">Next</span>
+        <FaChevronRight aria-hidden="true" />
+      </button>
+    </nav>
+  );
+}
+
 /* ══════════════════════════════════════════════════════════════
    PAGE
    ══════════════════════════════════════════════════════════════ */
@@ -290,10 +413,17 @@ export default function NotificationPage() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [sortOrder, setSortOrder] = useState("newest");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [markingAll, setMarkingAll] = useState(false);
   const [clearing, setClearing] = useState(false);
+
+  const dashboardPath =
+    user?.role === "ADMIN"
+      ? "/admin/dashboard"
+      : user?.role === "PROVIDER"
+        ? "/provider/dashboard"
+        : "/user/dashboard";
 
   /* ---------- FETCH ---------- */
   const fetchNotifications = useCallback(async () => {
@@ -314,9 +444,9 @@ export default function NotificationPage() {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  /* Reset pagination whenever the visible set changes shape */
+  /* Reset to page 1 whenever the filtered set changes shape */
   useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
   }, [search, activeFilter, sortOrder]);
 
   /* ---------- ACTIONS ---------- */
@@ -394,26 +524,28 @@ export default function NotificationPage() {
   );
   const readCount = notifications.length - unreadCount;
 
-  const filtered = useMemo(() => {
-    let list = notifications;
-
-    if (activeFilter === "UNREAD") {
-      list = list.filter((n) => !n.read);
-    } else if (activeFilter !== "ALL") {
-      list = list.filter((n) => n.type === activeFilter);
-    }
-
+  // Search-scoped base list, used for both filtering and live filter counts
+  const searchScoped = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (q) {
-      list = list.filter(
-        (n) =>
-          n.title?.toLowerCase().includes(q) ||
-          n.message?.toLowerCase().includes(q),
-      );
-    }
+    if (!q) return notifications;
+    return notifications.filter(
+      (n) =>
+        n.title?.toLowerCase().includes(q) ||
+        n.message?.toLowerCase().includes(q),
+    );
+  }, [notifications, search]);
 
-    return list;
-  }, [notifications, activeFilter, search]);
+  const filterCounts = useMemo(
+    () => getFilterCounts(searchScoped),
+    [searchScoped],
+  );
+
+  const filtered = useMemo(() => {
+    if (activeFilter === "UNREAD") return searchScoped.filter((n) => !n.read);
+    if (activeFilter !== "ALL")
+      return searchScoped.filter((n) => n.type === activeFilter);
+    return searchScoped;
+  }, [searchScoped, activeFilter]);
 
   const sorted = useMemo(() => {
     const list = [...filtered];
@@ -424,8 +556,22 @@ export default function NotificationPage() {
     return list;
   }, [filtered, sortOrder]);
 
-  const visible = sorted.slice(0, visibleCount);
-  const hasMore = visibleCount < sorted.length;
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+
+  // Keep the current page in range if the list shrinks (e.g. after Clear Read)
+  useEffect(() => {
+    setCurrentPage((p) => Math.min(p, totalPages));
+  }, [totalPages]);
+
+  const pageItems = useMemo(
+    () => sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [sorted, currentPage],
+  );
+
+  const groupedPageItems = useMemo(
+    () => groupNotifications(pageItems),
+    [pageItems],
+  );
 
   const clearFiltersAndSearch = () => {
     setSearch("");
@@ -435,45 +581,61 @@ export default function NotificationPage() {
   /* ---------- RENDER ---------- */
   return (
     <div className="np-page">
+      {/* ── HERO ─────────────────────────────────────────────── */}
+      <header className="np-hero">
+        <span className="np-hero-blob np-hero-blob-1" aria-hidden="true" />
+        <span className="np-hero-blob np-hero-blob-2" aria-hidden="true" />
+
+        <div className="np-hero-inner">
+          <div className="np-hero-left">
+            <div className="np-hero-icon" aria-hidden="true">
+              <FaBell />
+            </div>
+            <div>
+              <h1 className="np-hero-title">Notifications</h1>
+              <p className="np-hero-subtitle">
+                Stay updated with your bookings, provider requests, account
+                activity, reviews and important system updates.
+              </p>
+            </div>
+          </div>
+
+          <div className="np-hero-stats" aria-live="polite">
+            <div className="np-hero-stat">
+              <span className="np-hero-stat-value">{notifications.length}</span>
+              <span className="np-hero-stat-label">Total</span>
+            </div>
+            <div className="np-hero-stat">
+              <span className="np-hero-stat-value">{unreadCount}</span>
+              <span className="np-hero-stat-label">Unread</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <div className="np-container">
-        {/* ── HEADER ───────────────────────────────────────── */}
-        <header className="np-header">
-          <div className="np-header-text">
-            <h1 className="np-title">Notifications</h1>
-            <p className="np-subtitle">
-              Stay updated with your bookings, provider requests, account
-              activity and important updates.
-            </p>
-          </div>
+        {/* ── ACTIONS ROW ──────────────────────────────────── */}
+        <div className="np-actions-row">
+          <button
+            type="button"
+            className="np-btn np-btn-outline"
+            onClick={handleMarkAllRead}
+            disabled={markingAll || unreadCount === 0}
+            aria-label="Mark all notifications as read">
+            <FaCheckDouble aria-hidden="true" />
+            Mark All Read
+          </button>
 
-          <div className="np-header-actions">
-            {unreadCount > 0 && (
-              <span className="np-unread-count" aria-live="polite">
-                {unreadCount} unread
-              </span>
-            )}
-
-            <button
-              type="button"
-              className="np-btn np-btn-outline"
-              onClick={handleMarkAllRead}
-              disabled={markingAll || unreadCount === 0}
-              aria-label="Mark all notifications as read">
-              <FaCheckDouble aria-hidden="true" />
-              Mark All Read
-            </button>
-
-            <button
-              type="button"
-              className="np-btn np-btn-ghost"
-              onClick={handleClearRead}
-              disabled={clearing || readCount === 0}
-              aria-label="Clear read notifications">
-              <FaTrashAlt aria-hidden="true" />
-              Clear Read
-            </button>
-          </div>
-        </header>
+          <button
+            type="button"
+            className="np-btn np-btn-ghost"
+            onClick={handleClearRead}
+            disabled={clearing || readCount === 0}
+            aria-label="Clear read notifications">
+            <FaTrashAlt aria-hidden="true" />
+            Clear Read
+          </button>
+        </div>
 
         {/* ── TOOLBAR: search + sort ──────────────────────── */}
         <div className="np-toolbar">
@@ -529,6 +691,7 @@ export default function NotificationPage() {
               className={`np-chip ${activeFilter === f.key ? "np-chip-active" : ""}`}
               onClick={() => setActiveFilter(f.key)}>
               {f.label}
+              <span className="np-chip-count">{filterCounts[f.key] || 0}</span>
             </button>
           ))}
         </div>
@@ -560,8 +723,18 @@ export default function NotificationPage() {
             <span className="np-state-icon np-empty-icon">
               <FaBell />
             </span>
-            <h2 className="np-state-title">No notifications yet</h2>
-            <p className="np-state-body">You'll receive updates here.</p>
+            <h2 className="np-state-title">No Notifications Yet</h2>
+            <p className="np-state-body">
+              You're all caught up! New booking updates, reviews, provider
+              requests and account activities will appear here.
+            </p>
+            <button
+              type="button"
+              className="np-btn np-btn-solid"
+              onClick={() => navigate(dashboardPath)}>
+              <FaHome aria-hidden="true" />
+              Back to Dashboard
+            </button>
           </div>
         ) : sorted.length === 0 ? (
           <div className="np-state np-empty-state">
@@ -581,31 +754,31 @@ export default function NotificationPage() {
           </div>
         ) : (
           <>
-            <div className="np-list">
-              {visible.map((n, i) => (
-                <div
-                  key={n.id}
-                  className="np-card-enter"
-                  style={{ animationDelay: `${Math.min(i, 8) * 30}ms` }}>
-                  <NotificationCard
-                    notification={n}
-                    role={user?.role}
-                    onOpen={handleOpen}
-                  />
+            {groupedPageItems.map((group) => (
+              <div className="np-group" key={group.label}>
+                <h2 className="np-group-heading">{group.label}</h2>
+                <div className="np-list">
+                  {group.items.map((n, i) => (
+                    <div
+                      key={n.id}
+                      className="np-card-enter"
+                      style={{ animationDelay: `${Math.min(i, 8) * 30}ms` }}>
+                      <NotificationCard
+                        notification={n}
+                        role={user?.role}
+                        onOpen={handleOpen}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            {hasMore && (
-              <div className="np-load-more-wrap">
-                <button
-                  type="button"
-                  className="np-btn np-btn-outline np-load-more"
-                  onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}>
-                  Load More
-                </button>
               </div>
-            )}
+            ))}
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onChange={setCurrentPage}
+            />
           </>
         )}
       </div>
