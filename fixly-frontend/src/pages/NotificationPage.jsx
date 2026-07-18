@@ -22,7 +22,6 @@ import {
   FaArrowRight,
   FaChevronDown,
 } from "react-icons/fa";
-// ⚠️ Adjust this import path to match where your existing fixlyApi instance lives
 import fixlyApi from "../api/fixlyApi";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/NotificationPage.css";

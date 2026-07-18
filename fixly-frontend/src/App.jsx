@@ -15,6 +15,7 @@ import ChangePassword from "./pages/ChangePassword";
 import Profile from "./pages/Profile";
 import AdminProviderRequests from "./pages/AdminProviderRequests";
 import HelpSupport from "./pages/HelpSupport";
+import NotificationPage from "./pages/NotificationPage";
 
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -54,6 +55,14 @@ function App() {
           element={
             <PrivateRoute>
               <HelpSupport />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <PrivateRoute>
+              <NotificationPage />
             </PrivateRoute>
           }
         />
