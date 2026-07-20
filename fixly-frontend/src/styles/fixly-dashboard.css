@@ -95,16 +95,16 @@
 .ud-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 12px;
   padding: 0 24px;
   margin-bottom: 20px;
 }
 
 .ud-stat-card {
   position: relative;
-  display: flex; align-items: flex-start; gap: 14px;
-  border-radius: 18px;
-  padding: 20px 20px 22px;
+  display: flex; align-items: flex-start; gap: 10px;
+  border-radius: 14px;
+  padding: 13px 14px 14px;
   border: 1.5px solid transparent;
   overflow: hidden;
   transition: box-shadow .18s ease, border-color .18s ease, transform .15s ease;
@@ -114,8 +114,8 @@
 /* decorative soft circle bleeding off the right edge, like the reference */
 .ud-stat-card-deco {
   position: absolute;
-  top: -30px; right: -30px;
-  width: 130px; height: 130px;
+  top: -24px; right: -24px;
+  width: 90px; height: 90px;
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
@@ -125,23 +125,23 @@
 .ud-stat-body { position: relative; z-index: 1; }
 
 .ud-stat-icon {
-  width: 48px; height: 48px; border-radius: 14px;
+  width: 36px; height: 36px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.05rem; flex-shrink: 0;
+  font-size: .85rem; flex-shrink: 0;
 }
 
-.ud-stat-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ud-stat-body { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 
 .ud-stat-num {
-  font-size: 1.7rem; font-weight: 900;
-  line-height: 1.1; letter-spacing: -.025em;
+  font-size: 1.3rem; font-weight: 900;
+  line-height: 1.15; letter-spacing: -.02em;
 }
 .ud-stat-lbl {
-  font-size: .92rem; font-weight: 800; color: #0f172a;
+  font-size: .78rem; font-weight: 800; color: #0f172a;
 }
 .ud-stat-desc {
-  font-size: .74rem; font-weight: 500; color: #64748b;
-  line-height: 1.4;
+  font-size: .66rem; font-weight: 500; color: #64748b;
+  line-height: 1.35;
 }
 
 /* ---- Tone: Blue (Total) ---- */
@@ -546,12 +546,12 @@
   .ud-hero-avatar { width: 46px; height: 46px; font-size: 1.15rem; border-radius: 12px; }
   .ud-hero-content { gap: 13px; }
 
-  .ud-stats-grid { padding: 0 14px; gap: 10px; grid-template-columns: 1fr; }
-  .ud-stat-card { padding: 15px 15px 16px; border-radius: 15px; gap: 12px; }
-  .ud-stat-icon { width: 40px; height: 40px; border-radius: 11px; font-size: .92rem; }
-  .ud-stat-num { font-size: 1.4rem; }
-  .ud-stat-lbl { font-size: .84rem; }
-  .ud-stat-desc { font-size: .7rem; }
+  .ud-stats-grid { padding: 0 14px; gap: 10px; grid-template-columns: 1fr 1fr; }
+  .ud-stat-card { padding: 12px 13px 13px; border-radius: 13px; gap: 9px; }
+  .ud-stat-icon { width: 33px; height: 33px; border-radius: 9px; font-size: .8rem; }
+  .ud-stat-num { font-size: 1.2rem; }
+  .ud-stat-lbl { font-size: .74rem; }
+  .ud-stat-desc { font-size: .63rem; }
 
   .ud-filter-bar { margin: 0 14px 14px; padding: 10px 12px; border-radius: 13px; gap: 9px; }
   .ud-filter-label { font-size: .65rem; }
