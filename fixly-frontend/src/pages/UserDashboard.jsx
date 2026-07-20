@@ -92,6 +92,42 @@ const UserDashboard = () => {
   ).length;
   const cancelled = bookings.filter((b) => b.status === "CANCELLED").length;
 
+  /* Stat card definitions — icon, number, label + short description */
+  const STATS = [
+    {
+      key: "total",
+      tone: "blue",
+      icon: <FaClipboardList />,
+      value: total,
+      label: "Total Bookings",
+      desc: "All your service bookings",
+    },
+    {
+      key: "completed",
+      tone: "green",
+      icon: <FaCheckCircle />,
+      value: completed,
+      label: "Completed",
+      desc: "Successfully finished services",
+    },
+    {
+      key: "active",
+      tone: "amber",
+      icon: <FaFire />,
+      value: active,
+      label: "Active",
+      desc: "Pending or accepted right now",
+    },
+    {
+      key: "cancelled",
+      tone: "red",
+      icon: <FaTimesCircle />,
+      value: cancelled,
+      label: "Cancelled",
+      desc: "Bookings that were cancelled",
+    },
+  ];
+
   /* ===== LOADER ===== */
   if (loading) {
     return (
@@ -132,42 +168,17 @@ const UserDashboard = () => {
 
         {/* ===== STATS GRID ===== */}
         <div className="ud-stats-grid">
-          <div className="ud-stat-card ud-stat-blue">
-            <div className="ud-stat-icon">
-              <FaClipboardList />
+          {STATS.map((s) => (
+            <div key={s.key} className={`ud-stat-card ud-stat-${s.tone}`}>
+              <div className="ud-stat-card-deco" />
+              <div className="ud-stat-icon">{s.icon}</div>
+              <div className="ud-stat-body">
+                <span className="ud-stat-num">{s.value}</span>
+                <span className="ud-stat-lbl">{s.label}</span>
+                <span className="ud-stat-desc">{s.desc}</span>
+              </div>
             </div>
-            <div className="ud-stat-body">
-              <span className="ud-stat-num">{total}</span>
-              <span className="ud-stat-lbl">Total Bookings</span>
-            </div>
-          </div>
-          <div className="ud-stat-card ud-stat-green">
-            <div className="ud-stat-icon">
-              <FaCheckCircle />
-            </div>
-            <div className="ud-stat-body">
-              <span className="ud-stat-num">{completed}</span>
-              <span className="ud-stat-lbl">Completed</span>
-            </div>
-          </div>
-          <div className="ud-stat-card ud-stat-amber">
-            <div className="ud-stat-icon">
-              <FaFire />
-            </div>
-            <div className="ud-stat-body">
-              <span className="ud-stat-num">{active}</span>
-              <span className="ud-stat-lbl">Active</span>
-            </div>
-          </div>
-          <div className="ud-stat-card ud-stat-red">
-            <div className="ud-stat-icon">
-              <FaTimesCircle />
-            </div>
-            <div className="ud-stat-body">
-              <span className="ud-stat-num">{cancelled}</span>
-              <span className="ud-stat-lbl">Cancelled</span>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* ===== FILTER BAR ===== */}

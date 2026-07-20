@@ -90,53 +90,99 @@
 }
 
 /* ================================================================
-   STATS GRID
+   STATS GRID — soft tinted cards with icon, number, label + description
    ================================================================ */
 .ud-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 16px;
   padding: 0 24px;
   margin-bottom: 20px;
 }
 
 .ud-stat-card {
-  display: flex; align-items: center; gap: 13px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px 18px;
-  border: 1.5px solid #e4e9f0;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  position: relative;
+  display: flex; align-items: flex-start; gap: 14px;
+  border-radius: 18px;
+  padding: 20px 20px 22px;
+  border: 1.5px solid transparent;
+  overflow: hidden;
   transition: box-shadow .18s ease, border-color .18s ease, transform .15s ease;
 }
-.ud-stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+.ud-stat-card:hover { transform: translateY(-3px); }
 
-.ud-stat-blue:hover   { border-color: #93c5fd; }
-.ud-stat-green:hover  { border-color: #86efac; }
-.ud-stat-amber:hover  { border-color: #fde68a; }
-.ud-stat-red:hover    { border-color: #fca5a5; }
+/* decorative soft circle bleeding off the right edge, like the reference */
+.ud-stat-card-deco {
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ud-stat-icon,
+.ud-stat-body { position: relative; z-index: 1; }
 
 .ud-stat-icon {
-  width: 42px; height: 42px; border-radius: 12px;
+  width: 48px; height: 48px; border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  font-size: .95rem; flex-shrink: 0;
+  font-size: 1.05rem; flex-shrink: 0;
 }
 
-.ud-stat-blue  .ud-stat-icon { background: #dbeafe; color: #1d4ed8; }
-.ud-stat-green .ud-stat-icon { background: #dcfce7; color: #15803d; }
-.ud-stat-amber .ud-stat-icon { background: #fef3c7; color: #d97706; }
-.ud-stat-red   .ud-stat-icon { background: #fee2e2; color: #dc2626; }
-
-.ud-stat-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ud-stat-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 
 .ud-stat-num {
-  font-size: 1.5rem; font-weight: 900; color: #0f172a;
-  line-height: 1; letter-spacing: -.025em;
+  font-size: 1.7rem; font-weight: 900;
+  line-height: 1.1; letter-spacing: -.025em;
 }
 .ud-stat-lbl {
-  font-size: .65rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .07em; color: #94a3b8;
+  font-size: .92rem; font-weight: 800; color: #0f172a;
 }
+.ud-stat-desc {
+  font-size: .74rem; font-weight: 500; color: #64748b;
+  line-height: 1.4;
+}
+
+/* ---- Tone: Blue (Total) ---- */
+.ud-stat-blue {
+  background: linear-gradient(135deg, #eef2ff 0%, #f5f8ff 55%, #ffffff 100%);
+  border-color: #e0e7ff;
+}
+.ud-stat-blue:hover { border-color: #93c5fd; box-shadow: 0 8px 22px rgba(37,99,235,.12); }
+.ud-stat-blue .ud-stat-card-deco { background: rgba(59,130,246,.08); }
+.ud-stat-blue .ud-stat-icon { background: #dbeafe; color: #1d4ed8; }
+.ud-stat-blue .ud-stat-num  { color: #1d4ed8; }
+
+/* ---- Tone: Green (Completed) ---- */
+.ud-stat-green {
+  background: linear-gradient(135deg, #ecfdf3 0%, #f4fdf7 55%, #ffffff 100%);
+  border-color: #dcfce7;
+}
+.ud-stat-green:hover { border-color: #86efac; box-shadow: 0 8px 22px rgba(22,163,74,.12); }
+.ud-stat-green .ud-stat-card-deco { background: rgba(34,197,94,.08); }
+.ud-stat-green .ud-stat-icon { background: #dcfce7; color: #15803d; }
+.ud-stat-green .ud-stat-num  { color: #15803d; }
+
+/* ---- Tone: Amber (Active) ---- */
+.ud-stat-amber {
+  background: linear-gradient(135deg, #fffbeb 0%, #fffdf5 55%, #ffffff 100%);
+  border-color: #fef3c7;
+}
+.ud-stat-amber:hover { border-color: #fde68a; box-shadow: 0 8px 22px rgba(217,119,6,.12); }
+.ud-stat-amber .ud-stat-card-deco { background: rgba(245,158,11,.09); }
+.ud-stat-amber .ud-stat-icon { background: #fef3c7; color: #d97706; }
+.ud-stat-amber .ud-stat-num  { color: #d97706; }
+
+/* ---- Tone: Red (Cancelled) ---- */
+.ud-stat-red {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff6f6 55%, #ffffff 100%);
+  border-color: #fee2e2;
+}
+.ud-stat-red:hover { border-color: #fca5a5; box-shadow: 0 8px 22px rgba(220,38,38,.12); }
+.ud-stat-red .ud-stat-card-deco { background: rgba(239,68,68,.08); }
+.ud-stat-red .ud-stat-icon { background: #fee2e2; color: #dc2626; }
+.ud-stat-red .ud-stat-num  { color: #dc2626; }
 
 /* ================================================================
    FILTER BAR — glassmorphism
@@ -479,7 +525,7 @@
    RESPONSIVE — 768px
    ====================================================== */
 @media (max-width: 768px) {
-  .ud-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .ud-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .ud-filter-bar { margin: 0 16px 16px; }
   .ud-card-grid  { grid-template-columns: 1fr; padding: 0 16px; }
   .ud-hero { padding: 24px 18px 22px; border-radius: 0 0 22px 22px; margin-bottom: 18px; }
@@ -500,11 +546,12 @@
   .ud-hero-avatar { width: 46px; height: 46px; font-size: 1.15rem; border-radius: 12px; }
   .ud-hero-content { gap: 13px; }
 
-  .ud-stats-grid { padding: 0 14px; gap: 9px; }
-  .ud-stat-card { padding: 12px 13px; border-radius: 13px; gap: 10px; }
-  .ud-stat-icon { width: 36px; height: 36px; border-radius: 10px; font-size: .84rem; }
-  .ud-stat-num { font-size: 1.25rem; }
-  .ud-stat-lbl { font-size: .6rem; }
+  .ud-stats-grid { padding: 0 14px; gap: 10px; grid-template-columns: 1fr; }
+  .ud-stat-card { padding: 15px 15px 16px; border-radius: 15px; gap: 12px; }
+  .ud-stat-icon { width: 40px; height: 40px; border-radius: 11px; font-size: .92rem; }
+  .ud-stat-num { font-size: 1.4rem; }
+  .ud-stat-lbl { font-size: .84rem; }
+  .ud-stat-desc { font-size: .7rem; }
 
   .ud-filter-bar { margin: 0 14px 14px; padding: 10px 12px; border-radius: 13px; gap: 9px; }
   .ud-filter-label { font-size: .65rem; }
