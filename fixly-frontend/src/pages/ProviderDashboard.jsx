@@ -173,43 +173,49 @@ const ProviderDashboard = () => {
     }
   };
 
-  /* ===== STAT CARDS CONFIG ===== */
+  /* ===== STAT CARDS CONFIG — icon, number, label + short description ===== */
   const stats = [
     {
       label: "Total",
       value: totalBookings,
       icon: <FaClipboardList />,
       cls: "pd-stat-blue",
+      desc: "All bookings received",
     },
     {
       label: "Pending",
       value: pending,
       icon: <FaHourglassHalf />,
       cls: "pd-stat-amber",
+      desc: "Awaiting your response",
     },
     {
       label: "Accepted",
       value: accepted,
       icon: <FaClock />,
       cls: "pd-stat-sky",
+      desc: "Confirmed, not yet done",
     },
     {
       label: "Completed",
       value: completed.length,
       icon: <FaCheckCircle />,
       cls: "pd-stat-green",
+      desc: "Successfully finished jobs",
     },
     {
       label: "Cancelled",
       value: cancelled,
       icon: <FaTimesCircle />,
       cls: "pd-stat-red",
+      desc: "Bookings that fell through",
     },
     {
       label: "Earnings",
       value: `₹${earnings}`,
       icon: <FaRupeeSign />,
       cls: "pd-stat-violet",
+      desc: "Total from completed jobs",
     },
   ];
 
@@ -284,10 +290,12 @@ const ProviderDashboard = () => {
         <div className="pd-stats-grid">
           {stats.map((s, i) => (
             <div key={i} className={`pd-stat-card ${s.cls}`}>
+              <div className="pd-stat-card-deco" />
               <div className="pd-stat-icon">{s.icon}</div>
               <div className="pd-stat-body">
                 <span className="pd-stat-num">{s.value}</span>
                 <span className="pd-stat-lbl">{s.label}</span>
+                <span className="pd-stat-desc">{s.desc}</span>
               </div>
             </div>
           ))}
