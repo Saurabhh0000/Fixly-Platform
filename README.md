@@ -1,74 +1,202 @@
 # Fixly Platform 🚀
 
-Fixly is a full-stack service booking platform designed to connect users with trusted service providers.
-It enables seamless service discovery, booking management, and administrative control through a modern web application.
+Fixly is a full-stack service marketplace platform that connects customers with verified local service providers.
+
+The platform enables users to discover services, book professionals, track service progress, receive notifications, and manage their service experience through a modern web application.
+
+Fixly provides a complete ecosystem with three roles:
+
+- 👤 User
+- 🛠 Service Provider
+- 🛡 Admin
 
 ---
 
-## 🏗 Project Structure
+# 📌 Project Overview
 
-This repository follows a **monorepo architecture**:
+Fixly solves the problem of finding reliable local service professionals by providing:
+
+- Service discovery
+- Provider verification
+- Online booking management
+- OTP-based service completion
+- Reviews and ratings
+- Real-time notification system
+- Role-based dashboards
+
+---
+
+# 🏗 Project Architecture
+
+Fixly follows a monorepo structure:
 
 ```
 Fixly
-├── backend      # Spring Boot backend application
-└── frontend     # React frontend application (Vite)
+│
+├── backend
+│   └── Spring Boot REST API
+│
+├── frontend
+│   └── React + Vite Application
+│
+└── screenshots
+    └── Application Screenshots
 ```
 
 ---
 
-## ✨ Features
+# ✨ Features
 
-### 👤 Users
+## 👤 User Features
 
-- User registration and authentication
-- Browse and book services
-- Manage bookings and profile
-
-### 🛠 Service Providers
-
-- Manage services
-- View and manage bookings
-- Profile management
-
-### 🛡 Admin
-
-- Manage users and providers
-- Monitor platform activity
-- Control services and bookings
+- User registration and login
+- JWT based authentication
+- Browse service categories
+- Search service providers
+- View provider details
+- Add multiple addresses
+- Book services
+- Track booking status
+- Receive booking notifications
+- OTP based service verification
+- Rate and review providers
+- Manage profile
+- Change password
+- Notification center
 
 ---
 
-## ⚙️ Tech Stack
+# 🛠 Service Provider Features
 
-### Backend
+- Provider registration
+- Upload verification documents
+- Admin approval workflow
+- Provider dashboard
+- Manage availability
+- Receive booking requests
+- Accept or reject bookings
+- View customer details after acceptance
+- Complete services using OTP verification
+- View customer reviews
+- Manage profile
 
-- Java
+---
+
+# 🛡 Admin Features
+
+- Admin dashboard
+- Manage users
+- Manage service providers
+- Verify provider applications
+- Approve providers
+- Reject provider applications
+- Suspend providers
+- Manage service categories
+- Monitor platform activity
+
+---
+
+# 🔔 Notification System
+
+Fixly includes an in-app notification system.
+
+Users receive notifications for:
+
+- New bookings
+- Booking acceptance
+- Booking cancellation
+- Service completion
+- Provider approval
+- Provider rejection
+- Account updates
+- New reviews
+- Address updates
+
+Features:
+
+- Notification dropdown
+- Notification center page
+- Read/unread tracking
+- Notification filtering
+- Pagination
+
+---
+
+# 📧 Email Notification System
+
+Fixly supports email communication for important events:
+
+Examples:
+
+- Welcome emails
+- Booking confirmation
+- Provider approval
+- Password changes
+- Service updates
+
+(Email service powered by Spring Boot Mail)
+
+---
+
+# ⚙️ Tech Stack
+
+## Backend
+
+- Java 17
 - Spring Boot
 - Spring Security
+- JWT Authentication
+- Spring Data JPA
+- Hibernate
 - REST APIs
 - MySQL
 - Maven
 
-### Frontend
+## Frontend
 
-- React (Vite)
-- JavaScript (ES6+)
+- React JS
+- Vite
+- JavaScript ES6+
 - HTML5
 - CSS3
 - Axios
+- React Router
+- React Icons
 
-### Tools
+## Tools
 
-- Git & GitHub
-- VS Code
+- Git
+- GitHub
 - Postman
+- Swagger UI
+- VS Code
 
 ---
 
-## 🚀 Getting Started
+# 🔐 Security
 
-### Prerequisites
+Fixly implements:
+
+- JWT authentication
+- Role Based Authorization
+
+Roles:
+
+```
+USER
+PROVIDER
+ADMIN
+```
+
+Protected routes are secured using Spring Security.
+
+---
+
+# 🚀 Installation & Setup
+
+## Prerequisites
+
+Install:
 
 - Java 17+
 - Node.js 18+
@@ -77,15 +205,33 @@ Fixly
 
 ---
 
-## 🔧 Backend Setup
+# Backend Setup
+
+Clone repository:
 
 ```bash
-cd backend
+git clone https://github.com/Saurabhh0000/Fixly-Platform.git
+```
+
+Navigate:
+
+```bash
+cd Fixly/backend
+```
+
+Build project:
+
+```bash
 mvn clean install
+```
+
+Run application:
+
+```bash
 mvn spring-boot:run
 ```
 
-Backend runs on:
+Backend URL:
 
 ```
 http://localhost:8080
@@ -93,15 +239,27 @@ http://localhost:8080
 
 ---
 
-## 🎨 Frontend Setup
+# Frontend Setup
+
+Navigate:
 
 ```bash
-cd frontend
+cd Fixly/frontend
+```
+
+Install dependencies:
+
+```bash
 npm install
+```
+
+Run development server:
+
+```bash
 npm run dev
 ```
 
-Frontend runs on:
+Frontend URL:
 
 ```
 http://localhost:5173
@@ -109,183 +267,222 @@ http://localhost:5173
 
 ---
 
-## 📘 Swagger / API Documentation
+# 📘 API Documentation
 
-Fixly uses **Swagger (OpenAPI 3)** for API documentation.
+Fixly uses Swagger OpenAPI documentation.
 
-After starting the backend, open:
+After running backend:
 
 ```
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
 ```
 
 Swagger provides:
 
-- Interactive API testing
-- Request & response schemas
-- Clear API contracts for frontend & backend teams
+- API testing
+- Request/Response documentation
+- Endpoint details
 
 ---
 
-## 🔗 API Endpoints (Overview)
+# 🔗 API Overview
 
-### 🔐 Authentication
-
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET  /api/auth/me`
-
-### 👤 Users
-
-- `GET  /api/users/{id}`
-- `PUT  /api/users/{id}`
-- `GET  /api/users/bookings`
-
-### 🛠 Service Providers
-
-- `POST /api/providers`
-- `GET  /api/providers`
-- `GET  /api/providers/{id}`
-- `PUT  /api/providers/{id}`
-
-### 📅 Bookings
-
-- `POST /api/bookings`
-- `GET  /api/bookings/{id}`
-- `GET  /api/bookings/user`
-- `GET  /api/bookings/provider`
-- `PUT  /api/bookings/{id}`
-
-### 🛡 Admin
-
-- `GET  /api/admin/users`
-- `GET  /api/admin/providers`
-- `GET  /api/admin/bookings`
-- `DELETE /api/admin/users/{id}`
-
-Base URL:
+## Authentication
 
 ```
-http://localhost:8080
+POST /api/auth/register
+
+POST /api/auth/login
+
+GET /api/auth/me
+```
+
+## Users
+
+```
+GET /api/users/{id}
+
+PUT /api/users/{id}
+
+PUT /api/users/change-password
+```
+
+## Providers
+
+```
+POST /api/providers/register
+
+GET /api/providers/search
+
+GET /api/providers/{id}
+
+PUT /api/providers/status
+```
+
+## Bookings
+
+```
+POST /api/bookings
+
+GET /api/bookings/user
+
+GET /api/bookings/provider
+
+PUT /api/bookings/{id}/accept
+
+PUT /api/bookings/{id}/complete
+```
+
+## Reviews
+
+```
+POST /api/reviews
+
+GET /api/reviews/provider/{id}
+```
+
+## Notifications
+
+```
+GET /api/notifications
+
+GET /api/notifications/count
+
+PUT /api/notifications/{id}/read
+
+PUT /api/notifications/read-all
 ```
 
 ---
 
-## 📸 Screenshots
+# 🌍 Deployment
 
-Create a folder named **`screenshots`** in the project root and add UI images.
-
-### Folder Structure
+Frontend:
 
 ```
-Fixly
-└── screenshots
-    ├── home.png
-    ├── login.png
-    ├── dashboard.png
-    ├── booking.png
-    └── swagger.png
+Netlify
 ```
 
-### Preview
+Backend:
 
-#### Home Page
+```
+Render
+```
 
-**Hero Section**
-![Home Page 1](screenshots/HomePage-1.png)
+Database:
 
-**Service Categories**
-![Home Page 2](screenshots/HomePage-2.png)
+```
+PostgreSQL / MySQL
+```
 
-**Popular Services**
-![Home Page 3](screenshots/HomePage-3.png)
+---
 
-**Footer & CTA**
-![Home Page 4](screenshots/HomePage-4.png)
+# 📸 Screenshots
 
-#### Login Page
+## Home Page
+
+![Home](screenshots/HomePage-1.png)
+
+## Login
 
 ![Login](screenshots/LoginPage.png)
 
-#### Registration Page
-
-![Login](screenshots/LoginPage.png)
-
-### User Dashboard
+## User Dashboard
 
 ![Dashboard](screenshots/UserDashboard.png)
 
-### Book Service
+## Provider Dashboard
 
-![Book Service](screenshots/UserBookService.png)
+![Provider](screenshots/ProviderDashboard-1.png)
 
-### User Bookings
+## Admin Dashboard
 
-![User Booking](screenshots/UserBooking.png)
+![Admin](screenshots/AdminDashboard.png)
 
-### Become Provider
+## Notification Center
 
-![Become Provider](screenshots/BecomeProvider.png)
+![Notifications](screenshots/NotificationPage.png)
 
-#### Provider Dashboard
+## Swagger Documentation
 
-**Provider Overview**
-![Provider Dashboard 1](screenshots/ProviderDashboard-1.png)
-
-**Booking Management**
-![Provider Dashboard 2](screenshots/ProviderDashboard-2.png)
-
-**Rating And Footer**
-![Provider Dashboard 3](screenshots/ProviderDashboard-3.png)
-
-#### Admin Dashboard
-
-**Admin Overview**
-![Admin Dashboard](screenshots/AdminDashboard.png)
-
-#### API Documentation (Swagger)
-
-**User & Service categories APIs**
-![Swagger API 1](screenshots/Swagger-API-1.png)
-
-**Review & Booking APIs**
-![Swagger API 2](screenshots/Swagger-API-2.png)
-
-**Authentication & Address APIs**
-![Swagger API 3](screenshots/Swagger-API-3.png)
+![Swagger](screenshots/Swagger-API-1.png)
 
 ---
 
-## 🔐 Environment Variables
+# 🔒 Environment Variables
 
-Create `.env` files where required and configure:
+Create environment files:
 
-- Database credentials
-- API URLs
-- Secret keys
+Backend:
 
-⚠️ **Do not commit `.env` files to GitHub**
+```
+application.properties
+```
+
+Frontend:
+
+```
+.env
+```
+
+Example:
+
+```
+DATABASE_URL=
+JWT_SECRET=
+VITE_API_BASE_URL=
+```
+
+⚠️ Never commit environment files.
 
 ---
 
-## 🤝 Contribution Guidelines
+# 🤝 Contribution
 
-1. Fork the repository
-2. Create a new branch (`feature/your-feature`)
-3. Commit your changes
-4. Push to your branch
-5. Create a Pull Request
+1. Fork repository
+
+2. Create branch
+
+```
+git checkout -b feature/new-feature
+```
+
+3. Commit changes
+
+```
+git commit -m "Added new feature"
+```
+
+4. Push branch
+
+```
+git push origin feature/new-feature
+```
+
+5. Create Pull Request
 
 ---
 
-## 📜 License
+# 📜 License
 
-© Fixly. All rights reserved.  
-This project is proprietary and confidential.
+This project is proprietary software.
+
+© Fixly Platform
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Developer
 
-**Fixly Team**  
-Built with ❤️ to simplify service booking.
+**Saurabh Kumar**
+
+Full Stack Developer
+
+GitHub:
+https://github.com/Saurabhh0000
+
+Portfolio:
+https://saurabh-kumar-dev.netlify.app
+
+---
+
+Built with ❤️ using Spring Boot + React
