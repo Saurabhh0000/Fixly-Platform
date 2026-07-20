@@ -125,6 +125,46 @@ const UserBookings = () => {
     (b) => b.status === "CANCELLED",
   ).length;
 
+  /* Stat card definitions — icon, number, label + short description */
+  const STATS = [
+    {
+      key: "total",
+      tone: "total",
+      icon: <FaListAlt />,
+      iconCls: "ub-si-blue",
+      value: bookings.length,
+      label: "Total",
+      desc: "All your service bookings",
+    },
+    {
+      key: "completed",
+      tone: "completed",
+      icon: <FaCheckCircle />,
+      iconCls: "ub-si-green",
+      value: completedCount,
+      label: "Completed",
+      desc: "Successfully finished services",
+    },
+    {
+      key: "active",
+      tone: "active",
+      icon: <FaBolt />,
+      iconCls: "ub-si-amber",
+      value: activeCount,
+      label: "Active",
+      desc: "Pending or accepted right now",
+    },
+    {
+      key: "cancelled",
+      tone: "cancelled",
+      icon: <FaBan />,
+      iconCls: "ub-si-red",
+      value: cancelledCount,
+      label: "Cancelled",
+      desc: "Bookings that were cancelled",
+    },
+  ];
+
   /* ===== LOADER ===== */
   if (loading) {
     return (
@@ -159,44 +199,19 @@ const UserBookings = () => {
           </div>
         </div>
 
-        {/* ===== STATS ROW (outside hero, with icons) ===== */}
+        {/* ===== STATS ROW (outside hero, with icons + description) ===== */}
         <div className="ub-stats-row">
-          <div className="ub-stat-card ub-stat-total">
-            <div className="ub-stat-icon-wrap ub-si-blue">
-              <FaListAlt />
+          {STATS.map((s) => (
+            <div key={s.key} className={`ub-stat-card ub-stat-${s.tone}`}>
+              <div className="ub-stat-card-deco" />
+              <div className={`ub-stat-icon-wrap ${s.iconCls}`}>{s.icon}</div>
+              <div className="ub-stat-info">
+                <span className="ub-stat-num">{s.value}</span>
+                <span className="ub-stat-lbl">{s.label}</span>
+                <span className="ub-stat-desc">{s.desc}</span>
+              </div>
             </div>
-            <div className="ub-stat-info">
-              <span className="ub-stat-num">{bookings.length}</span>
-              <span className="ub-stat-lbl">Total</span>
-            </div>
-          </div>
-          <div className="ub-stat-card ub-stat-completed">
-            <div className="ub-stat-icon-wrap ub-si-green">
-              <FaCheckCircle />
-            </div>
-            <div className="ub-stat-info">
-              <span className="ub-stat-num">{completedCount}</span>
-              <span className="ub-stat-lbl">Completed</span>
-            </div>
-          </div>
-          <div className="ub-stat-card ub-stat-active">
-            <div className="ub-stat-icon-wrap ub-si-amber">
-              <FaBolt />
-            </div>
-            <div className="ub-stat-info">
-              <span className="ub-stat-num">{activeCount}</span>
-              <span className="ub-stat-lbl">Active</span>
-            </div>
-          </div>
-          <div className="ub-stat-card ub-stat-cancelled">
-            <div className="ub-stat-icon-wrap ub-si-red">
-              <FaBan />
-            </div>
-            <div className="ub-stat-info">
-              <span className="ub-stat-num">{cancelledCount}</span>
-              <span className="ub-stat-lbl">Cancelled</span>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* ===== FILTER BAR ===== */}

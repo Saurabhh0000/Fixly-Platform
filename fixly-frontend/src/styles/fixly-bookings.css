@@ -120,17 +120,6 @@
   padding: 0 20px;
 }
 
-.ub-stat-num {
-  font-size: 1.5rem; font-weight: 900; color: #fff;
-  line-height: 1; letter-spacing: -.025em;
-}
-
-.ub-stat-lbl {
-  font-size: .65rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .08em;
-  color: rgba(255,255,255,.7);
-}
-
 .ub-stat-divider {
   width: 1px; height: 36px;
   background: rgba(255,255,255,.25);
@@ -452,10 +441,6 @@
 
   .ub-stat-tile { padding: 0 14px; }
 
-  .ub-stat-num { font-size: 1.25rem; }
-
-  .ub-stat-lbl { font-size: .6rem; }
-
   .ub-grid { grid-template-columns: 1fr; gap: 14px; padding: 0 12px; }
 
   .ub-card { border-radius: 20px; padding: 18px 18px 16px; }
@@ -516,42 +501,50 @@
 }
 
 /* ================================================================
-   STATS ROW — outside hero, with icons
+   STATS ROW — outside hero, tinted gradient cards with
+   icon, number, label + short description
    ================================================================ */
 .ub-stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 12px;
   padding: 0 20px;
   margin-bottom: 18px;
 }
 
 .ub-stat-card {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #ffffff;
+  align-items: flex-start;
+  gap: 10px;
   border-radius: 14px;
-  padding: 14px 16px;
-  border: 1.5px solid #e4e9f0;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  padding: 13px 14px 14px;
+  border: 1.5px solid transparent;
+  overflow: hidden;
   transition: box-shadow .18s ease, border-color .18s ease, transform .15s ease;
 }
 
 .ub-stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  transform: translateY(-3px);
 }
 
-.ub-stat-total:hover     { border-color: #bfdbfe; }
-.ub-stat-completed:hover { border-color: #86efac; }
-.ub-stat-active:hover    { border-color: #fde68a; }
-.ub-stat-cancelled:hover { border-color: #fca5a5; }
+/* decorative soft circle bleeding off the right edge */
+.ub-stat-card-deco {
+  position: absolute;
+  top: -24px; right: -24px;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ub-stat-icon-wrap,
+.ub-stat-info { position: relative; z-index: 1; }
 
 .ub-stat-icon-wrap {
-  width: 40px; height: 40px; border-radius: 11px;
+  width: 36px; height: 36px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  font-size: .95rem; flex-shrink: 0;
+  font-size: .85rem; flex-shrink: 0;
 }
 
 .ub-si-blue   { background: #dbeafe; color: #1d4ed8; }
@@ -560,18 +553,58 @@
 .ub-si-red    { background: #fee2e2; color: #dc2626; }
 
 .ub-stat-info {
-  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  display: flex; flex-direction: column; gap: 1px; min-width: 0;
 }
 
 .ub-stat-num {
-  font-size: 1.4rem; font-weight: 900; color: #0f172a;
-  line-height: 1; letter-spacing: -.025em;
+  font-size: 1.3rem; font-weight: 900;
+  line-height: 1.15; letter-spacing: -.02em;
 }
 
 .ub-stat-lbl {
-  font-size: .65rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .07em; color: #94a3b8;
+  font-size: .78rem; font-weight: 800; color: #0f172a;
 }
+
+.ub-stat-desc {
+  font-size: .66rem; font-weight: 500; color: #64748b;
+  line-height: 1.35;
+}
+
+/* ---- Tone: Blue (Total) ---- */
+.ub-stat-total {
+  background: linear-gradient(135deg, #eef2ff 0%, #f5f8ff 55%, #ffffff 100%);
+  border-color: #e0e7ff;
+}
+.ub-stat-total:hover { border-color: #93c5fd; box-shadow: 0 8px 22px rgba(37,99,235,.12); }
+.ub-stat-total .ub-stat-card-deco { background: rgba(59,130,246,.08); }
+.ub-stat-total .ub-stat-num { color: #1d4ed8; }
+
+/* ---- Tone: Green (Completed) ---- */
+.ub-stat-completed {
+  background: linear-gradient(135deg, #ecfdf3 0%, #f4fdf7 55%, #ffffff 100%);
+  border-color: #dcfce7;
+}
+.ub-stat-completed:hover { border-color: #86efac; box-shadow: 0 8px 22px rgba(22,163,74,.12); }
+.ub-stat-completed .ub-stat-card-deco { background: rgba(34,197,94,.08); }
+.ub-stat-completed .ub-stat-num { color: #15803d; }
+
+/* ---- Tone: Amber (Active) ---- */
+.ub-stat-active {
+  background: linear-gradient(135deg, #fffbeb 0%, #fffdf5 55%, #ffffff 100%);
+  border-color: #fef3c7;
+}
+.ub-stat-active:hover { border-color: #fde68a; box-shadow: 0 8px 22px rgba(217,119,6,.12); }
+.ub-stat-active .ub-stat-card-deco { background: rgba(245,158,11,.09); }
+.ub-stat-active .ub-stat-num { color: #d97706; }
+
+/* ---- Tone: Red (Cancelled) ---- */
+.ub-stat-cancelled {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff6f6 55%, #ffffff 100%);
+  border-color: #fee2e2;
+}
+.ub-stat-cancelled:hover { border-color: #fca5a5; box-shadow: 0 8px 22px rgba(220,38,38,.12); }
+.ub-stat-cancelled .ub-stat-card-deco { background: rgba(239,68,68,.08); }
+.ub-stat-cancelled .ub-stat-num { color: #dc2626; }
 
 /* ================================================================
    FILTER BAR
@@ -674,10 +707,12 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px; padding: 0 12px; margin-bottom: 14px;
   }
-  .ub-stat-card { padding: 11px 12px; border-radius: 12px; gap: 9px; }
-  .ub-stat-icon-wrap { width: 34px; height: 34px; border-radius: 9px; font-size: .82rem; }
+  .ub-stat-card { padding: 12px 13px 13px; border-radius: 13px; gap: 9px; }
+  .ub-stat-card-deco { width: 70px; height: 70px; top: -18px; right: -18px; }
+  .ub-stat-icon-wrap { width: 33px; height: 33px; border-radius: 9px; font-size: .8rem; }
   .ub-stat-num { font-size: 1.2rem; }
-  .ub-stat-lbl { font-size: .6rem; }
+  .ub-stat-lbl { font-size: .74rem; }
+  .ub-stat-desc { font-size: .63rem; }
 
   .ub-filter-bar { margin: 0 12px 16px; padding: 10px 12px; border-radius: 12px; gap: 9px; }
   .ub-filter-label { font-size: .65rem; }
