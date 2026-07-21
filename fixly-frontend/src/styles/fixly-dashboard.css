@@ -185,72 +185,161 @@
 .ud-stat-red .ud-stat-num  { color: #dc2626; }
 
 /* ================================================================
-   FILTER BAR — glassmorphism
+   FILTER BAR — premium card (Airbnb / Urban Company style)
    ================================================================ */
 .ud-filter-bar {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 20px 22px;
+  margin: 0 24px 20px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.ud-filter-bar:hover {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+  border-color: #DCFCE7;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.ud-filter-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(255,255,255,.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1.5px solid rgba(255,255,255,.9);
-  border-radius: 16px;
-  padding: 12px 18px;
-  margin: 0 24px 20px;
-  box-shadow: 0 4px 16px rgba(22,163,74,.06),
-              inset 0 1px 0 rgba(255,255,255,.95);
-  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
-.ud-filter-label {
-  display: flex; align-items: center; gap: 6px;
-  font-size: .7rem; font-weight: 800;
-  text-transform: uppercase; letter-spacing: .09em; color: #475569;
+.ud-filter-header-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #F0FDF4;
+  border: 1.5px solid #DCFCE7;
+  color: #16A34A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
   flex-shrink: 0;
 }
-.ud-filter-icon { color: #16a34a; font-size: .75rem; }
 
-.ud-filter-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.ud-filter-title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+}
+
+.ud-filter-subtitle {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: #64748B;
+  margin: 0;
+}
+
+/* ── Chip row ─────────────────────────────────────────────── */
+.ud-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
 
 .ud-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 13px; border-radius: 22px;
-  background: rgba(255,255,255,.7);
-  border: 1.5px solid rgba(255,255,255,.9);
-  backdrop-filter: blur(8px);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  font-size: .73rem; font-weight: 700; color: #475569;
-  cursor: pointer; white-space: nowrap;
-  transition: background .15s ease, border-color .15s ease,
-              color .15s ease, transform .12s ease, box-shadow .15s ease;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
 }
+
+.ud-chip-icon {
+  display: inline-flex;
+  font-size: 0.72rem;
+  color: #16A34A;
+  transition: color 0.25s ease;
+}
+
 .ud-chip:hover {
-  background: rgba(255,255,255,.92); border-color: #e2e8f0;
-  transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,.07);
+  border-color: #16A34A;
+  background: #F0FDF4;
+  color: #15803D;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.14);
 }
-.ud-chip svg { font-size: .7rem; }
+.ud-chip:hover .ud-chip-icon {
+  color: #15803D;
+}
 
 .ud-chip-label { /* always shown */ }
 
 .ud-chip-count {
-  background: rgba(0,0,0,.09); border-radius: 10px;
-  padding: 1px 6px; font-size: .63rem; font-weight: 900;
+  background: #F1F5F9;
+  color: #475569;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
-/* Active */
+/* Active state — solid Fixly green, matches the rest of the app */
 .ud-chip-active {
-  background: linear-gradient(160deg,#15803d 0%,#16a34a 40%,#22c55e 100%) !important;
-  border-color: transparent !important; color: #fff !important;
-  box-shadow: 0 4px 14px rgba(22,163,74,.35) !important;
+  background: linear-gradient(160deg, #15803D 0%, #16A34A 40%, #22C55E 100%) !important;
+  border-color: transparent !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.32) !important;
 }
-.ud-chip-active .ud-chip-count { background: rgba(255,255,255,.25); color:#fff; }
+.ud-chip-active .ud-chip-icon {
+  color: #FFFFFF !important;
+}
+.ud-chip-active .ud-chip-count {
+  background: rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+}
+.ud-chip-active:hover {
+  transform: translateY(-2px);
+}
 
-/* idle tints */
-.ud-chip-pending:not(.ud-chip-active)   { background:rgba(254,249,195,.75); border-color:rgba(253,230,138,.8); color:#713f12; }
-.ud-chip-accepted:not(.ud-chip-active)  { background:rgba(219,234,254,.75); border-color:rgba(147,197,253,.8); color:#1e3a8a; }
-.ud-chip-completed:not(.ud-chip-active) { background:rgba(220,252,231,.75); border-color:rgba(134,239,172,.8); color:#14532d; }
-.ud-chip-cancelled:not(.ud-chip-active) { background:rgba(254,226,226,.75); border-color:rgba(252,165,165,.8); color:#7f1d1d; }
+/* Idle status tints — softened to fit the premium neutral card look */
+.ud-chip-pending:not(.ud-chip-active) {
+  background: #FFFBEB;
+  border-color: #FEF3C7;
+  color: #92400E;
+}
+.ud-chip-pending:not(.ud-chip-active) .ud-chip-icon { color: #D97706; }
+
+.ud-chip-accepted:not(.ud-chip-active) {
+  background: #EFF6FF;
+  border-color: #DBEAFE;
+  color: #1E3A8A;
+}
+.ud-chip-accepted:not(.ud-chip-active) .ud-chip-icon { color: #2563EB; }
+
+.ud-chip-completed:not(.ud-chip-active) {
+  background: #F0FDF4;
+  border-color: #DCFCE7;
+  color: #14532D;
+}
+.ud-chip-completed:not(.ud-chip-active) .ud-chip-icon { color: #16A34A; }
+
+.ud-chip-cancelled:not(.ud-chip-active) {
+  background: #FEF2F2;
+  border-color: #FEE2E2;
+  color: #7F1D1D;
+}
+.ud-chip-cancelled:not(.ud-chip-active) .ud-chip-icon { color: #DC2626; }
 
 /* RESULTS LINE */
 .ud-results-line {
@@ -526,7 +615,10 @@
    ====================================================== */
 @media (max-width: 768px) {
   .ud-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .ud-filter-bar { margin: 0 16px 16px; }
+  .ud-filter-bar {
+    margin: 0 16px 16px;
+    padding: 18px 16px;
+  }
   .ud-card-grid  { grid-template-columns: 1fr; padding: 0 16px; }
   .ud-hero { padding: 24px 18px 22px; border-radius: 0 0 22px 22px; margin-bottom: 18px; }
   .ud-hero-title { font-size: 1.15rem; }
@@ -553,9 +645,35 @@
   .ud-stat-lbl { font-size: .74rem; }
   .ud-stat-desc { font-size: .63rem; }
 
-  .ud-filter-bar { margin: 0 14px 14px; padding: 10px 12px; border-radius: 13px; gap: 9px; }
-  .ud-filter-label { font-size: .65rem; }
-  .ud-chip { font-size: .68rem; padding: 5px 10px; }
+  .ud-filter-bar {
+    margin: 0 14px 14px;
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+  .ud-filter-header {
+    margin-bottom: 13px;
+  }
+  .ud-filter-header-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+  }
+  .ud-filter-title {
+    font-size: 0.86rem;
+  }
+  .ud-filter-subtitle {
+    font-size: 0.7rem;
+  }
+  .ud-filter-chips {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ud-chip {
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px 14px;
+  }
 
   .ud-card-grid { padding: 0 14px; gap: 14px; }
   .ud-card { border-radius: 16px; }
@@ -580,7 +698,9 @@
   .ud-hero { padding: 18px 12px 16px; }
   .ud-hero-title { font-size: .97rem; }
   .ud-stats-grid { padding: 0 12px; }
-  .ud-filter-bar { margin: 0 12px 13px; }
+  .ud-filter-bar {
+    margin: 0 12px 13px;
+  }
   .ud-card-grid { padding: 0 12px; gap: 12px; }
   .ud-chip-label { display: none; }
   .ud-chip { padding: 5px 9px; }

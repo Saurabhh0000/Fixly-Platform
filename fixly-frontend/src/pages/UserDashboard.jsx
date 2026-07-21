@@ -183,9 +183,18 @@ const UserDashboard = () => {
 
         {/* ===== FILTER BAR ===== */}
         <div className="ud-filter-bar">
-          <div className="ud-filter-label">
-            <FaFilter className="ud-filter-icon" /> Filter
+          <div className="ud-filter-header">
+            <div className="ud-filter-header-icon">
+              <FaFilter />
+            </div>
+            <div className="ud-filter-header-text">
+              <h3 className="ud-filter-title">Filter Bookings</h3>
+              <p className="ud-filter-subtitle">
+                Narrow down your bookings by status
+              </p>
+            </div>
           </div>
+
           <div className="ud-filter-chips">
             {FILTERS.map((f) => {
               const count =
@@ -197,7 +206,7 @@ const UserDashboard = () => {
                   key={f.key}
                   className={`ud-chip ud-chip-${f.key.toLowerCase()} ${filter === f.key ? "ud-chip-active" : ""}`}
                   onClick={() => handleFilter(f.key)}>
-                  {f.icon}
+                  <span className="ud-chip-icon">{f.icon}</span>
                   <span className="ud-chip-label">{f.label}</span>
                   <span className="ud-chip-count">{count}</span>
                 </button>
