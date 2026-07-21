@@ -338,6 +338,7 @@
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--fs-text-muted);
+  text-align: center;
 }
 
 .fs-input-body select {
@@ -762,3 +763,111 @@
     padding: 6px 11px;
   }
 }
+
+/* ════════════════════════════════════════
+   CUSTOM SELECT — City / Service dropdowns
+   Native <option> elements can't be styled
+   consistently across browsers, so the trigger
+   below replaces the native <select> visually
+   while the option list is a fully custom,
+   portal-rendered panel. Layout, spacing and
+   colors of the surrounding search card are
+   untouched.
+════════════════════════════════════════ */
+.fs-select-wrap { position: relative; }
+
+.fs-select-trigger {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--fs-text-dark);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  cursor: pointer;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  border-radius: 6px;
+  transition: box-shadow 0.25s ease, outline-color 0.25s ease;
+}
+.fs-select-trigger:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(22,163,74,0.14);
+}
+
+.fs-select-value {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fs-select-placeholder {
+  color: var(--fs-text-muted);
+  font-weight: 500;
+}
+
+.fs-select-arrow-open {
+  transform: rotate(180deg);
+  color: #16a34a;
+}
+
+.fs-select-menu {
+  position: fixed;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(15,23,42,0.16), 0 4px 14px rgba(22,163,74,0.10);
+  padding: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 1200;
+  list-style: none;
+  margin: 0;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  animation: fs-select-open 0.18s ease both;
+}
+
+@keyframes fs-select-open {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fs-select-option {
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.fs-select-option:hover,
+.fs-select-option:focus-visible {
+  background: #F0FDF4;
+  color: #16A34A;
+  outline: none;
+}
+.fs-select-option-active {
+  background: #16A34A;
+  color: #ffffff;
+}
+.fs-select-option-active:hover,
+.fs-select-option-active:focus-visible {
+  background: #15803D;
+  color: #ffffff;
+}
+
+.fs-select-empty {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--fs-text-muted);
+  font-style: italic;
+  cursor: default;
+}
+
+.fs-select-menu::-webkit-scrollbar { width: 6px; }
+.fs-select-menu::-webkit-scrollbar-thumb { background: #DCFCE7; border-radius: 999px; }
+.fs-select-menu::-webkit-scrollbar-thumb:hover { background: #86efac; }
