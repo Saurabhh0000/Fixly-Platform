@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import fixlyApi from "../api/fixlyApi";
@@ -49,6 +50,129 @@ const warnToast = (msg) =>
       fontFamily: "'DM Sans', system-ui, sans-serif",
     },
   });
+
+/* ─────────────────────────────────────────────────────────
+   FhSelect — a fully-styled dropdown that visually replaces
+   the native <select>. Rendered via a portal to document.body
+   so it isn't clipped by the search card's overflow:hidden,
+   and so it can be styled consistently across all browsers
+   (native <option> elements cannot be).
+   ───────────────────────────────────────────────────────── */
+const FhSelect = ({ icon, label, placeholder, value, options, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
+  const wrapRef = useRef(null);
+  const menuRef = useRef(null);
+
+  const updatePosition = () => {
+    if (!wrapRef.current) return;
+    const rect = wrapRef.current.getBoundingClientRect();
+    setPos({
+      top: rect.bottom + 8,
+      left: rect.left,
+      width: rect.width,
+    });
+  };
+
+  const toggleOpen = () => {
+    if (!open) updatePosition();
+    setOpen((o) => !o);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleClickOutside = (e) => {
+      if (
+        wrapRef.current &&
+        !wrapRef.current.contains(e.target) &&
+        menuRef.current &&
+        !menuRef.current.contains(e.target)
+      ) {
+        setOpen(false);
+      }
+    };
+    const handleKey = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const handleReposition = () => updatePosition();
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKey);
+    window.addEventListener("scroll", handleReposition, true);
+    window.addEventListener("resize", handleReposition);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKey);
+      window.removeEventListener("scroll", handleReposition, true);
+      window.removeEventListener("resize", handleReposition);
+    };
+  }, [open]);
+
+  const selectedLabel = (() => {
+    const found = options.find((o) => o.value === value);
+    return found ? found.label : "";
+  })();
+
+  return (
+    <div className="fh-input-group fh-select-wrap" ref={wrapRef}>
+      <div className="fh-input-icon">{icon}</div>
+      <div className="fh-input-body">
+        <span className="fh-input-lbl">{label}</span>
+        <button
+          type="button"
+          className="fh-select-trigger"
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          onClick={toggleOpen}>
+          <span
+            className={`fh-select-value ${!selectedLabel ? "fh-select-placeholder" : ""}`}>
+            {selectedLabel || placeholder}
+          </span>
+        </button>
+      </div>
+      <FaChevronDown
+        className={`fh-chevron ${open ? "fh-chevron-open" : ""}`}
+      />
+
+      {open &&
+        createPortal(
+          <ul
+            className="fh-select-menu"
+            role="listbox"
+            ref={menuRef}
+            style={{ top: pos.top, left: pos.left, width: pos.width }}>
+            {options.length === 0 && (
+              <li className="fh-select-empty">No options available</li>
+            )}
+            {options.map((o) => (
+              <li
+                key={o.value}
+                role="option"
+                aria-selected={value === o.value}
+                tabIndex={0}
+                className={`fh-select-option ${value === o.value ? "fh-select-option-active" : ""}`}
+                onClick={() => {
+                  onChange(o.value);
+                  setOpen(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onChange(o.value);
+                    setOpen(false);
+                  }
+                }}>
+                {o.label}
+              </li>
+            ))}
+          </ul>,
+          document.body,
+        )}
+    </div>
+  );
+};
 
 const Home = () => {
   const navigate = useNavigate();
@@ -163,48 +287,29 @@ const Home = () => {
 
             <div className="fh-search-row">
               {/* city */}
-              <div className="fh-input-group">
-                <div className="fh-input-icon">
-                  <FaMapMarkerAlt />
-                </div>
-                <div className="fh-input-body">
-                  <span className="fh-input-lbl">City</span>
-                  <select
-                    value={searchCity}
-                    onChange={(e) => setSearchCity(e.target.value)}>
-                    <option value="">Select your city</option>
-                    {cities.map((c, i) => (
-                      <option key={i} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <FaChevronDown className="fh-chevron" />
-              </div>
+              <FhSelect
+                icon={<FaMapMarkerAlt />}
+                label="City"
+                placeholder="Select your city"
+                value={searchCity}
+                onChange={setSearchCity}
+                options={cities.map((c) => ({ value: c, label: c }))}
+              />
 
               <div className="fh-search-sep" />
 
               {/* category */}
-              <div className="fh-input-group">
-                <div className="fh-input-icon">
-                  <FaTools />
-                </div>
-                <div className="fh-input-body">
-                  <span className="fh-input-lbl">Service</span>
-                  <select
-                    value={searchCategory}
-                    onChange={(e) => setSearchCategory(e.target.value)}>
-                    <option value="">Select a service</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.name}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <FaChevronDown className="fh-chevron" />
-              </div>
+              <FhSelect
+                icon={<FaTools />}
+                label="Service"
+                placeholder="Select a service"
+                value={searchCategory}
+                onChange={setSearchCategory}
+                options={categories.map((c) => ({
+                  value: c.name,
+                  label: c.name,
+                }))}
+              />
 
               <button className="fh-search-btn" onClick={handleSearch}>
                 <FaSearch />
