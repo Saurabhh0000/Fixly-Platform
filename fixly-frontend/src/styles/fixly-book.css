@@ -1197,3 +1197,29 @@
   .fb-confirm-btn { font-size: 0.86rem; }
   .fb-success-card h2 { font-size: 1.2rem; }
 }
+
+/* ── Provider hero rating (real average, replaces the old
+   hardcoded 5-star row). Sits in the same top-right slot the
+   static stars occupied, so spacing is unchanged. ── */
+.fb-ph-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.fb-ph-stars svg.fb-ph-star-filled { color: #fde68a; }
+.fb-ph-stars svg.fb-ph-star-empty  { color: rgba(255,255,255,0.30); }
+
+.fb-ph-rating-val {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+}
+
+.fb-ph-no-reviews {
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-style: italic;
+  color: rgba(255,255,255,0.65);
+}

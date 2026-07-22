@@ -94,6 +94,12 @@ const BookService = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
+  /* ── real rating, same fields the provider search API returns ── */
+  const rating = provider?.averageRating ?? 0;
+  const totalReviews = provider?.totalReviews ?? 0;
+  const hasReviews = totalReviews > 0;
+  const filledStars = Math.round(rating);
+
   useEffect(() => {
     if (!provider) {
       errorToast("Please select a provider first.");
@@ -282,11 +288,30 @@ const BookService = () => {
                 <div className="fb-ph-avatar">
                   <FaUserTie />
                 </div>
-                <div className="fb-ph-stars">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} />
-                  ))}
-                </div>
+
+                {/* ⭐ Real average rating, same data the provider
+                    search results already carry — no extra API call. */}
+                {hasReviews ? (
+                  <div className="fb-ph-rating">
+                    <div className="fb-ph-stars">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar
+                          key={i}
+                          className={
+                            i < filledStars
+                              ? "fb-ph-star-filled"
+                              : "fb-ph-star-empty"
+                          }
+                        />
+                      ))}
+                    </div>
+                    <span className="fb-ph-rating-val">
+                      {rating.toFixed(1)} ({totalReviews})
+                    </span>
+                  </div>
+                ) : (
+                  <span className="fb-ph-no-reviews">No reviews yet</span>
+                )}
               </div>
               <div className="fb-ph-name">{provider?.fullName || "—"}</div>
               <div className="fb-ph-service">
