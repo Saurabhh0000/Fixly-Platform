@@ -95,8 +95,8 @@ const BookService = () => {
   const today = new Date().toISOString().split("T")[0];
 
   /* ── real rating, same fields the provider search API returns ── */
-  const rating = provider?.averageRating ?? 0;
-  const totalReviews = provider?.totalReviews ?? 0;
+  const rating = provider?.rating ?? 0;
+  const totalReviews = provider?.ratingCount ?? 0;
   const hasReviews = totalReviews > 0;
   const filledStars = Math.round(rating);
 
