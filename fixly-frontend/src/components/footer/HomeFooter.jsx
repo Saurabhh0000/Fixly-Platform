@@ -3,8 +3,9 @@ import {
   FaBolt,
   FaUserCheck,
   FaInstagram,
-  FaXTwitter,
+  FaLinkedin,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import "../../styles/fixly-footer.css";
 
 const HomeFooter = () => {
