@@ -2,9 +2,8 @@ import {
   FaShieldAlt,
   FaBolt,
   FaUserCheck,
-  FaFacebook,
   FaInstagram,
-  FaTwitter,
+  FaX,
 } from "react-icons/fa";
 import "../../styles/fixly-footer.css";
 
@@ -48,9 +47,29 @@ const HomeFooter = () => {
           <h4>Connect with Fixly</h4>
 
           <div className="footer-social">
-            <FaFacebook />
-            <FaInstagram />
-            <FaTwitter />
+            <a
+              href="https://www.instagram.com/_._saurabh.__/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram">
+              <FaInstagram />
+            </a>
+
+            <a
+              href="https://x.com/Saurabh75660541"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter">
+              <FaX />
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/saurabh-kumar-fronted-developer/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn">
+              <FaLinkedin />
+            </a>
           </div>
 
           <p className="footer-copy">
