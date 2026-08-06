@@ -96,6 +96,25 @@
   color: #9ca3af;
   line-height: 1.5;
 }
+.footer-social {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.footer-social a:hover {
+  color: #22c55e; /* Fixly green */
+  transform: translateY(-3px);
+}
 
 /* MOBILE */
 @media (max-width: 768px) {
