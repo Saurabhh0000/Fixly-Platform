@@ -3,7 +3,7 @@ import {
   FaBolt,
   FaUserCheck,
   FaInstagram,
-  FaX,
+  FaXTwitter,
 } from "react-icons/fa";
 import "../../styles/fixly-footer.css";
 
@@ -59,8 +59,8 @@ const HomeFooter = () => {
               href="https://x.com/Saurabh75660541"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Twitter">
-              <FaX />
+              aria-label="X">
+              <FaXTwitter />
             </a>
 
             <a
