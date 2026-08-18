@@ -27,6 +27,7 @@ import {
 } from "react-icons/fa";
 import "../styles/fixly-home.css";
 import Footer from "../components/footer/Footer";
+import FixlyChatbot from "../components/chatbot/FixlyChatbot";
 import serviceImg1 from "../assets/service-1.png";
 import serviceImg2 from "../assets/service-2.png";
 import verifiedExpert from "../assets/verified-Expert.png";
@@ -780,6 +781,11 @@ const Home = () => {
       </section>
 
       <Footer />
+
+      {/* ══════════════════════════════════════
+          FIXLY ASSISTANT — floating chatbot
+      ══════════════════════════════════════ */}
+      <FixlyChatbot />
     </>
   );
 };

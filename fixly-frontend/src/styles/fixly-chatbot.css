@@ -1,0 +1,401 @@
+/* ============================================================
+   FIXLY ASSISTANT — Scoped .fixly-chatbot-* prefix only.
+   Independent widget: does not touch any existing Fixly styles.
+   ============================================================ */
+
+.fixly-chatbot-root {
+  --fcb-green:        #16a34a;
+  --fcb-green-hover:  #15803d;
+  --fcb-green-light:  #dcfce7;
+  --fcb-bg:           #f0fdf4;
+  --fcb-text:         #0f172a;
+  --fcb-text-muted:   #475569;
+  --fcb-border:       #e2e8f0;
+
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+@media (max-width: 600px) {
+  .fixly-chatbot-root {
+    bottom: 18px;
+    right: 16px;
+  }
+}
+
+/* screen-reader-only helper for the input's label */
+.fixly-chatbot-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ════════════════════════════════════════
+   TOGGLE BUTTON
+════════════════════════════════════════ */
+.fixly-chatbot-toggle-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--fcb-green);
+  color: #ffffff;
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(22, 163, 74, 0.34), 0 2px 8px rgba(15, 23, 42, 0.12);
+  transition: background 0.22s ease, box-shadow 0.22s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.fixly-chatbot-toggle-btn:hover {
+  background: var(--fcb-green-hover);
+  box-shadow: 0 14px 34px rgba(22, 163, 74, 0.42), 0 4px 10px rgba(15, 23, 42, 0.14);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.fixly-chatbot-toggle-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.fixly-chatbot-toggle-btn:focus-visible {
+  outline: 2px solid var(--fcb-green-hover);
+  outline-offset: 3px;
+}
+
+/* ════════════════════════════════════════
+   PANEL
+════════════════════════════════════════ */
+.fixly-chatbot-panel {
+  width: 360px;
+  height: 520px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid var(--fcb-border);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fixly-chatbot-panel-in 0.24s ease both;
+}
+
+@keyframes fixly-chatbot-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .fixly-chatbot-panel {
+    width: calc(100vw - 24px);
+    height: min(560px, calc(100vh - 100px));
+  }
+}
+
+/* ── Header ── */
+.fixly-chatbot-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, var(--fcb-green) 0%, var(--fcb-green-hover) 100%);
+  color: #ffffff;
+}
+
+.fixly-chatbot-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.fixly-chatbot-header-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.fixly-chatbot-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.fixly-chatbot-header-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.fixly-chatbot-header-sub {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.fixly-chatbot-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.18s ease;
+}
+
+.fixly-chatbot-close-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.fixly-chatbot-close-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── Messages ── */
+.fixly-chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #ffffff;
+}
+
+.fixly-chatbot-msg-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  animation: fixly-chatbot-msg-in 0.2s ease both;
+}
+
+@keyframes fixly-chatbot-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fixly-chatbot-msg-row-user {
+  justify-content: flex-end;
+}
+
+.fixly-chatbot-msg-row-bot {
+  justify-content: flex-start;
+}
+
+.fixly-chatbot-msg-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--fcb-green-light);
+  color: var(--fcb-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.fixly-chatbot-msg-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 78%;
+}
+
+.fixly-chatbot-msg-row-user .fixly-chatbot-msg-col {
+  align-items: flex-end;
+}
+
+.fixly-chatbot-bubble {
+  padding: 10px 13px;
+  border-radius: 14px;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.fixly-chatbot-bubble-user {
+  background: var(--fcb-green);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.fixly-chatbot-bubble-bot {
+  background: var(--fcb-bg);
+  color: var(--fcb-text);
+  border-bottom-left-radius: 4px;
+}
+
+.fixly-chatbot-action-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--fcb-green);
+  background: #ffffff;
+  color: var(--fcb-green-hover);
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
+}
+
+.fixly-chatbot-action-btn:hover {
+  background: var(--fcb-green);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* ── Quick questions ── */
+.fixly-chatbot-quick-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-left: 34px;
+}
+
+.fixly-chatbot-quick-btn {
+  border: 1px solid var(--fcb-border);
+  background: var(--fcb-bg);
+  color: var(--fcb-text-muted);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.15s ease;
+}
+
+.fixly-chatbot-quick-btn:hover {
+  background: var(--fcb-green-light);
+  border-color: var(--fcb-green);
+  color: var(--fcb-green-hover);
+  transform: translateY(-1px);
+}
+
+/* ── Input row ── */
+.fixly-chatbot-input-row {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--fcb-border);
+  background: #ffffff;
+}
+
+.fixly-chatbot-input {
+  flex: 1;
+  min-width: 0;
+  border: 1.5px solid var(--fcb-border);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 0.83rem;
+  font-family: inherit;
+  color: var(--fcb-text);
+  background: var(--fcb-bg);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.fixly-chatbot-input::placeholder {
+  color: var(--fcb-text-muted);
+}
+
+.fixly-chatbot-input:focus {
+  border-color: var(--fcb-green);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.14);
+}
+
+.fixly-chatbot-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--fcb-green);
+  color: #ffffff;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.18s ease, transform 0.15s ease;
+}
+
+.fixly-chatbot-send-btn:hover:not(:disabled) {
+  background: var(--fcb-green-hover);
+  transform: scale(1.06);
+}
+
+.fixly-chatbot-send-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.fixly-chatbot-send-btn:focus-visible,
+.fixly-chatbot-input:focus-visible {
+  outline: 2px solid var(--fcb-green-hover);
+  outline-offset: 2px;
+}
+
+/* respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .fixly-chatbot-panel,
+  .fixly-chatbot-msg-row,
+  .fixly-chatbot-toggle-btn,
+  .fixly-chatbot-action-btn,
+  .fixly-chatbot-quick-btn,
+  .fixly-chatbot-send-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
