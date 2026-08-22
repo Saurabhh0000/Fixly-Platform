@@ -6,9 +6,11 @@ import { FaRobot } from "react-icons/fa";
    messages align left (light green) with a small
    robot avatar. An optional action button can
    accompany an assistant message (e.g. "Browse
-   Services").
+   Services"), and optional suggestion chips let
+   the person tap a quick reply instead of typing
+   (e.g. clarifying follow-up options from Support).
 ══════════════════════════════════════════ */
-const ChatMessage = ({ message, onAction }) => {
+const ChatMessage = ({ message, onAction, onSuggestionClick }) => {
   const isUser = message.sender === "user";
 
   return (
@@ -37,6 +39,20 @@ const ChatMessage = ({ message, onAction }) => {
             onClick={() => onAction(message.action)}>
             {message.action.label}
           </button>
+        )}
+
+        {!isUser && message.suggestions && message.suggestions.length > 0 && (
+          <div className="fixly-chatbot-quick-row" style={{ paddingLeft: 0 }}>
+            {message.suggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                className="fixly-chatbot-quick-btn"
+                onClick={() => onSuggestionClick?.(suggestion)}>
+                {suggestion}
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>

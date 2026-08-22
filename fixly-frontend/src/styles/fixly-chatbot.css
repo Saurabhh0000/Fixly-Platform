@@ -21,11 +21,14 @@
   align-items: flex-end;
   gap: 16px;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  /* keep the launcher clear of notches/home-indicators on iOS */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 @media (max-width: 600px) {
   .fixly-chatbot-root {
-    bottom: 18px;
+    bottom: 16px;
     right: 16px;
   }
 }
@@ -45,10 +48,15 @@
 
 /* ════════════════════════════════════════
    TOGGLE BUTTON
+   Fixed 56px on all breakpoints — already
+   comfortably above the 48px minimum touch
+   target recommended for mobile.
 ════════════════════════════════════════ */
 .fixly-chatbot-toggle-btn {
   width: 56px;
   height: 56px;
+  min-width: 56px;
+  min-height: 56px;
   border-radius: 50%;
   border: none;
   background: var(--fcb-green);
@@ -105,10 +113,38 @@
   }
 }
 
+/* ── Mobile: dedicated layout, not a shrunk desktop popup ──
+   Uses dvh (dynamic viewport height) where supported so the
+   panel accounts for mobile browser chrome and the on-screen
+   keyboard, falling back to vh for older browsers. Because the
+   panel is a fixed-position flex column (header / scrollable
+   messages / input), it naturally stays usable when the
+   keyboard opens — no fixed inner heights to fight against. */
 @media (max-width: 600px) {
   .fixly-chatbot-panel {
-    width: calc(100vw - 24px);
-    height: min(560px, calc(100vh - 100px));
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    max-width: none;
+    height: 75vh;
+    height: 75dvh;
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
+    border-radius: 16px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* ── Tablet: a bit wider/taller than desktop-mobile default,
+   but not full-width ── */
+@media (min-width: 601px) and (max-width: 900px) {
+  .fixly-chatbot-panel {
+    width: 380px;
+    height: 65vh;
+    height: 65dvh;
+    max-height: 560px;
   }
 }
 
@@ -161,6 +197,9 @@
   font-size: 0.7rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .fixly-chatbot-close-btn {
@@ -179,6 +218,15 @@
   transition: background 0.18s ease;
 }
 
+/* comfortable 44px touch target on mobile without growing the
+   visible icon — expand the hit area via padding instead */
+@media (max-width: 600px) {
+  .fixly-chatbot-close-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 .fixly-chatbot-close-btn:hover {
   background: rgba(255, 255, 255, 0.28);
 }
@@ -188,10 +236,17 @@
   outline-offset: 2px;
 }
 
-/* ── Messages ── */
+/* ── Messages ──
+   Scrolls independently of the page; header and input stay
+   fixed above/below it (flex column on the panel). */
 .fixly-chatbot-messages {
   flex: 1;
+  min-height: 0; /* required so flex:1 + overflow-y:auto actually scrolls
+                    instead of growing the panel, in flexbox children */
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain; /* don't let scrolling the chat also
+                                    scroll the dashboard behind it */
   padding: 14px;
   display: flex;
   flex-direction: column;
@@ -245,6 +300,12 @@
   max-width: 78%;
 }
 
+@media (max-width: 600px) {
+  .fixly-chatbot-msg-col {
+    max-width: 84%;
+  }
+}
+
 .fixly-chatbot-msg-row-user .fixly-chatbot-msg-col {
   align-items: flex-end;
 }
@@ -256,6 +317,7 @@
   line-height: 1.5;
   white-space: pre-line;
   word-break: break-word;
+  overflow-wrap: anywhere; /* long unbroken strings (emails, IDs) still wrap */
 }
 
 .fixly-chatbot-bubble-user {
@@ -281,9 +343,18 @@
   font-size: 0.76rem;
   font-weight: 700;
   padding: 6px 12px;
+  min-height: 32px;
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
+}
+
+@media (max-width: 600px) {
+  .fixly-chatbot-action-btn {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
 }
 
 .fixly-chatbot-action-btn:hover {
@@ -300,6 +371,12 @@
   padding-left: 34px;
 }
 
+@media (max-width: 600px) {
+  .fixly-chatbot-quick-row {
+    padding-left: 0;
+  }
+}
+
 .fixly-chatbot-quick-btn {
   border: 1px solid var(--fcb-border);
   background: var(--fcb-bg);
@@ -308,9 +385,18 @@
   font-size: 0.74rem;
   font-weight: 600;
   padding: 7px 12px;
+  min-height: 32px;
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.15s ease;
+}
+
+@media (max-width: 600px) {
+  .fixly-chatbot-quick-btn {
+    min-height: 40px;
+    padding: 9px 14px;
+    font-size: 0.8rem;
+  }
 }
 
 .fixly-chatbot-quick-btn:hover {
@@ -320,13 +406,17 @@
   transform: translateY(-1px);
 }
 
-/* ── Input row ── */
+/* ── Input row ──
+   Sits at the bottom of the flex column; safe-area padding
+   keeps it clear of the home indicator on notched iPhones when
+   the panel is flush with the bottom edge on mobile. */
 .fixly-chatbot-input-row {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--fcb-border);
   background: #ffffff;
 }
@@ -345,6 +435,14 @@
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
+@media (max-width: 600px) {
+  .fixly-chatbot-input {
+    /* 16px prevents iOS Safari auto-zooming the page on focus */
+    font-size: 16px;
+    padding: 11px 14px;
+  }
+}
+
 .fixly-chatbot-input::placeholder {
   color: var(--fcb-text-muted);
 }
@@ -353,6 +451,11 @@
   border-color: var(--fcb-green);
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.14);
+}
+
+.fixly-chatbot-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .fixly-chatbot-send-btn {
@@ -371,6 +474,14 @@
   transition: background 0.18s ease, transform 0.15s ease;
 }
 
+@media (max-width: 600px) {
+  .fixly-chatbot-send-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+}
+
 .fixly-chatbot-send-btn:hover:not(:disabled) {
   background: var(--fcb-green-hover);
   transform: scale(1.06);
@@ -385,6 +496,20 @@
 .fixly-chatbot-input:focus-visible {
   outline: 2px solid var(--fcb-green-hover);
   outline-offset: 2px;
+}
+
+/* prevent any horizontal scroll from the chatbot itself at very
+   narrow widths (320px) */
+@media (max-width: 360px) {
+  .fixly-chatbot-panel {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .fixly-chatbot-header {
+    padding: 12px 12px;
+  }
 }
 
 /* respect reduced-motion preferences */

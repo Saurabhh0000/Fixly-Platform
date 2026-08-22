@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import ProviderFooter from "../components/footer/ProviderFooter";
+import FixlyChatbot from "../components/chatbot/FixlyChatbot";
 
 const ProviderLayout = ({ children }) => {
   const { user, loading, logout } = useContext(AuthContext);
@@ -38,6 +39,7 @@ const ProviderLayout = ({ children }) => {
     <>
       <main className="provider-layout-main">{children}</main>
       <ProviderFooter />
+      <FixlyChatbot />
     </>
   );
 };
