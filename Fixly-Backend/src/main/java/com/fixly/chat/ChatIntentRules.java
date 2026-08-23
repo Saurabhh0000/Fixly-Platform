@@ -20,8 +20,10 @@ public final class ChatIntentRules {
 
                         new ChatIntentRule(PROVIDER_VERIFICATION, 930, Set.of(
                                         "verifying", "why am i still verifying", "what does verifying mean",
-                                        "how long does approval take", "verification", "application rejected",
-                                        "what should i do after rejection", "documents required",
+                                        "how long does approval take", "provider verification", "verification review",
+                                        "verification status", "verification process", "document verification",
+                                        "application rejected", "what should i do after rejection",
+                                        "documents required",
                                         "what documents are required", "aadhaar", "pan card")),
 
                         new ChatIntentRule(PROVIDER_REGISTRATION, 920, Set.of(
@@ -60,7 +62,8 @@ public final class ChatIntentRules {
 
                         new ChatIntentRule(BOOKING_QUEUE, 860, Set.of(
                                         "too many pending requests", "why did my booking disappear",
-                                        "completed booking is not showing", "my completed booking")),
+                                        "completed booking is not showing", "my completed booking",
+                                        "manage bookings", "how do i manage bookings", "manage my bookings")),
 
                         new ChatIntentRule(BOOKING_STATUS, 850, Set.of(
                                         "booking status", "my booking is still pending", "where is my booking",
@@ -81,7 +84,8 @@ public final class ChatIntentRules {
                         new ChatIntentRule(PROVIDER_AVAILABILITY, 800, Set.of(
                                         "change my availability", "unavailable today",
                                         "stop receiving booking requests",
-                                        "why am i not receiving bookings", "availability")),
+                                        "why am i not receiving bookings", "availability", "become available",
+                                        "how do i become available", "go online", "go offline")),
 
                         new ChatIntentRule(PROVIDER_PROFILE, 790, Set.of(
                                         "update my provider profile", "change my service", "change my price",
@@ -116,7 +120,8 @@ public final class ChatIntentRules {
 
                         new ChatIntentRule(FIXLY_INFO, 700, Set.of(
                                         "what is fixly", "about fixly", "how does fixly work", "how fixly works",
-                                        "tell me about fixly", "why fixly")),
+                                        "tell me about fixly", "why fixly", "is fixly safe", "is it safe", "trusted",
+                                        "trustworthy", "safety")),
 
                         new ChatIntentRule(SERVICE_SEARCH, 550, Set.of(
                                         "plumber", "plumbing", "pipe leak", "leaking tap", "leaking pipe",
@@ -129,7 +134,8 @@ public final class ChatIntentRules {
                                         "which service should i choose", "i dont know which category",
                                         "what services does fixly provide", "find a plumber", "find an electrician",
                                         "need a plumber", "need electrician", "need cleaning", "need child care",
-                                        "need ac repair", "need painter", "need carpenter", "what services")),
+                                        "need ac repair", "need painter", "need carpenter", "what services",
+                                        "find a service")),
 
                         new ChatIntentRule(SMALL_TALK, 400, Set.of(
                                         "what can you do", "who are you", "are you a bot", "are you human",

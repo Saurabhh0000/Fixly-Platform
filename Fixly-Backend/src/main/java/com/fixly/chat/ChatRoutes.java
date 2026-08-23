@@ -19,4 +19,5 @@ public final class ChatRoutes {
     public static final String HELP_SUPPORT = "/help-support";
     public static final String NOTIFICATIONS = "/notifications";
     public static final String BOOK = "/book";
+    public static final String LOGIN = "/login";
 }

@@ -27,6 +27,7 @@ import com.fixly.enums.BookingStatus;
 import com.fixly.enums.ProviderStatus;
 import com.fixly.enums.Role;
 import com.fixly.exception.BadRequestException;
+import com.fixly.exception.ResourceNotFoundException;
 import com.fixly.repository.AddressRepository;
 import com.fixly.repository.BookingRepository;
 import com.fixly.repository.ReviewRepository;
@@ -71,26 +72,29 @@ public class ChatServiceImpl implements ChatService {
                         throw new BadRequestException("Message cannot be empty");
                 }
 
-                User user = userResolver.resolveCurrentUser();
-                Role role = user.getRole();
+                // Guests are allowed here — /api/chat is public. This never throws;
+                // it simply returns null when there's no authenticated user, and
+                // every handler below is written to handle that null gracefully.
+                User user = userResolver.resolveCurrentUserOrNull();
+                Role role = user != null ? user.getRole() : null;
 
                 ChatTopic topic = intentDetector.detectTopic(message, request.getLastIntent());
                 String normalized = ChatTextUtils.normalize(message);
 
-                ChatResponse response;
                 try {
-                        response = dispatch(topic, role, user, normalized);
-                } catch (BadRequestException | com.fixly.exception.ResourceNotFoundException e) {
+                        ChatResponse response = dispatch(topic, role, user, normalized);
+                        return response.withIntent(resolveIntent(topic, role).name());
+                } catch (BadRequestException | ResourceNotFoundException e) {
                         throw e;
                 } catch (Exception e) {
                         // A failed data lookup should degrade gracefully, not break the chat.
-                        log.error("Chat handler failed for topic={} userId={}", topic, user.getUserId(), e);
-                        response = ChatResponse.of(
-                                        "I'm unable to retrieve that information right now. Please try again in a moment. "
-                                                        + "You can also open your dashboard and check the relevant section directly.");
+                        log.error("Chat handler failed for topic={} userId={}",
+                                        topic, user != null ? user.getUserId() : "guest", e);
+                        return ChatResponse.of(
+                                        "I'm sorry, I'm having trouble processing that right now. Please try again or use Help & Support.")
+                                        .withIntent("ERROR")
+                                        .withFollowUp(false);
                 }
-
-                return response.withIntent(resolveIntent(topic, role).name());
         }
 
         private ChatResponse dispatch(ChatTopic topic, Role role, User user, String normalized) {
@@ -106,24 +110,36 @@ public class ChatServiceImpl implements ChatService {
                         case BOOKING_CREATE -> bookingCreate(role);
                         case BOOKING_STATUS -> bookingStatus(role, user, normalized);
                         case BOOKING_ACCEPT_REJECT -> bookingAcceptReject(role, user);
-                        case BOOKING_CANCEL -> bookingCancel(role);
+                        case BOOKING_CANCEL -> bookingCancel(role, user);
                         case BOOKING_RESCHEDULE -> bookingReschedule();
                         case BOOKING_OTP -> bookingOtp(role, user);
                         case BOOKING_QUEUE -> bookingQueue(role, user);
                         case PAYMENT -> payment();
                         case RATING -> rating(role, user);
-                        case ADDRESS -> address();
-                        case ACCOUNT -> account(role);
-                        case ACCOUNT_PASSWORD -> accountPassword();
+                        case ADDRESS -> address(user);
+                        case ACCOUNT -> account(role, user);
+                        case ACCOUNT_PASSWORD -> accountPassword(user);
                         case NOTIFICATION -> notification(user);
                         case SUPPORT -> support(role);
                         case PROVIDER_REGISTRATION -> providerRegistration(role);
-                        case PROVIDER_VERIFICATION -> providerVerification(role, user);
+                        case PROVIDER_VERIFICATION -> providerVerification(user);
                         case PROVIDER_AVAILABILITY -> providerAvailability(role, user);
                         case PROVIDER_PROFILE -> providerProfile(role, user);
                         case PROVIDER_SUSPENSION -> providerSuspension(role, user);
                         default -> fallback(role);
                 };
+        }
+
+        /**
+         * Consistent "please log in" response for topics with no meaningful
+         * public-facing content (personal notifications, account settings).
+         */
+        private ChatResponse loginRequired(String whatTheyNeedToDo) {
+                return ChatResponse.of(
+                                "You'll need to be logged in to " + whatTheyNeedToDo + ". Please log in to your Fixly "
+                                                + "account and ask me again.",
+                                new ChatAction("Log In", ChatRoutes.LOGIN))
+                                .withFollowUp(false);
         }
 
         /* ===================== GREETING / SMALL TALK / INFO ===================== */
@@ -135,18 +151,28 @@ public class ChatServiceImpl implements ChatService {
                                                         + "requests, verification status, availability, your profile, and ratings. "
                                                         + "What do you need?");
                 }
+                if (role == Role.USER) {
+                        return ChatResponse.of(
+                                        "Hi! 👋 Welcome back to Fixly. I can help you with bookings, finding services, "
+                                                        + "addresses, reviews, and more. What can I help you with today?");
+                }
                 return ChatResponse.of(
-                                "Hi! 👋 Welcome back to Fixly. I can help you with bookings, finding services, "
-                                                + "addresses, reviews, and more. What can I help you with today?");
+                                "Hi! 👋 Welcome to Fixly. I can help you find services, understand how bookings work, "
+                                                + "or explain how to become a provider. What can I help you with today?",
+                                new ChatAction("Browse Services", ChatRoutes.SEARCH));
         }
 
         private ChatResponse smallTalk(Role role) {
-                String base = "I'm the Fixly Assistant 🤖 — not a person, but I'm connected to your real "
-                                + "Fixly account so I can give you accurate, account-specific answers.";
+                String base = "I'm the Fixly Assistant 🤖 — not a person.";
                 if (role == Role.PROVIDER) {
-                        base += " I can help with booking requests, verification, availability, and your provider profile.";
+                        base += " I'm connected to your Fixly account, so I can help with booking requests, "
+                                        + "verification, availability, and your provider profile.";
+                } else if (role == Role.USER) {
+                        base += " I'm connected to your Fixly account, so I can give account-specific answers "
+                                        + "about your bookings, finding services, and more.";
                 } else {
-                        base += " I can help with bookings, finding services, and account questions.";
+                        base += " I can answer general questions about Fixly, help you find a service, or explain "
+                                        + "how bookings and provider registration work. Log in for account-specific answers.";
                 }
                 return ChatResponse.of(base);
         }
@@ -157,8 +183,9 @@ public class ChatServiceImpl implements ChatService {
                                                 + "home and personal services. Customers browse categories, choose a provider, and "
                                                 + "submit a booking request. The provider then accepts the request, performs the "
                                                 + "service, and the booking is marked complete using an OTP-based verification step. "
-                                                + "Providers join Fixly through an application and verification process before they "
-                                                + "can start accepting bookings.",
+                                                + "Providers join Fixly through an application and identity verification process "
+                                                + "before they can start accepting bookings, which is designed to help customers "
+                                                + "book with more confidence.",
                                 new ChatAction("Browse Services", ChatRoutes.SEARCH));
         }
 
@@ -215,7 +242,7 @@ public class ChatServiceImpl implements ChatService {
                                                 + "5. The provider reviews it and can accept it\n"
                                                 + "6. Once accepted, an OTP is generated — share it with the provider only after "
                                                 + "the service is actually completed, as that's what marks the job done\n\n"
-                                                + "You can track the request's status from My Bookings at any point.",
+                                                + "Log in and you can track a real booking's status here directly.",
                                 new ChatAction("Browse Services", ChatRoutes.SEARCH));
         }
 
@@ -224,6 +251,10 @@ public class ChatServiceImpl implements ChatService {
                         String meaning = explainStatusMeaning(normalized);
                         if (meaning != null)
                                 return ChatResponse.of(meaning);
+                }
+
+                if (user == null) {
+                        return loginRequired("check the status of your own booking");
                 }
 
                 if (role == Role.PROVIDER) {
@@ -318,6 +349,13 @@ public class ChatServiceImpl implements ChatService {
                                                         + "'reject' action beyond that.",
                                         new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
                 }
+                if (user == null) {
+                        return ChatResponse.of(
+                                        "After a booking is submitted, the provider reviews it and can accept it — customers "
+                                                        + "don't accept requests themselves. Log in to check the status of your own "
+                                                        + "booking requests.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
+                }
                 List<Booking> bookings = bookingRepository.findByUserUserId(user.getUserId());
                 long pending = bookings.stream().filter(b -> b.getStatus() == BookingStatus.PENDING).count();
                 String pendingNote = pending > 0
@@ -332,13 +370,20 @@ public class ChatServiceImpl implements ChatService {
                                 new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
         }
 
-        private ChatResponse bookingCancel(Role role) {
+        private ChatResponse bookingCancel(Role role, User user) {
                 if (role == Role.PROVIDER) {
                         return ChatResponse.of(
                                         "You can cancel a booking you've accepted from your Provider Dashboard. Cancelling "
                                                         + "notifies the customer immediately, so it's best to only do this when you "
                                                         + "genuinely can't complete the job. A booking that's already COMPLETED or "
                                                         + "already CANCELLED can't be cancelled again.");
+                }
+                if (user == null) {
+                        return ChatResponse.of(
+                                        "Cancellation generally works like this: open the booking from My Bookings and cancel "
+                                                        + "it there, as long as it isn't already completed or cancelled. Log in to "
+                                                        + "manage your own bookings.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
                 }
                 return ChatResponse.of(
                                 "If you need to cancel a booking, open My Bookings and select the booking you want to "
@@ -373,6 +418,13 @@ public class ChatServiceImpl implements ChatService {
                                                         + "after the service is actually finished. Enter that OTP to mark the job "
                                                         + "COMPLETED." + note);
                 }
+                if (user == null) {
+                        return ChatResponse.of(
+                                        "Once a provider accepts your booking, you'll receive an OTP — share it with them "
+                                                        + "only after the service is actually completed, since that's what marks the "
+                                                        + "job done. Log in to view the OTP on your own accepted booking.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
+                }
                 List<Booking> bookings = bookingRepository.findByUserUserId(user.getUserId());
                 boolean hasAcceptedBooking = bookings.stream().anyMatch(b -> b.getStatus() == BookingStatus.ACCEPTED);
                 String availability = hasAcceptedBooking
@@ -389,6 +441,11 @@ public class ChatServiceImpl implements ChatService {
 
         private ChatResponse bookingQueue(Role role, User user) {
                 if (role != Role.PROVIDER) {
+                        if (user == null) {
+                                return ChatResponse.of(
+                                                "Log in to see all your bookings, including completed ones, in My Bookings.",
+                                                new ChatAction("Log In", ChatRoutes.LOGIN));
+                        }
                         return ChatResponse.of(
                                         "You can see all your bookings, including completed ones, in My Bookings.",
                                         new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
@@ -446,7 +503,13 @@ public class ChatServiceImpl implements ChatService {
 
         /* ===================== ADDRESS ===================== */
 
-        private ChatResponse address() {
+        private ChatResponse address(User user) {
+                if (user == null) {
+                        return ChatResponse.of(
+                                        "Addresses are tied to your account and used when booking a service. Log in to add "
+                                                        + "or view your saved addresses.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
+                }
                 List<String> cities = addressRepository.findDistinctCities();
                 String cityNote = cities.isEmpty()
                                 ? ""
@@ -463,7 +526,10 @@ public class ChatServiceImpl implements ChatService {
 
         /* ===================== ACCOUNT ===================== */
 
-        private ChatResponse account(Role role) {
+        private ChatResponse account(Role role, User user) {
+                if (user == null) {
+                        return loginRequired("view or update your account details");
+                }
                 return ChatResponse.of(
                                 "You can view and update your account details from your Profile page. If you're having "
                                                 + "trouble logging in or seeing 'unauthorized' errors, that usually means your "
@@ -474,7 +540,14 @@ public class ChatServiceImpl implements ChatService {
                                 new ChatAction("Open Profile", ChatRoutes.PROFILE));
         }
 
-        private ChatResponse accountPassword() {
+        private ChatResponse accountPassword(User user) {
+                if (user == null) {
+                        return ChatResponse.of(
+                                        "Log in first, then you can update your password from the Change Password page. I "
+                                                        + "don't see a self-service 'forgot password' flow currently available — if "
+                                                        + "you're locked out, please contact Help & Support for account recovery.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
+                }
                 return ChatResponse.of(
                                 "You can update your password from the Change Password page while logged in. I don't see "
                                                 + "a self-service 'forgot password' flow currently available in the app — if you're "
@@ -486,6 +559,9 @@ public class ChatServiceImpl implements ChatService {
         /* ===================== NOTIFICATIONS ===================== */
 
         private ChatResponse notification(User user) {
+                if (user == null) {
+                        return loginRequired("view your notifications");
+                }
                 long unread = notificationService.getUnreadCount(user.getUserId());
                 String text = unread > 0
                                 ? "You currently have " + unread
@@ -529,19 +605,26 @@ public class ChatServiceImpl implements ChatService {
                                 new ChatAction("Become a Provider", ChatRoutes.BECOME_PROVIDER));
         }
 
-        private ChatResponse providerVerification(Role role, User user) {
-                if (role != Role.PROVIDER) {
+        private ChatResponse providerVerification(User user) {
+                // NOTE: user.role only flips to PROVIDER on approval (see
+                // ProviderServiceImpl.approveProvider). Someone with a PENDING,
+                // VERIFYING, or REJECTED application is still role=USER, so this
+                // must be keyed on "is there a provider record at all", not role.
+                if (user == null) {
                         return ChatResponse.of(
                                         "Fixly verifies providers by reviewing their submitted identity and service documents "
                                                         + "before their profile goes live, which is meant to help customers make more "
-                                                        + "informed choices.");
+                                                        + "informed choices. Log in to check your own application's status.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
                 }
+
                 ServiceProvider provider = providerRepository.findByUser_UserId(user.getUserId()).orElse(null);
                 if (provider == null) {
                         return ChatResponse.of(
                                         "I don't see a provider application on your account yet.",
                                         new ChatAction("Become a Provider", ChatRoutes.BECOME_PROVIDER));
                 }
+
                 String statusText = switch (provider.getStatus()) {
                         case PENDING ->
                                 "Your application is PENDING — it hasn't started formal verification review yet.";
@@ -627,8 +710,12 @@ public class ChatServiceImpl implements ChatService {
                 String text = role == Role.PROVIDER
                                 ? "I'm not fully sure what you need yet. I can help with booking requests, verification "
                                                 + "status, availability, your provider profile, ratings, or support."
-                                : "I'm not fully sure what you need yet. I can help with finding a service, bookings, "
-                                                + "provider registration, ratings, account questions, or support.";
+                                : role == Role.USER
+                                                ? "I'm not fully sure what you need yet. I can help with finding a service, bookings, "
+                                                                + "provider registration, ratings, account questions, or support."
+                                                : "I'm not fully sure what you need yet. I can help with finding a service, "
+                                                                + "explaining how Fixly works, or how to become a provider. Log in for "
+                                                                + "account-specific help like bookings and ratings.";
                 return ChatResponse.of(text, new ChatAction("Help & Support", ChatRoutes.HELP_SUPPORT))
                                 .withFollowUp(true);
         }
