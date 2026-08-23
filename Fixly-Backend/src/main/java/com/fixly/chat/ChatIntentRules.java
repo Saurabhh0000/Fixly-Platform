@@ -75,7 +75,7 @@ public final class ChatIntentRules {
                         new ChatIntentRule(BOOKING_CREATE, 840, Set.of(
                                         "how do i book", "book a service", "make a booking", "want to book",
                                         "can i book", "book a plumber", "book electrician", "schedule service",
-                                        "how does booking work", "can someone come tomorrow", "book a service")),
+                                        "how does booking work", "can someone come tomorrow")),
 
                         new ChatIntentRule(PAYMENT, 820, Set.of(
                                         "payment", "pay", "paid", "payment failed", "money was deducted", "refund",
