@@ -2,7 +2,7 @@
 
 Fixly is a full-stack service marketplace platform that connects customers with verified local service providers.
 
-The platform enables users to discover services, book professionals, track service progress, receive notifications, and manage their service experience through a modern web application.
+The platform enables users to discover services, book professionals, track service progress, receive notifications, and manage their service experience through a modern web application — with an AI-powered assistant guiding them through it all.
 
 Fixly provides a complete ecosystem with three roles:
 
@@ -23,6 +23,7 @@ Fixly solves the problem of finding reliable local service professionals by prov
 - Reviews and ratings
 - Real-time notification system
 - Role-based dashboards
+- An in-app AI assistant for guided help across every role
 
 ---
 
@@ -50,7 +51,7 @@ Fixly
 ## 👤 User Features
 
 - User registration and login
-- JWT based authentication
+- HTTP Basic Authentication
 - Browse service categories
 - Search service providers
 - View provider details
@@ -63,6 +64,7 @@ Fixly
 - Manage profile
 - Change password
 - Notification center
+- Ask the Fixly Assistant about bookings, services, or account help
 
 ---
 
@@ -79,6 +81,7 @@ Fixly
 - Complete services using OTP verification
 - View customer reviews
 - Manage profile
+- Ask the Fixly Assistant about booking requests, verification status, OTP, or availability
 
 ---
 
@@ -93,6 +96,51 @@ Fixly
 - Suspend providers
 - Manage service categories
 - Monitor platform activity
+
+---
+
+# 🤖 Fixly Assistant (AI Chatbot)
+
+Fixly includes a role-aware in-app assistant available on the Home page, User Dashboard, and Provider Dashboard.
+
+- **Public on the Home page** — visitors can ask general questions (what Fixly is, how booking works, how to become a provider) without logging in.
+- **Role-aware once logged in** — the same assistant answers differently for a Customer vs. a Provider, and always resolves the real identity and role server-side from Spring Security, never from anything the frontend sends.
+- **Backed by real account data** — logged-in users get answers grounded in their actual bookings, provider status, ratings, and notifications rather than generic text.
+- **Graceful for private questions when logged out** — asking about "my bookings" as a guest returns a clear login prompt instead of an error.
+- **Quick questions** — a curated set of role-specific quick-reply prompts (e.g. _"Where is my booking?"_ for customers, _"How do I accept a booking?"_ for providers).
+- **Never invents data** — pricing, availability, provider details, and booking status are only stated when they come from the database; the assistant says so explicitly when it can't verify something (e.g. payment status).
+
+### Assistant API
+
+```
+POST /api/chat
+```
+
+Public endpoint — works for guests and authenticated users alike.
+
+**Request**
+
+```json
+{
+  "message": "Where is my booking?",
+  "lastIntent": null
+}
+```
+
+**Response**
+
+```json
+{
+  "text": "Your most recent booking is currently ACCEPTED...",
+  "action": {
+    "label": "View My Bookings",
+    "to": "/user/bookings"
+  },
+  "suggestions": [],
+  "intent": "USER_BOOKING_STATUS",
+  "requiresFollowUp": false
+}
+```
 
 ---
 
@@ -144,12 +192,11 @@ Examples:
 
 - Java 17
 - Spring Boot
-- Spring Security
-- JWT Authentication
+- Spring Security (HTTP Basic Authentication)
 - Spring Data JPA
 - Hibernate
 - REST APIs
-- MySQL
+- PostgreSQL (Supabase)
 - Maven
 
 ## Frontend
@@ -177,7 +224,7 @@ Examples:
 
 Fixly implements:
 
-- JWT authentication
+- HTTP Basic Authentication
 - Role Based Authorization
 
 Roles:
@@ -188,7 +235,7 @@ PROVIDER
 ADMIN
 ```
 
-Protected routes are secured using Spring Security.
+Protected routes are secured using Spring Security. The authenticated user's identity and role are always resolved server-side from the security context — never trusted from request bodies — for both standard API routes and the Fixly Assistant endpoint.
 
 ---
 
@@ -200,7 +247,7 @@ Install:
 
 - Java 17+
 - Node.js 18+
-- MySQL
+- PostgreSQL
 - Maven
 
 ---
@@ -216,7 +263,7 @@ git clone https://github.com/Saurabhh0000/Fixly-Platform.git
 Navigate:
 
 ```bash
-cd Fixly/backend
+cd Fixly-Platform/backend
 ```
 
 Build project:
@@ -244,7 +291,7 @@ http://localhost:8080
 Navigate:
 
 ```bash
-cd Fixly/frontend
+cd Fixly-Platform/frontend
 ```
 
 Install dependencies:
@@ -353,6 +400,14 @@ PUT /api/notifications/{id}/read
 PUT /api/notifications/read-all
 ```
 
+## Fixly Assistant
+
+```
+POST /api/chat
+```
+
+Public endpoint; see the [Fixly Assistant](#-fixly-assistant-ai-chatbot) section above for the request/response contract.
+
 ---
 
 # 🌍 Deployment
@@ -372,7 +427,7 @@ Render
 Database:
 
 ```
-PostgreSQL / MySQL
+PostgreSQL (Supabase)
 ```
 
 ---
@@ -429,7 +484,8 @@ Example:
 
 ```
 DATABASE_URL=
-JWT_SECRET=
+DATABASE_USERNAME=
+DATABASE_PASSWORD=
 VITE_API_BASE_URL=
 ```
 
