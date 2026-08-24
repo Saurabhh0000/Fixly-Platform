@@ -3,6 +3,8 @@
   color: #e5e7eb;
   padding: 64px 20px;
   font-family: "Nunito", sans-serif;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* CONTAINER */
@@ -78,15 +80,38 @@
   margin-bottom: 14px;
 }
 
-.footer-social svg {
-  font-size: 1.3rem;
-  margin-right: 14px;
-  cursor: pointer;
-  transition: all 0.25s ease;
+/* SOCIAL — single source of truth for icon styling. Icons inherit color
+   from the <a> via currentColor, so only the anchor needs to be styled;
+   this replaces the previous duplicated `.footer-social svg` rules,
+   which caused conflicting spacing (margin-right stacking with the
+   flex gap) and conflicting hover effects (svg:hover scaling while
+   a:hover translated). */
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.footer-social svg:hover {
-  transform: scale(1.25);
+.footer-social a {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.25rem;
+  border-radius: 8px;
+  transition: color 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
+}
+
+.footer-social a:hover {
+  color: #22c55e;
+  transform: translateY(-3px);
+}
+
+.footer-social a:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 3px;
   color: #22c55e;
 }
 
@@ -96,31 +121,24 @@
   color: #9ca3af;
   line-height: 1.5;
 }
-.footer-social {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
 
-.footer-social a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: 1.25rem;
-  transition: all 0.25s ease;
-}
-
-.footer-social a:hover {
-  color: #22c55e; /* Fixly green */
-  transform: translateY(-3px);
-}
-
-/* MOBILE */
+/* ============================================================
+   MOBILE (<= 768px)
+   ============================================================ */
 @media (max-width: 768px) {
+  .fixly-footer {
+    padding: 48px 20px 32px;
+  }
+
   .footer-container {
     grid-template-columns: 1fr;
+    justify-items: center;
     text-align: center;
+    gap: 36px;
+  }
+
+  .footer-logo {
+    font-size: 1.9rem;
   }
 
   .footer-desc {
@@ -132,7 +150,65 @@
     justify-content: center;
   }
 
-  .footer-social svg {
-    margin: 0 10px;
+  .footer-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+
+  /* slightly larger tap targets on touch devices */
+  .footer-social a {
+    width: 44px;
+    height: 44px;
+    font-size: 1.35rem;
+  }
+}
+
+/* ============================================================
+   SMALL PHONES (<= 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .fixly-footer {
+    padding: 40px 16px 28px;
+  }
+
+  .footer-container {
+    gap: 28px;
+  }
+
+  .footer-logo {
+    font-size: 1.6rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.95rem;
+  }
+
+  .footer-desc {
+    font-size: 0.85rem;
+    padding: 0 4px;
+  }
+
+  .footer-badges {
+    gap: 8px;
+  }
+
+  .footer-badges span {
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+
+  .footer-social {
+    gap: 10px;
+  }
+
+  .footer-copy {
+    font-size: 0.7rem;
+    padding: 0 8px;
   }
 }

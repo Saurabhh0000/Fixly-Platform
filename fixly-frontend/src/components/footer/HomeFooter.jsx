@@ -4,6 +4,7 @@ import {
   FaUserCheck,
   FaInstagram,
   FaLinkedin,
+  FaGithub,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import "../../styles/fixly-footer.css";
@@ -70,6 +71,14 @@ const HomeFooter = () => {
               rel="noopener noreferrer"
               aria-label="LinkedIn">
               <FaLinkedin />
+            </a>
+
+            <a
+              href="https://github.com/Saurabhh0000"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub">
+              <FaGithub />
             </a>
           </div>
 
