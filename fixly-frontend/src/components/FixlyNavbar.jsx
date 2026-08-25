@@ -18,6 +18,7 @@ import {
   FaBars,
   FaTimes,
   FaUserCircle,
+  FaListAlt,
 } from "react-icons/fa";
 import "../styles/fixly-navbar.css";
 import NotificationBell from "./notifications/NotificationBell";
@@ -198,9 +199,15 @@ const FixlyNavbar = () => {
           )}
 
           {user.role === "ADMIN" && (
-            <Link to="/admin/providers" className="fnav-link">
-              <FaShieldAlt className="fnav-link-icon" /> Provider Requests
-            </Link>
+            <>
+              <Link to="/admin/providers" className="fnav-link">
+                <FaShieldAlt className="fnav-link-icon" /> Provider Requests
+              </Link>
+
+              <Link to="/admin/categories" className="fnav-link">
+                <FaListAlt className="fnav-link-icon" /> Service Categories
+              </Link>
+            </>
           )}
 
           {/* Notification bell (desktop) */}
