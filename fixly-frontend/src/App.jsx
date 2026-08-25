@@ -18,6 +18,7 @@ import HelpSupport from "./pages/HelpSupport";
 import NotificationPage from "./pages/NotificationPage";
 
 import PrivateRoute from "./components/PrivateRoute";
+import AdminCategories from "./pages/AdminCategories";
 
 function App() {
   return (
@@ -119,6 +120,14 @@ function App() {
           element={
             <PrivateRoute role="ADMIN">
               <AdminProviderRequests />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/categories"
+          element={
+            <PrivateRoute role="ADMIN">
+              <AdminCategories />
             </PrivateRoute>
           }
         />
