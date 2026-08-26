@@ -366,11 +366,21 @@ const FixlyNavbar = () => {
             )}
 
             {user.role === "ADMIN" && (
-              <button
-                className="fnav-mobile-link"
-                onClick={() => go("/admin/providers")}>
-                <FaShieldAlt className="fnav-ml-icon" /> Provider Requests
-              </button>
+              <>
+                <button
+                  className="fnav-mobile-link"
+                  onClick={() => go("/admin/providers")}>
+                  <FaShieldAlt className="fnav-ml-icon" />
+                  Provider Requests
+                </button>
+
+                <button
+                  className="fnav-mobile-link"
+                  onClick={() => go("/admin/categories")}>
+                  <FaListAlt className="fnav-ml-icon" />
+                  Service Categories
+                </button>
+              </>
             )}
           </div>
 
