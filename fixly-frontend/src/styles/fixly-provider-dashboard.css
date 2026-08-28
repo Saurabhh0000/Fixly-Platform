@@ -620,6 +620,257 @@
 
 .pd-no-feedback { font-style: italic; color: #94a3b8; }
 
+/* ================================================================
+   PROVIDER CANCEL BOOKING MODAL — scoped, additive only
+   ================================================================ */
+.provider-cancel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+  box-sizing: border-box;
+  animation: provider-cancel-fade-in 0.15s ease;
+}
+@keyframes provider-cancel-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.provider-cancel-modal {
+  background: #ffffff;
+  width: min(460px, 100%);
+  max-height: min(90vh, 640px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 60px rgba(2, 6, 23, 0.25);
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  animation: provider-cancel-scale-in 0.18s ease;
+}
+@keyframes provider-cancel-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.provider-cancel-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.provider-cancel-header-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #fee2e2;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.provider-cancel-title {
+  margin: 0 0 4px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.provider-cancel-subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.provider-cancel-body {
+  padding: 16px 20px 4px;
+  box-sizing: border-box;
+}
+
+.provider-cancel-summary {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.provider-cancel-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.provider-cancel-summary-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+.provider-cancel-summary-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: right;
+  word-break: break-word;
+}
+
+.provider-cancel-label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.provider-cancel-textarea {
+  width: 100%;
+  min-height: 96px;
+  max-height: 220px;
+  resize: vertical;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  padding: 10px 12px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.84rem;
+  color: #0f172a;
+  background: #fff;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.provider-cancel-textarea::placeholder {
+  color: #94a3b8;
+}
+.provider-cancel-textarea:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+.provider-cancel-textarea-error {
+  border-color: #ef4444;
+}
+.provider-cancel-textarea-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+.provider-cancel-textarea:disabled {
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+
+.provider-cancel-meta-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+  min-height: 16px;
+}
+.provider-cancel-error {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ef4444;
+  line-height: 1.4;
+}
+.provider-cancel-counter {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.provider-cancel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  flex-wrap: wrap;
+}
+
+.provider-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  min-height: 40px;
+  transition: filter 0.15s ease, transform 0.12s ease, opacity 0.15s ease;
+}
+.provider-cancel-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.provider-cancel-btn:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.97);
+}
+.provider-cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.provider-cancel-btn-secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #e2e8f0;
+}
+.provider-cancel-btn-danger {
+  background: #ef4444;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.28);
+}
+
+/* ================================================================
+   RESPONSIVE — provider cancel modal
+   ================================================================ */
+@media (max-width: 480px) {
+  .provider-cancel-overlay { padding: 12px; align-items: flex-end; }
+  .provider-cancel-modal {
+    width: 100%;
+    max-height: 88vh;
+    border-radius: 18px 18px 14px 14px;
+  }
+  .provider-cancel-header { padding: 16px 16px 12px; }
+  .provider-cancel-body { padding: 14px 16px 4px; }
+  .provider-cancel-actions {
+    padding: 14px 16px 16px;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .provider-cancel-btn { width: 100%; }
+  .provider-cancel-summary-row { flex-wrap: wrap; }
+  .provider-cancel-summary-value { text-align: left; }
+}
+
+@media (max-width: 360px) {
+  .provider-cancel-header-icon { width: 34px; height: 34px; font-size: 0.9rem; }
+  .provider-cancel-title { font-size: 0.95rem; }
+  .provider-cancel-subtitle { font-size: 0.78rem; }
+  .provider-cancel-textarea { min-height: 84px; font-size: 0.8rem; }
+}
+
 /* ======================================================
    RESPONSIVE — 1100px
    ====================================================== */

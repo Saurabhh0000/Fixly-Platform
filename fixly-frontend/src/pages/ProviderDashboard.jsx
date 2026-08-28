@@ -20,6 +20,7 @@ import {
   FaChevronRight,
   FaFireAlt,
   FaHashtag,
+  FaExclamationTriangle,
 } from "react-icons/fa";
 import fixlyApi from "../api/fixlyApi";
 import toast from "react-hot-toast";
@@ -52,6 +53,173 @@ const STATUS_PILL_CLS = {
   CANCELLED: "pd-pill-cancelled",
 };
 
+// Statuses a provider is allowed to cancel from
+const CANCELLABLE_STATUSES = ["PENDING", "ACCEPTED"];
+
+const REASON_MIN_LEN = 3;
+const REASON_MAX_LEN = 500;
+
+const validateCancellationReason = (raw) => {
+  const value = (raw || "").trim();
+  if (!value) return "Cancellation reason is required.";
+  if (value.length < REASON_MIN_LEN)
+    return `Cancellation reason must be at least ${REASON_MIN_LEN} characters.`;
+  if (value.length > REASON_MAX_LEN)
+    return `Cancellation reason cannot exceed ${REASON_MAX_LEN} characters.`;
+  return "";
+};
+
+const CANCEL_STATUS_MESSAGES = {
+  400: "Unable to cancel this booking. Please check the booking status.",
+  401: "Your session has expired. Please login again.",
+  403: "You are not authorized to cancel this booking.",
+  404: "Booking not found.",
+  409: "This booking has already been updated. Please refresh your bookings.",
+  500: "Something went wrong while cancelling the booking. Please try again later.",
+};
+
+const getCancelErrorMessage = (err) => {
+  const status = err?.response?.status;
+  const serverMessage = err?.response?.data?.message;
+  if (serverMessage) return serverMessage;
+  if (status && CANCEL_STATUS_MESSAGES[status])
+    return CANCEL_STATUS_MESSAGES[status];
+  return "Something went wrong while cancelling the booking. Please try again later.";
+};
+
+/* ==================================================================
+   PROVIDER CANCEL BOOKING MODAL
+   ================================================================== */
+const ProviderCancelBookingModal = ({
+  booking,
+  reason,
+  onReasonChange,
+  error,
+  isSubmitting,
+  onClose,
+  onConfirm,
+}) => {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && !isSubmitting) {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isSubmitting, onClose]);
+
+  if (!booking) return null;
+
+  const trimmedLen = (reason || "").trim().length;
+  const rawLen = (reason || "").length;
+
+  return (
+    <div
+      className="provider-cancel-overlay"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget && !isSubmitting) onClose();
+      }}>
+      <div
+        className="provider-cancel-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="provider-cancel-title">
+        <div className="provider-cancel-header">
+          <div className="provider-cancel-header-icon">
+            <FaExclamationTriangle />
+          </div>
+          <div>
+            <h3 id="provider-cancel-title" className="provider-cancel-title">
+              Cancel Booking
+            </h3>
+            <p className="provider-cancel-subtitle">
+              Are you sure you want to cancel this booking?
+            </p>
+          </div>
+        </div>
+
+        <div className="provider-cancel-body">
+          <div className="provider-cancel-summary">
+            <div className="provider-cancel-summary-row">
+              <span className="provider-cancel-summary-label">Booking</span>
+              <span className="provider-cancel-summary-value">
+                #{booking.bookingId}
+              </span>
+            </div>
+            <div className="provider-cancel-summary-row">
+              <span className="provider-cancel-summary-label">Customer</span>
+              <span className="provider-cancel-summary-value">
+                {booking.customerName}
+              </span>
+            </div>
+            <div className="provider-cancel-summary-row">
+              <span className="provider-cancel-summary-label">Category</span>
+              <span className="provider-cancel-summary-value">
+                {booking.category || "Service"}
+              </span>
+            </div>
+            <div className="provider-cancel-summary-row">
+              <span className="provider-cancel-summary-label">Date</span>
+              <span className="provider-cancel-summary-value">
+                {booking.serviceDate}
+              </span>
+            </div>
+          </div>
+
+          <label
+            htmlFor="provider-cancel-reason"
+            className="provider-cancel-label">
+            Cancellation Reason
+          </label>
+          <textarea
+            id="provider-cancel-reason"
+            className={`provider-cancel-textarea ${error ? "provider-cancel-textarea-error" : ""}`}
+            placeholder="Please tell us why you want to cancel this booking..."
+            value={reason}
+            maxLength={REASON_MAX_LEN}
+            disabled={isSubmitting}
+            onChange={(e) => onReasonChange(e.target.value)}
+            aria-invalid={!!error}
+            aria-describedby="provider-cancel-counter provider-cancel-error-msg"
+          />
+
+          <div className="provider-cancel-meta-row">
+            <span
+              id="provider-cancel-error-msg"
+              className="provider-cancel-error"
+              role="alert">
+              {error || ""}
+            </span>
+            <span
+              id="provider-cancel-counter"
+              className="provider-cancel-counter">
+              {trimmedLen === rawLen ? rawLen : trimmedLen}/{REASON_MAX_LEN}
+            </span>
+          </div>
+        </div>
+
+        <div className="provider-cancel-actions">
+          <button
+            type="button"
+            className="provider-cancel-btn provider-cancel-btn-secondary"
+            disabled={isSubmitting}
+            onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="provider-cancel-btn provider-cancel-btn-danger"
+            disabled={isSubmitting}
+            onClick={onConfirm}>
+            {isSubmitting ? "Cancelling..." : "Confirm Cancellation"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProviderDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [otpBookingId, setOtpBookingId] = useState(null);
@@ -59,6 +227,13 @@ const ProviderDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [available, setAvailable] = useState(true);
+
+  // ===== Provider cancellation modal state =====
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [cancellationReason, setCancellationReason] = useState("");
+  const [cancelError, setCancelError] = useState("");
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const { user } = useContext(AuthContext);
   const providerId = user?.providerId;
@@ -161,15 +336,90 @@ const ProviderDashboard = () => {
     }
   };
 
-  const cancel = async (id) => {
+  /* ===== PROVIDER CANCELLATION FLOW ===== */
+  const openCancelModal = (booking) => {
+    setSelectedBooking(booking);
+    setCancellationReason("");
+    setCancelError("");
+    setShowCancelModal(true);
+  };
+
+  const closeCancelModal = () => {
+    if (isCancelling) return;
+    setShowCancelModal(false);
+    setSelectedBooking(null);
+    setCancellationReason("");
+    setCancelError("");
+  };
+
+  const handleReasonChange = (value) => {
+    if (value.length > REASON_MAX_LEN) return;
+    setCancellationReason(value);
+    if (cancelError) setCancelError("");
+  };
+
+  const confirmCancelBooking = async () => {
+    if (isCancelling) return;
+
+    if (!selectedBooking || !selectedBooking.bookingId) {
+      setCancelError(
+        "This booking could not be found. Please refresh and try again.",
+      );
+      return;
+    }
+
+    const status = normalize(selectedBooking.status);
+    if (!CANCELLABLE_STATUSES.includes(status)) {
+      setCancelError("This booking can no longer be cancelled.");
+      return;
+    }
+
+    const reasonValidationError =
+      validateCancellationReason(cancellationReason);
+    if (reasonValidationError) {
+      setCancelError(reasonValidationError);
+      return;
+    }
+
+    const trimmedReason = cancellationReason.trim();
+
     try {
-      await fixlyApi.put(`/api/bookings/${id}/cancel`);
-      toast.success("Booking cancelled.", { duration: 3500 });
+      setIsCancelling(true);
+      await fixlyApi.put(
+        `/api/bookings/${selectedBooking.bookingId}/cancel`,
+        { reason: trimmedReason },
+        { headers: { "Content-Type": "application/json" } },
+      );
+
+      setShowCancelModal(false);
+      setSelectedBooking(null);
+      setCancellationReason("");
+      setCancelError("");
+
+      toast.success("Booking cancelled successfully.", { duration: 3500 });
       loadBookings();
-    } catch {
-      toast.error("Failed to cancel booking. Please try again.", {
-        duration: 3500,
-      });
+    } catch (err) {
+      const status = err?.response?.status;
+      const message = getCancelErrorMessage(err);
+
+      if (status === 409) {
+        toast.error(message, { duration: 4500 });
+        setShowCancelModal(false);
+        setSelectedBooking(null);
+        setCancellationReason("");
+        setCancelError("");
+        loadBookings();
+      } else if (status === 401) {
+        toast.error(message, { duration: 4500 });
+        setShowCancelModal(false);
+        setSelectedBooking(null);
+        setCancellationReason("");
+        setCancelError("");
+      } else {
+        setCancelError(message);
+      }
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -369,6 +619,7 @@ const ProviderDashboard = () => {
                 const bandCls = BAND_CLS[st] || "pd-band-pending";
                 const pillCls = STATUS_PILL_CLS[st] || "pd-pill-pending";
                 const initial = b.customerName?.charAt(0)?.toUpperCase() || "C";
+                const canCancel = CANCELLABLE_STATUSES.includes(st);
 
                 return (
                   <div key={b.bookingId} className="pd-card">
@@ -469,17 +720,24 @@ const ProviderDashboard = () => {
                               </button>
                               <button
                                 className="pd-btn pd-btn-cancel"
-                                onClick={() => cancel(b.bookingId)}>
-                                <FaTimesCircle /> Cancel
+                                onClick={() => openCancelModal(b)}>
+                                <FaTimesCircle /> Cancel Booking
                               </button>
                             </>
                           )}
                           {st === "ACCEPTED" && (
-                            <button
-                              className="pd-btn pd-btn-otp"
-                              onClick={() => setOtpBookingId(b.bookingId)}>
-                              <FaKey /> Verify OTP
-                            </button>
+                            <>
+                              <button
+                                className="pd-btn pd-btn-otp"
+                                onClick={() => setOtpBookingId(b.bookingId)}>
+                                <FaKey /> Verify OTP
+                              </button>
+                              <button
+                                className="pd-btn pd-btn-cancel"
+                                onClick={() => openCancelModal(b)}>
+                                <FaTimesCircle /> Cancel Booking
+                              </button>
+                            </>
                           )}
                           {st === "COMPLETED" && (
                             <span className="pd-done-badge pd-done-green">
@@ -611,6 +869,18 @@ const ProviderDashboard = () => {
             bookingId={otpBookingId}
             onClose={() => setOtpBookingId(null)}
             onSuccess={loadBookings}
+          />
+        )}
+
+        {showCancelModal && (
+          <ProviderCancelBookingModal
+            booking={selectedBooking}
+            reason={cancellationReason}
+            onReasonChange={handleReasonChange}
+            error={cancelError}
+            isSubmitting={isCancelling}
+            onClose={closeCancelModal}
+            onConfirm={confirmCancelBooking}
           />
         )}
       </div>
