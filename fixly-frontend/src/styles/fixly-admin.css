@@ -57,71 +57,151 @@
   outline: 2px solid var(--adm-primary); outline-offset: 2px;
 }
 
-/* ================= BENTO KPI GRID ================= */
+/* ================= KPI GRID (flat tinted cards) ================= */
 .adm-kpi-grid {
-  display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 26px;
 }
-.adm-kpi-revenue   { grid-column: span 5; }
-.adm-kpi-bookings  { grid-column: span 4; }
-.adm-kpi-providers { grid-column: span 3; }
-.adm-kpi-users,
-.adm-kpi-completed,
-.adm-kpi-pending,
-.adm-kpi-cancelled { grid-column: span 3; }
-.adm-kpi-avg       { grid-column: span 12; }
 
-/* ================= STAT CARD ================= */
 .adm-stat-card {
-  position: relative; overflow: hidden;
-  background: #fff; border: 1px solid var(--adm-border); border-radius: 20px;
-  padding: 20px; height: 100%;
-  box-shadow: 0 1px 2px rgba(15,23,42,.04);
-  transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+  position: relative;
+  display: flex; align-items: flex-start; gap: 12px;
+  border-radius: 16px;
+  padding: 16px 16px 17px;
+  border: 1.5px solid transparent;
+  overflow: hidden;
+  height: 100%;
+  transition: box-shadow .18s ease, border-color .18s ease, transform .15s ease;
 }
-.adm-stat-card:hover {
-  box-shadow: 0 10px 24px -6px rgba(15,23,42,.10);
-  transform: translateY(-2px);
-  border-color: #D1DAE5;
-}
-.adm-stat-card-lg { padding: 26px; display: flex; flex-direction: column; justify-content: space-between; min-height: 168px; }
-.adm-stat-card-avg { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.adm-stat-card-avg .adm-stat-card-value { font-size: 1.5rem; }
+.adm-stat-card:hover { transform: translateY(-3px); }
+.adm-stat-card:focus-visible { outline: 2px solid var(--adm-primary); outline-offset: 2px; }
 
-.adm-stat-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+/* decorative soft circle bleeding off the top-right edge */
+.adm-stat-card-deco {
+  position: absolute;
+  top: -28px; right: -28px;
+  width: 104px; height: 104px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.adm-stat-card-icon,
+.adm-stat-card-body { position: relative; z-index: 1; }
+
 .adm-stat-card-icon {
-  width: 40px; height: 40px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center; font-size: .95rem; flex-shrink: 0;
-  background: var(--adm-primary-tint); color: var(--adm-primary-dark);
+  width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .92rem; flex-shrink: 0;
 }
-.adm-stat-card-lg .adm-stat-card-icon {
-  width: 46px; height: 46px; font-size: 1.05rem;
-  background: rgba(255,255,255,.18); color: #fff;
+
+.adm-stat-card-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+
+.adm-stat-card-value {
+  font-size: 1.5rem; font-weight: 900;
+  line-height: 1.15; letter-spacing: -.02em;
 }
-.adm-tone-info .adm-stat-card-icon    { background: #EFF6FF; color: var(--adm-info); }
-.adm-tone-warning .adm-stat-card-icon { background: #FFFBEB; color: var(--adm-warning); }
-.adm-tone-danger .adm-stat-card-icon  { background: #FEF2F2; color: var(--adm-danger); }
-.adm-tone-neutral .adm-stat-card-icon { background: #F1F5F9; color: var(--adm-text-2); }
-
-.adm-stat-card-lg.adm-tone-revenue {
-  background: linear-gradient(135deg, var(--adm-primary-dark) 0%, var(--adm-primary) 55%, var(--adm-primary-2) 100%);
-  border: none; color: #fff;
+.adm-stat-card-title {
+  font-size: .82rem; font-weight: 800; color: var(--adm-text);
+  margin-top: 3px;
 }
-.adm-stat-card-lg.adm-tone-revenue .adm-stat-card-title { color: rgba(255,255,255,.85); }
-.adm-stat-card-lg.adm-tone-revenue .adm-stat-card-sub   { color: rgba(255,255,255,.7); }
-.adm-stat-card-lg.adm-tone-revenue .adm-stat-card-value { color: #fff; }
+.adm-stat-card-sub {
+  font-size: .71rem; font-weight: 500; color: var(--adm-text-2);
+  line-height: 1.35; margin-top: 1px;
+}
 
-.adm-trend { font-size: .72rem; font-weight: 800; padding: 4px 9px; border-radius: 20px; }
-.adm-trend-up { background: #DCFCE7; color: var(--adm-primary-dark); }
-.adm-trend-down { background: #FEE2E2; color: #991B1B; }
+.adm-trend {
+  position: relative; z-index: 1;
+  font-size: .68rem; font-weight: 800; padding: 3px 8px; border-radius: 20px;
+  margin-left: auto; flex-shrink: 0;
+}
+.adm-trend-up { background: rgba(255,255,255,.7); color: #15803D; }
+.adm-trend-down { background: rgba(255,255,255,.7); color: #991B1B; }
 
-.adm-stat-card-value { font-size: 1.7rem; font-weight: 800; color: var(--adm-text); letter-spacing: -.02em; line-height: 1.1; }
-.adm-stat-card-lg .adm-stat-card-value { font-size: 2.4rem; }
-.adm-stat-card-title { font-size: .82rem; font-weight: 700; color: #334155; margin-top: 4px; }
-.adm-stat-card-lg .adm-stat-card-title { font-size: .95rem; font-weight: 700; letter-spacing: .01em; text-transform: uppercase; }
-.adm-stat-card-sub { font-size: .74rem; color: var(--adm-text-2); margin-top: 4px; }
+/* ---- Tone: Emerald (Revenue) ---- */
+.adm-tone-revenue {
+  background: linear-gradient(135deg, #ecfdf3 0%, #f4fdf7 55%, #ffffff 100%);
+  border-color: #dcfce7;
+}
+.adm-tone-revenue:hover { border-color: #86efac; box-shadow: 0 8px 22px rgba(22,163,74,.14); }
+.adm-tone-revenue .adm-stat-card-deco { background: rgba(34,197,94,.10); }
+.adm-tone-revenue .adm-stat-card-icon { background: #dcfce7; color: #15803D; }
+.adm-tone-revenue .adm-stat-card-value { color: #15803D; }
+
+/* ---- Tone: Blue (Bookings) ---- */
+.adm-tone-blue {
+  background: linear-gradient(135deg, #eef2ff 0%, #f5f8ff 55%, #ffffff 100%);
+  border-color: #e0e7ff;
+}
+.adm-tone-blue:hover { border-color: #93c5fd; box-shadow: 0 8px 22px rgba(37,99,235,.12); }
+.adm-tone-blue .adm-stat-card-deco { background: rgba(59,130,246,.08); }
+.adm-tone-blue .adm-stat-card-icon { background: #dbeafe; color: #1d4ed8; }
+.adm-tone-blue .adm-stat-card-value { color: #1d4ed8; }
+
+/* ---- Tone: Purple (Providers) ---- */
+.adm-tone-purple {
+  background: linear-gradient(135deg, #f5f3ff 0%, #f9f7ff 55%, #ffffff 100%);
+  border-color: #ede9fe;
+}
+.adm-tone-purple:hover { border-color: #c4b5fd; box-shadow: 0 8px 22px rgba(124,58,237,.12); }
+.adm-tone-purple .adm-stat-card-deco { background: rgba(139,92,246,.09); }
+.adm-tone-purple .adm-stat-card-icon { background: #ede9fe; color: #6d28d9; }
+.adm-tone-purple .adm-stat-card-value { color: #6d28d9; }
+
+/* ---- Tone: Indigo (Users) ---- */
+.adm-tone-indigo {
+  background: linear-gradient(135deg, #eef2ff 0%, #f6f7ff 55%, #ffffff 100%);
+  border-color: #e0e7ff;
+}
+.adm-tone-indigo:hover { border-color: #a5b4fc; box-shadow: 0 8px 22px rgba(79,70,229,.12); }
+.adm-tone-indigo .adm-stat-card-deco { background: rgba(99,102,241,.09); }
+.adm-tone-indigo .adm-stat-card-icon { background: #e0e7ff; color: #4338ca; }
+.adm-tone-indigo .adm-stat-card-value { color: #4338ca; }
+
+/* ---- Tone: Green (Completed) ---- */
+.adm-tone-green {
+  background: linear-gradient(135deg, #f0fdf4 0%, #f6fdf8 55%, #ffffff 100%);
+  border-color: #dcfce7;
+}
+.adm-tone-green:hover { border-color: #86efac; box-shadow: 0 8px 22px rgba(22,163,74,.12); }
+.adm-tone-green .adm-stat-card-deco { background: rgba(34,197,94,.08); }
+.adm-tone-green .adm-stat-card-icon { background: #dcfce7; color: #15803d; }
+.adm-tone-green .adm-stat-card-value { color: #15803d; }
+
+/* ---- Tone: Amber (Pending) ---- */
+.adm-tone-amber {
+  background: linear-gradient(135deg, #fffbeb 0%, #fffdf5 55%, #ffffff 100%);
+  border-color: #fef3c7;
+}
+.adm-tone-amber:hover { border-color: #fde68a; box-shadow: 0 8px 22px rgba(217,119,6,.12); }
+.adm-tone-amber .adm-stat-card-deco { background: rgba(245,158,11,.09); }
+.adm-tone-amber .adm-stat-card-icon { background: #fef3c7; color: #d97706; }
+.adm-tone-amber .adm-stat-card-value { color: #d97706; }
+
+/* ---- Tone: Red (Cancelled) ---- */
+.adm-tone-red {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff6f6 55%, #ffffff 100%);
+  border-color: #fee2e2;
+}
+.adm-tone-red:hover { border-color: #fca5a5; box-shadow: 0 8px 22px rgba(220,38,38,.12); }
+.adm-tone-red .adm-stat-card-deco { background: rgba(239,68,68,.08); }
+.adm-tone-red .adm-stat-card-icon { background: #fee2e2; color: #dc2626; }
+.adm-tone-red .adm-stat-card-value { color: #dc2626; }
+
+/* ---- Tone: Slate (Avg Booking Value) ---- */
+.adm-tone-slate {
+  background: linear-gradient(135deg, #f8fafc 0%, #fbfcfd 55%, #ffffff 100%);
+  border-color: #e2e8f0;
+}
+.adm-tone-slate:hover { border-color: #cbd5e1; box-shadow: 0 8px 22px rgba(15,23,42,.08); }
+.adm-tone-slate .adm-stat-card-deco { background: rgba(100,116,139,.08); }
+.adm-tone-slate .adm-stat-card-icon { background: #f1f5f9; color: #475569; }
+.adm-tone-slate .adm-stat-card-value { color: #334155; }
 
 .adm-skeleton-card {
-  height: 130px; border-radius: 20px;
+  height: 96px; border-radius: 16px;
   background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 37%, #F1F5F9 63%);
   background-size: 400% 100%; animation: adm-shimmer 1.4s ease infinite;
 }
@@ -229,33 +309,23 @@
    ====================================================== */
 @media (max-width: 1024px) {
   .adm-wrapper { padding: 22px 18px 60px; }
-  .adm-kpi-grid { grid-template-columns: repeat(4, 1fr); }
-  .adm-kpi-revenue, .adm-kpi-avg { grid-column: span 4; }
-  .adm-kpi-bookings, .adm-kpi-providers,
-  .adm-kpi-users, .adm-kpi-completed, .adm-kpi-pending, .adm-kpi-cancelled { grid-column: span 2; }
+  .adm-kpi-grid { grid-template-columns: repeat(3, 1fr); }
   .adm-bento-row-2 { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
   .adm-wrapper { padding: 16px 13px 52px; }
   .adm-analytics-title { font-size: 1.35rem; }
-  .adm-kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .adm-kpi-revenue, .adm-kpi-avg { grid-column: span 2; }
-  .adm-kpi-bookings, .adm-kpi-providers,
-  .adm-kpi-users, .adm-kpi-completed, .adm-kpi-pending, .adm-kpi-cancelled { grid-column: span 1; }
-  .adm-stat-card { padding: 16px; border-radius: 16px; }
-  .adm-stat-card-lg { padding: 20px; min-height: 140px; }
-  .adm-stat-card-value { font-size: 1.4rem; }
-  .adm-stat-card-lg .adm-stat-card-value { font-size: 1.9rem; }
+  .adm-kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .adm-stat-card { padding: 13px 13px 14px; border-radius: 14px; gap: 10px; }
+  .adm-stat-card-value { font-size: 1.25rem; }
   .adm-provider-chart-row { flex-direction: column; align-items: stretch; }
   .adm-chart-card { padding: 16px; border-radius: 16px; }
 }
 
 @media (max-width: 480px) {
   .adm-wrapper { padding: 12px 10px 48px; }
-  .adm-kpi-grid { grid-template-columns: 1fr; }
-  .adm-kpi-revenue, .adm-kpi-bookings, .adm-kpi-providers, .adm-kpi-avg,
-  .adm-kpi-users, .adm-kpi-completed, .adm-kpi-pending, .adm-kpi-cancelled { grid-column: span 1; }
+  .adm-kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 9px; }
   .adm-period-selector { width: 100%; }
   .adm-period-btn { flex: 1; text-align: center; padding: 9px 6px; }
   .adm-analytics-header { align-items: stretch; }
@@ -264,6 +334,6 @@
 @media (max-width: 380px) {
   .adm-analytics-title { font-size: 1.15rem; }
   .adm-section-title { font-size: .95rem; }
-  .adm-stat-card-value { font-size: 1.25rem; }
-  .adm-stat-card-lg .adm-stat-card-value { font-size: 1.7rem; }
+  .adm-kpi-grid { grid-template-columns: 1fr; }
+  .adm-stat-card-value { font-size: 1.15rem; }
 }

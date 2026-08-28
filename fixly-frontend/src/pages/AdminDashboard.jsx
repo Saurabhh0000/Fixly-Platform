@@ -56,23 +56,9 @@ const AdminDashboard = () => {
 
         {status === "loading" && (
           <div className="adm-kpi-grid">
-            <div className="adm-kpi-revenue">
-              <div className="adm-skeleton-card" style={{ height: 168 }} />
-            </div>
-            <div className="adm-kpi-bookings">
-              <div className="adm-skeleton-card" style={{ height: 168 }} />
-            </div>
-            <div className="adm-kpi-providers">
-              <div className="adm-skeleton-card" style={{ height: 168 }} />
-            </div>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div className="adm-kpi-users" key={i}>
-                <div className="adm-skeleton-card" />
-              </div>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div className="adm-skeleton-card" key={i} />
             ))}
-            <div className="adm-kpi-avg">
-              <div className="adm-skeleton-card" style={{ height: 96 }} />
-            </div>
           </div>
         )}
 
@@ -93,81 +79,62 @@ const AdminDashboard = () => {
         {status === "ready" && overview && (
           <>
             <div className="adm-kpi-grid">
-              <div className="adm-kpi-revenue">
-                <AdminStatCard
-                  size="lg"
-                  tone="revenue"
-                  icon={<FaRupeeSign />}
-                  title="Total Revenue"
-                  value={`₹${overview.totalRevenue.toLocaleString("en-IN")}`}
-                  subtitle="Completed bookings, selected period"
-                />
-              </div>
-              <div className="adm-kpi-bookings">
-                <AdminStatCard
-                  size="lg"
-                  tone="info"
-                  icon={<FaClipboardList />}
-                  title="Total Bookings"
-                  value={overview.totalBookings.toLocaleString("en-IN")}
-                  subtitle="Selected period"
-                />
-              </div>
-              <div className="adm-kpi-providers">
-                <AdminStatCard
-                  icon={<FaUserTie />}
-                  title="Total Providers"
-                  value={overview.totalProviders.toLocaleString("en-IN")}
-                  subtitle={`${overview.approvedProviders} approved · ${overview.pendingProviders} pending`}
-                />
-              </div>
-
-              <div className="adm-kpi-users">
-                <AdminStatCard
-                  icon={<FaUsers />}
-                  title="Total Users"
-                  value={overview.totalUsers.toLocaleString("en-IN")}
-                  subtitle="All time"
-                />
-              </div>
-              <div className="adm-kpi-completed">
-                <AdminStatCard
-                  tone="default"
-                  icon={<FaCheckCircle />}
-                  title="Completed Bookings"
-                  value={overview.completedBookings.toLocaleString("en-IN")}
-                  subtitle={`${overview.bookingCompletionRate}% completion rate`}
-                />
-              </div>
-              <div className="adm-kpi-pending">
-                <AdminStatCard
-                  tone="warning"
-                  icon={<FaHourglassHalf />}
-                  title="Pending Bookings"
-                  value={overview.pendingBookings.toLocaleString("en-IN")}
-                  subtitle="Awaiting provider response"
-                />
-              </div>
-              <div className="adm-kpi-cancelled">
-                <AdminStatCard
-                  tone="danger"
-                  icon={<FaTimesCircle />}
-                  title="Cancelled Bookings"
-                  value={overview.cancelledBookings.toLocaleString("en-IN")}
-                  subtitle={`${overview.bookingCancellationRate}% cancellation rate`}
-                />
-              </div>
-
-              <div className="adm-kpi-avg">
-                <AdminStatCard
-                  size="avg"
-                  tone="neutral"
-                  icon={<FaChartLine />}
-                  title="Average Booking Value"
-                  value={`₹${overview.averageBookingValue.toFixed(0)}`}
-                  subtitle="Per completed booking"
-                />
-              </div>
+              <AdminStatCard
+                tone="revenue"
+                icon={<FaRupeeSign />}
+                title="Total Revenue"
+                value={`₹${overview.totalRevenue.toLocaleString("en-IN")}`}
+                subtitle="Completed bookings, selected period"
+              />
+              <AdminStatCard
+                tone="blue"
+                icon={<FaClipboardList />}
+                title="Total Bookings"
+                value={overview.totalBookings.toLocaleString("en-IN")}
+                subtitle="Selected period"
+              />
+              <AdminStatCard
+                tone="purple"
+                icon={<FaUserTie />}
+                title="Total Providers"
+                value={overview.totalProviders.toLocaleString("en-IN")}
+                subtitle={`${overview.approvedProviders} approved · ${overview.pendingProviders} pending`}
+              />
+              <AdminStatCard
+                tone="indigo"
+                icon={<FaUsers />}
+                title="Total Users"
+                value={overview.totalUsers.toLocaleString("en-IN")}
+                subtitle="All time"
+              />
+              <AdminStatCard
+                tone="green"
+                icon={<FaCheckCircle />}
+                title="Completed"
+                value={overview.completedBookings.toLocaleString("en-IN")}
+                subtitle={`${overview.bookingCompletionRate}% completion rate`}
+              />
+              <AdminStatCard
+                tone="amber"
+                icon={<FaHourglassHalf />}
+                title="Pending"
+                value={overview.pendingBookings.toLocaleString("en-IN")}
+                subtitle="Awaiting provider response"
+              />
+              <AdminStatCard
+                tone="red"
+                icon={<FaTimesCircle />}
+                title="Cancelled"
+                value={overview.cancelledBookings.toLocaleString("en-IN")}
+                subtitle={`${overview.bookingCancellationRate}% cancellation rate`}
+              />
+              <AdminStatCard
+                tone="slate"
+                icon={<FaChartLine />}
+                title="Avg Booking Value"
+                value={`₹${overview.averageBookingValue.toFixed(0)}`}
+                subtitle="Per completed booking"
+              />
             </div>
 
             <h3 className="adm-section-title">Booking Performance</h3>
