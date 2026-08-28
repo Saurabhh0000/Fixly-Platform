@@ -54,4 +54,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 			ORDER BY SUM(CASE WHEN b.status = :completed THEN 1L ELSE 0L END) DESC
 			""")
 	List<Object[]> topProviders(@Param("completed") BookingStatus completed, Pageable pageable);
+
+	@Query("""
+			SELECT DISTINCT b FROM Booking b
+			JOIN FETCH b.user u
+			JOIN FETCH b.provider p
+			JOIN FETCH p.user pu
+			WHERE b.serviceDate < :date
+			AND b.status IN :statuses
+			""")
+	List<Booking> findExpiredBookings(@Param("date") LocalDate date, @Param("statuses") List<BookingStatus> statuses);
 }

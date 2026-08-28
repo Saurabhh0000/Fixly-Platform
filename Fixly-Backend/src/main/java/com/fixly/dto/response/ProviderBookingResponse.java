@@ -1,13 +1,14 @@
 package com.fixly.dto.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
 @Data
 public class ProviderBookingResponse {
-	
-	private Long bookingId;
+
+    private Long bookingId;
     private String customerName;
     private String customerPhone;
     private String city;
@@ -18,5 +19,9 @@ public class ProviderBookingResponse {
     private String status;
     private Double rating;
     private String description;
+
+    private String cancellationReason;
+    private LocalDateTime cancelledAt;
+    private String cancelledBy;
 
 }

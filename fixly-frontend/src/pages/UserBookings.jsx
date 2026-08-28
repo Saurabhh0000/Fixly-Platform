@@ -24,6 +24,7 @@ import {
   FaListAlt,
   FaBolt,
   FaBan,
+  FaTimes,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../styles/fixly-bookings.css";
@@ -41,6 +42,53 @@ const FILTERS = [
   { key: "CANCELLED", label: "Cancelled", icon: <FaBan /> },
 ];
 
+// Local (Asia/Kolkata-safe) YYYY-MM-DD — avoids toISOString()'s UTC shift.
+const getTodayLocalDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const validateCancellationReason = (value) => {
+  const trimmed = value.trim();
+  if (!trimmed) return "Cancellation reason is required.";
+  if (trimmed.length < 3)
+    return "Cancellation reason must be at least 3 characters.";
+  if (trimmed.length > 500)
+    return "Cancellation reason cannot exceed 500 characters.";
+  return "";
+};
+
+const validateRescheduleDate = (value) => {
+  if (!value) return "Please select a service date.";
+  if (value < getTodayLocalDateString())
+    return "Service date cannot be in the past.";
+  return "";
+};
+
+const getErrorMessage = (err, fallback) => {
+  const status = err?.response?.status;
+  const serverMessage = err?.response?.data?.message;
+  if (status === 400)
+    return (
+      serverMessage ||
+      "Unable to update this booking. Please check the information and try again."
+    );
+  if (status === 401) return "Your session has expired. Please log in again.";
+  if (status === 403)
+    return serverMessage || "You are not authorized to modify this booking.";
+  if (status === 404) return serverMessage || "Booking not found.";
+  if (status === 409)
+    return (
+      serverMessage ||
+      "This booking was already updated. Please refresh your bookings."
+    );
+  if (status === 500) return "Something went wrong. Please try again later.";
+  return serverMessage || fallback;
+};
+
 const UserBookings = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -51,6 +99,20 @@ const UserBookings = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [page, setPage] = useState(1);
+
+  // ===== CANCELLATION STATE =====
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelTarget, setCancelTarget] = useState(null);
+  const [cancellationReason, setCancellationReason] = useState("");
+  const [cancelError, setCancelError] = useState("");
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  // ===== RESCHEDULE STATE =====
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [rescheduleTarget, setRescheduleTarget] = useState(null);
+  const [rescheduleDate, setRescheduleDate] = useState("");
+  const [rescheduleError, setRescheduleError] = useState("");
+  const [isRescheduling, setIsRescheduling] = useState(false);
 
   const loadBookings = async () => {
     try {
@@ -68,6 +130,114 @@ const UserBookings = () => {
   useEffect(() => {
     if (user?.id) loadBookings();
   }, [user?.id]);
+
+  /* ===== CANCEL MODAL HANDLERS ===== */
+  const openCancelModal = (booking) => {
+    setCancelTarget(booking);
+    setCancellationReason("");
+    setCancelError("");
+    setShowCancelModal(true);
+  };
+
+  const closeCancelModal = () => {
+    if (isCancelling) return;
+    setShowCancelModal(false);
+    setCancelTarget(null);
+    setCancellationReason("");
+    setCancelError("");
+  };
+
+  const handleConfirmCancel = async () => {
+    if (isCancelling || !cancelTarget) return;
+    const validationError = validateCancellationReason(cancellationReason);
+    if (validationError) {
+      setCancelError(validationError);
+      return;
+    }
+    setIsCancelling(true);
+    setCancelError("");
+    try {
+      await fixlyApi.put(`/api/bookings/${cancelTarget.bookingId}/cancel`, {
+        reason: cancellationReason.trim(),
+      });
+      toast.success("Booking cancelled successfully.", { duration: 3500 });
+      setShowCancelModal(false);
+      setCancelTarget(null);
+      setCancellationReason("");
+      await loadBookings();
+    } catch (err) {
+      setCancelError(
+        getErrorMessage(
+          err,
+          "Unable to cancel this booking. Please try again.",
+        ),
+      );
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  /* ===== RESCHEDULE MODAL HANDLERS ===== */
+  const openRescheduleModal = (booking) => {
+    setRescheduleTarget(booking);
+    setRescheduleDate("");
+    setRescheduleError("");
+    setShowRescheduleModal(true);
+  };
+
+  const closeRescheduleModal = () => {
+    if (isRescheduling) return;
+    setShowRescheduleModal(false);
+    setRescheduleTarget(null);
+    setRescheduleDate("");
+    setRescheduleError("");
+  };
+
+  const handleConfirmReschedule = async () => {
+    if (isRescheduling || !rescheduleTarget) return;
+    const validationError = validateRescheduleDate(rescheduleDate);
+    if (validationError) {
+      setRescheduleError(validationError);
+      return;
+    }
+    setIsRescheduling(true);
+    setRescheduleError("");
+    try {
+      await fixlyApi.put(
+        `/api/bookings/${rescheduleTarget.bookingId}/reschedule`,
+        {
+          serviceDate: rescheduleDate,
+        },
+      );
+      toast.success("Booking rescheduled successfully.", { duration: 3500 });
+      setShowRescheduleModal(false);
+      setRescheduleTarget(null);
+      setRescheduleDate("");
+      await loadBookings();
+    } catch (err) {
+      setRescheduleError(
+        getErrorMessage(
+          err,
+          "Unable to reschedule this booking. Please try again.",
+        ),
+      );
+    } finally {
+      setIsRescheduling(false);
+    }
+  };
+
+  /* ===== ESCAPE KEY CLOSES OPEN MODAL ===== */
+  useEffect(() => {
+    if (!showCancelModal && !showRescheduleModal) return;
+    const handleKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      if (showCancelModal) closeCancelModal();
+      if (showRescheduleModal) closeRescheduleModal();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showCancelModal, showRescheduleModal, isCancelling, isRescheduling]);
 
   /* ===== STATUS CONFIG ===== */
   const statusConfig = {
@@ -393,6 +563,79 @@ const UserBookings = () => {
                       </span>
                     </div>
 
+                    {/* ===== CANCEL BOOKING ACTION ===== */}
+                    {(b.status === "PENDING" || b.status === "ACCEPTED") && (
+                      <div className="ub-booking-action-row">
+                        <button
+                          type="button"
+                          className="ub-cancel-action-btn"
+                          onClick={() => openCancelModal(b)}>
+                          <FaBan className="ub-cancel-action-icon" /> Cancel
+                          Booking
+                        </button>
+                      </div>
+                    )}
+
+                    {/* ===== CANCELLATION INFO + RESCHEDULE ACTION ===== */}
+                    {b.status === "CANCELLED" && (
+                      <>
+                        {(b.cancellationReason ||
+                          b.cancelledBy ||
+                          b.cancelledAt) && (
+                          <div className="ub-cancel-info-block">
+                            {b.cancellationReason && (
+                              <div className="ub-cancel-info-row">
+                                <span className="ub-cancel-info-label">
+                                  Cancellation Reason
+                                </span>
+                                <span className="ub-cancel-info-value">
+                                  {b.cancellationReason}
+                                </span>
+                              </div>
+                            )}
+                            {b.cancelledBy && (
+                              <div className="ub-cancel-info-row">
+                                <span className="ub-cancel-info-label">
+                                  Cancelled By
+                                </span>
+                                <span className="ub-cancel-info-value">
+                                  {b.cancelledBy}
+                                </span>
+                              </div>
+                            )}
+                            {b.cancelledAt && (
+                              <div className="ub-cancel-info-row">
+                                <span className="ub-cancel-info-label">
+                                  Cancelled On
+                                </span>
+                                <span className="ub-cancel-info-value">
+                                  {new Date(b.cancelledAt).toLocaleString(
+                                    "en-IN",
+                                    {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    },
+                                  )}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        <div className="ub-booking-action-row">
+                          <button
+                            type="button"
+                            className="ub-reschedule-action-btn"
+                            onClick={() => openRescheduleModal(b)}>
+                            <FaCalendarAlt className="ub-reschedule-action-icon" />{" "}
+                            Reschedule Booking
+                          </button>
+                        </div>
+                      </>
+                    )}
+
                     {b.status === "COMPLETED" && (
                       <div className="ub-review-row">
                         {!b.reviewed ? (
@@ -481,6 +724,156 @@ const UserBookings = () => {
               loadBookings();
             }}
           />
+        )}
+
+        {/* ===== CANCEL BOOKING MODAL ===== */}
+        {showCancelModal && cancelTarget && (
+          <div className="ub-modal-backdrop">
+            <div
+              className="ub-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="ub-cancel-modal-title">
+              <div className="ub-modal-header">
+                <h3 id="ub-cancel-modal-title" className="ub-modal-title">
+                  Cancel Booking
+                </h3>
+                <button
+                  type="button"
+                  className="ub-modal-close"
+                  aria-label="Close"
+                  onClick={closeCancelModal}
+                  disabled={isCancelling}>
+                  <FaTimes />
+                </button>
+              </div>
+
+              <p className="ub-modal-desc">
+                Are you sure you want to cancel this booking?
+              </p>
+
+              <div className="ub-modal-field">
+                <label htmlFor="ub-cancel-reason" className="ub-modal-label">
+                  Cancellation Reason
+                </label>
+                <textarea
+                  id="ub-cancel-reason"
+                  className="ub-modal-textarea"
+                  placeholder="Please tell us why you want to cancel..."
+                  value={cancellationReason}
+                  maxLength={500}
+                  disabled={isCancelling}
+                  onChange={(e) => {
+                    setCancellationReason(e.target.value);
+                    if (cancelError) setCancelError("");
+                  }}
+                />
+                <div className="ub-modal-textarea-footer">
+                  {cancelError ? (
+                    <span className="ub-modal-error">{cancelError}</span>
+                  ) : (
+                    <span />
+                  )}
+                  <span className="ub-char-counter">
+                    {cancellationReason.length} / 500
+                  </span>
+                </div>
+              </div>
+
+              <div className="ub-modal-actions">
+                <button
+                  type="button"
+                  className="ub-modal-btn ub-modal-btn-secondary"
+                  onClick={closeCancelModal}
+                  disabled={isCancelling}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="ub-modal-btn ub-modal-btn-danger"
+                  onClick={handleConfirmCancel}
+                  disabled={isCancelling}>
+                  {isCancelling ? "Cancelling..." : "Confirm Cancellation"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ===== RESCHEDULE BOOKING MODAL ===== */}
+        {showRescheduleModal && rescheduleTarget && (
+          <div className="ub-modal-backdrop">
+            <div
+              className="ub-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="ub-reschedule-modal-title">
+              <div className="ub-modal-header">
+                <h3 id="ub-reschedule-modal-title" className="ub-modal-title">
+                  Reschedule Booking
+                </h3>
+                <button
+                  type="button"
+                  className="ub-modal-close"
+                  aria-label="Close"
+                  onClick={closeRescheduleModal}
+                  disabled={isRescheduling}>
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="ub-reschedule-summary">
+                <div className="ub-reschedule-summary-row">
+                  <FaTools className="ub-reschedule-summary-icon" />
+                  <span>{rescheduleTarget.category}</span>
+                </div>
+                <div className="ub-reschedule-summary-row">
+                  <FaUserTie className="ub-reschedule-summary-icon" />
+                  <span>
+                    {rescheduleTarget.providerName || "Assigned Provider"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="ub-modal-field">
+                <label htmlFor="ub-reschedule-date" className="ub-modal-label">
+                  Select New Service Date
+                </label>
+                <input
+                  id="ub-reschedule-date"
+                  type="date"
+                  className="ub-modal-date-input"
+                  min={getTodayLocalDateString()}
+                  value={rescheduleDate}
+                  disabled={isRescheduling}
+                  onChange={(e) => {
+                    setRescheduleDate(e.target.value);
+                    if (rescheduleError) setRescheduleError("");
+                  }}
+                />
+                {rescheduleError && (
+                  <span className="ub-modal-error">{rescheduleError}</span>
+                )}
+              </div>
+
+              <div className="ub-modal-actions">
+                <button
+                  type="button"
+                  className="ub-modal-btn ub-modal-btn-secondary"
+                  onClick={closeRescheduleModal}
+                  disabled={isRescheduling}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="ub-modal-btn ub-modal-btn-primary"
+                  onClick={handleConfirmReschedule}
+                  disabled={isRescheduling}>
+                  {isRescheduling ? "Rescheduling..." : "Confirm Reschedule"}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </UserLayout>

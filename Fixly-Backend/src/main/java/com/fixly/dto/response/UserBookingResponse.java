@@ -1,6 +1,7 @@
 package com.fixly.dto.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -19,5 +20,9 @@ public class UserBookingResponse {
     private String otp;
     private boolean reviewed;
     private Double rating; // optional, for stars display
+
+    private String cancellationReason;
+    private LocalDateTime cancelledAt;
+    private String cancelledBy;
 
 }

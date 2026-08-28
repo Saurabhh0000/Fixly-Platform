@@ -1,7 +1,7 @@
 package com.fixly.entity;
 
-
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fixly.enums.BookingStatus;
@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
 import lombok.Data;
 
 @Entity
@@ -44,6 +45,12 @@ public class Booking {
     private BookingStatus status;
 
     private String otp;
+    private String cancellationReason;
+    private LocalDateTime cancelledAt;
+    private String cancelledBy;
+
+    @Version
+    private Long version;
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @JsonManagedReference

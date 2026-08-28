@@ -5,9 +5,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fixly.dto.request.BookingRequest;
+import com.fixly.dto.request.CancellationRequest;
+import com.fixly.dto.request.RescheduleBookingRequest;
 import com.fixly.dto.response.BookingResponse;
 import com.fixly.dto.response.ProviderBookingResponse;
 import com.fixly.dto.response.UserBookingResponse;
@@ -25,6 +30,7 @@ import com.fixly.repository.ServiceProviderRepository;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.BookingService;
 import com.fixly.service.NotificationService;
+import com.fixly.util.FixlyClock;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -97,7 +103,7 @@ public class BookingServiceImpl implements BookingService {
 		booking.setStatus(BookingStatus.ACCEPTED);
 		booking.setOtp(generateOtp());
 
-		Booking saved = bookingRepository.save(booking);
+		Booking saved = safeSave(booking);
 
 		notificationService.send(
 				booking.getUser().getUserId(),
@@ -124,7 +130,7 @@ public class BookingServiceImpl implements BookingService {
 		booking.setStatus(BookingStatus.COMPLETED);
 		booking.setOtp(null);
 
-		Booking save = bookingRepository.save(booking);
+		Booking save = safeSave(booking);
 
 		notificationService.send(
 				booking.getUser().getUserId(),
@@ -146,38 +152,105 @@ public class BookingServiceImpl implements BookingService {
 		return mapToResponse(save);
 	}
 
+	// USER / PROVIDER / ADMIN cancels booking with a required reason
+
 	@Override
-	public BookingResponse cancelBooking(Long bookingId) {
+	@Transactional
+	public BookingResponse cancelBooking(Long bookingId, CancellationRequest request, User actingUser) {
+
 		Booking booking = bookingRepository.findById(bookingId)
 				.orElseThrow(() -> new ResourceNotFoundException("Booking Not Found !"));
 
-		if (booking.getStatus() == BookingStatus.COMPLETED || booking.getStatus() == BookingStatus.CANCELLED) {
-			throw new BadRequestException("Booking Cannt Be Cancelled !");
+		authorizeCancellation(booking, actingUser);
+
+		if (booking.getStatus() == BookingStatus.COMPLETED) {
+			throw new BadRequestException("Completed bookings cannot be cancelled.");
 		}
+		if (booking.getStatus() == BookingStatus.CANCELLED) {
+			throw new BadRequestException("Booking is already cancelled.");
+		}
+
+		String cancelledByLabel = resolveCancelledByLabel(actingUser, booking);
 
 		booking.setStatus(BookingStatus.CANCELLED);
 		booking.setOtp(null);
+		booking.setCancellationReason(request.getReason());
+		booking.setCancelledAt(FixlyClock.now());
+		booking.setCancelledBy(cancelledByLabel);
 
-		Booking save = bookingRepository.save(booking);
+		Booking saved = safeSave(booking);
 
 		notificationService.send(
 				booking.getUser().getUserId(),
 				"Booking Cancelled",
-				"Your booking has been cancelled.",
+				"Your booking for " + booking.getProvider().getCategory().getName()
+						+ " has been cancelled successfully.",
 				NotificationType.BOOKING);
 
 		notificationService.send(
 				booking.getProvider().getUser().getUserId(),
 				"Booking Cancelled",
-				booking.getUser().getFullName() + " cancelled the booking.",
+				booking.getUser().getFullName() + " cancelled the booking for "
+						+ booking.getProvider().getCategory().getName()
+						+ ". Reason: " + request.getReason(),
 				NotificationType.BOOKING);
+
 		notificationService.send(
 				1L,
 				"Booking Cancelled",
-				"Booking #" + booking.getBookingId() + " was cancelled.",
+				"Booking #" + booking.getBookingId() + " was cancelled by " + cancelledByLabel + ".",
 				NotificationType.BOOKING);
 
-		return mapToResponse(save);
+		return mapToResponse(saved);
+	}
+
+	// USER reschedules a CANCELLED booking → back to PENDING
+
+	@Override
+	@Transactional
+	public BookingResponse rescheduleBooking(Long bookingId, RescheduleBookingRequest request, User actingUser) {
+
+		Booking booking = bookingRepository.findById(bookingId)
+				.orElseThrow(() -> new ResourceNotFoundException("Booking Not Found !"));
+
+		if (!booking.getUser().getUserId().equals(actingUser.getUserId())) {
+			throw new AccessDeniedException("You are not authorized to modify this booking.");
+		}
+
+		if (booking.getStatus() != BookingStatus.CANCELLED) {
+			throw new BadRequestException("Only cancelled bookings can be rescheduled.");
+		}
+
+		booking.setServiceDate(request.getServiceDate());
+		booking.setStatus(BookingStatus.PENDING);
+		booking.setOtp(null);
+		booking.setCancellationReason(null);
+		booking.setCancelledAt(null);
+		booking.setCancelledBy(null);
+
+		Booking saved = safeSave(booking);
+
+		notificationService.send(
+				booking.getUser().getUserId(),
+				"Booking Rescheduled",
+				"Booking #" + booking.getBookingId()
+						+ " has been rescheduled successfully and is waiting for provider confirmation.",
+				NotificationType.BOOKING);
+
+		notificationService.send(
+				booking.getProvider().getUser().getUserId(),
+				"Booking Rescheduled",
+				booking.getUser().getFullName() + " rescheduled booking #" + booking.getBookingId()
+						+ " to " + booking.getServiceDate() + ". Please review the request.",
+				NotificationType.BOOKING);
+
+		notificationService.send(
+				1L,
+				"Booking Rescheduled",
+				"Booking #" + booking.getBookingId() + " was rescheduled by the customer.",
+				NotificationType.BOOKING);
+
+		return mapToResponse(saved);
 	}
 
 	@Override
@@ -198,6 +271,49 @@ public class BookingServiceImpl implements BookingService {
 				.toList();
 	}
 
+	/* ===================== AUTHORIZATION HELPERS ===================== */
+
+	private void authorizeCancellation(Booking booking, User actingUser) {
+		switch (actingUser.getRole()) {
+			case ADMIN -> {
+				// admins may cancel any booking
+			}
+			case USER -> {
+				if (!booking.getUser().getUserId().equals(actingUser.getUserId())) {
+					throw new AccessDeniedException("You are not authorized to modify this booking.");
+				}
+			}
+			case PROVIDER -> {
+				ServiceProvider provider = providerRepository.findByUser_UserId(actingUser.getUserId())
+						.orElseThrow(() -> new AccessDeniedException(
+								"You are not authorized to modify this booking."));
+				if (!booking.getProvider().getProviderId().equals(provider.getProviderId())) {
+					throw new AccessDeniedException("You are not authorized to modify this booking.");
+				}
+			}
+			default -> throw new AccessDeniedException("You are not authorized to modify this booking.");
+		}
+	}
+
+	private String resolveCancelledByLabel(User actingUser, Booking booking) {
+		return switch (actingUser.getRole()) {
+			case ADMIN -> "Admin";
+			case PROVIDER -> booking.getProvider().getUser().getFullName() + " (Provider)";
+			default -> actingUser.getFullName();
+		};
+	}
+
+	/* ===================== CONCURRENCY-SAFE SAVE ===================== */
+
+	private Booking safeSave(Booking booking) {
+		try {
+			return bookingRepository.save(booking);
+		} catch (ObjectOptimisticLockingFailureException e) {
+			throw new BadRequestException(
+					"This booking was just updated elsewhere. Please refresh and try again.");
+		}
+	}
+
 	// mapToResponse and generate OTP Methods
 
 	private String generateOtp() {
@@ -213,6 +329,9 @@ public class BookingServiceImpl implements BookingService {
 		response.setCategory(booking.getProvider().getCategory().getName());
 		response.setServiceDate(booking.getServiceDate());
 		response.setStatus(booking.getStatus().name());
+		response.setCancellationReason(booking.getCancellationReason());
+		response.setCancelledAt(booking.getCancelledAt());
+		response.setCancelledBy(booking.getCancelledBy());
 
 		return response;
 	}
@@ -238,6 +357,9 @@ public class BookingServiceImpl implements BookingService {
 		response.setServiceDate(booking.getServiceDate());
 		response.setPricePerVisit(booking.getProvider().getPricePerVisit());
 		response.setStatus(booking.getStatus().name());
+		response.setCancellationReason(booking.getCancellationReason());
+		response.setCancelledAt(booking.getCancelledAt());
+		response.setCancelledBy(booking.getCancelledBy());
 
 		// ✅ SAFE RATING HANDLING
 		if (booking.getReview() != null) {
@@ -272,6 +394,9 @@ public class BookingServiceImpl implements BookingService {
 		response.setPincode(booking.getAddress().getPincode());
 		response.setStatus(booking.getStatus().name());
 		response.setPrice(booking.getProvider().getPricePerVisit());
+		response.setCancellationReason(booking.getCancellationReason());
+		response.setCancelledAt(booking.getCancelledAt());
+		response.setCancelledBy(booking.getCancelledBy());
 		// ✅ SEND OTP ONLY WHEN ACCEPTED
 		if (booking.getStatus() == BookingStatus.ACCEPTED) {
 			response.setOtp(booking.getOtp());
