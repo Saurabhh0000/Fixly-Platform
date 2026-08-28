@@ -57,14 +57,25 @@
   outline: 2px solid var(--adm-primary); outline-offset: 2px;
 }
 
-/* ================= KPI GRID (flat tinted cards) ================= */
+/* ================= KPI BENTO GRID ================= */
 .adm-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 14px;
   margin-bottom: 26px;
 }
+.adm-kpi-span-3  { grid-column: span 3; }
+.adm-kpi-span-4  { grid-column: span 4; }
+.adm-kpi-span-6  { grid-column: span 6; }
+.adm-kpi-span-12 { grid-column: span 12; }
+.adm-kpi-span-3, .adm-kpi-span-4, .adm-kpi-span-6, .adm-kpi-span-12 {
+  display: flex;
+}
+.adm-kpi-span-3 > *, .adm-kpi-span-4 > *, .adm-kpi-span-6 > *, .adm-kpi-span-12 > * {
+  width: 100%;
+}
 
+/* ================= STAT CARD (flat tinted, bento-aware) ================= */
 .adm-stat-card {
   position: relative;
   display: flex; align-items: flex-start; gap: 12px;
@@ -119,6 +130,41 @@
 }
 .adm-trend-up { background: rgba(255,255,255,.7); color: #15803D; }
 .adm-trend-down { background: rgba(255,255,255,.7); color: #991B1B; }
+
+/* ---- Size: lg (featured bento cards, row 1) ---- */
+.adm-stat-card-lg {
+  padding: 22px 22px 24px;
+  gap: 16px;
+  min-height: 148px;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.adm-stat-card-lg .adm-stat-card-icon {
+  width: 48px; height: 48px; border-radius: 13px; font-size: 1.1rem;
+}
+.adm-stat-card-lg .adm-stat-card-value { font-size: 2.15rem; }
+.adm-stat-card-lg .adm-stat-card-title {
+  font-size: .88rem; text-transform: uppercase; letter-spacing: .02em;
+}
+.adm-stat-card-lg .adm-stat-card-sub { font-size: .76rem; }
+.adm-stat-card-lg .adm-stat-card-deco { width: 140px; height: 140px; top: -36px; right: -36px; }
+
+/* ---- Size: banner (full-width row) ---- */
+.adm-stat-card-banner {
+  flex-direction: row;
+  align-items: center;
+  padding: 18px 24px;
+  gap: 16px;
+}
+.adm-stat-card-banner .adm-stat-card-body {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.adm-stat-card-banner .adm-stat-card-value { font-size: 1.5rem; }
+.adm-stat-card-banner .adm-stat-card-title { margin-top: 0; }
+.adm-stat-card-banner .adm-stat-card-sub { margin-top: 0; margin-left: auto; }
 
 /* ---- Tone: Emerald (Revenue) ---- */
 .adm-tone-revenue {
@@ -201,7 +247,7 @@
 .adm-tone-slate .adm-stat-card-value { color: #334155; }
 
 .adm-skeleton-card {
-  height: 96px; border-radius: 16px;
+  height: 96px; border-radius: 16px; width: 100%;
   background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 37%, #F1F5F9 63%);
   background-size: 400% 100%; animation: adm-shimmer 1.4s ease infinite;
 }
@@ -309,16 +355,26 @@
    ====================================================== */
 @media (max-width: 1024px) {
   .adm-wrapper { padding: 22px 18px 60px; }
-  .adm-kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  .adm-kpi-span-6 { grid-column: span 6; }
+  .adm-kpi-span-3 { grid-column: span 3; }
+  .adm-kpi-span-12 { grid-column: span 12; }
   .adm-bento-row-2 { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
   .adm-wrapper { padding: 16px 13px 52px; }
   .adm-analytics-title { font-size: 1.35rem; }
-  .adm-kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .adm-kpi-grid { grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .adm-kpi-span-6 { grid-column: span 6; }
+  .adm-kpi-span-3 { grid-column: span 3; }
+  .adm-kpi-span-12 { grid-column: span 6; }
   .adm-stat-card { padding: 13px 13px 14px; border-radius: 14px; gap: 10px; }
   .adm-stat-card-value { font-size: 1.25rem; }
+  .adm-stat-card-lg { padding: 16px 16px 18px; min-height: 128px; }
+  .adm-stat-card-lg .adm-stat-card-value { font-size: 1.65rem; }
+  .adm-stat-card-banner { flex-direction: column; align-items: flex-start; }
+  .adm-stat-card-banner .adm-stat-card-body { flex-direction: column; gap: 2px; }
+  .adm-stat-card-banner .adm-stat-card-sub { margin-left: 0; }
   .adm-provider-chart-row { flex-direction: column; align-items: stretch; }
   .adm-chart-card { padding: 16px; border-radius: 16px; }
 }
@@ -326,6 +382,8 @@
 @media (max-width: 480px) {
   .adm-wrapper { padding: 12px 10px 48px; }
   .adm-kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 9px; }
+  .adm-kpi-span-6, .adm-kpi-span-3, .adm-kpi-span-12 { grid-column: span 2; }
+  .adm-kpi-span-3 { grid-column: span 1; }
   .adm-period-selector { width: 100%; }
   .adm-period-btn { flex: 1; text-align: center; padding: 9px 6px; }
   .adm-analytics-header { align-items: stretch; }
@@ -335,5 +393,6 @@
   .adm-analytics-title { font-size: 1.15rem; }
   .adm-section-title { font-size: .95rem; }
   .adm-kpi-grid { grid-template-columns: 1fr; }
+  .adm-kpi-span-6, .adm-kpi-span-3, .adm-kpi-span-12 { grid-column: span 1; }
   .adm-stat-card-value { font-size: 1.15rem; }
 }

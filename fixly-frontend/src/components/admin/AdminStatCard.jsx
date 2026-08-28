@@ -5,9 +5,12 @@ const AdminStatCard = ({
   subtitle,
   trend,
   tone = "slate",
+  size = "md",
 }) => {
   return (
-    <div className={`adm-stat-card adm-tone-${tone}`} tabIndex={0}>
+    <div
+      className={`adm-stat-card adm-stat-card-${size} adm-tone-${tone}`}
+      tabIndex={0}>
       <span className="adm-stat-card-deco" aria-hidden="true" />
       <div className="adm-stat-card-icon">{icon}</div>
       <div className="adm-stat-card-body">
