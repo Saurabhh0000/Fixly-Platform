@@ -11,7 +11,6 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import AdminLayout from "../layouts/AdminLayout";
-import AdminFooter from "../components/footer/AdminFooter";
 import AnalyticsHeader from "../components/admin/AnalyticsHeader";
 import AdminStatCard from "../components/admin/AdminStatCard";
 import BookingAnalytics from "../components/admin/BookingAnalytics";
@@ -195,7 +194,6 @@ const AdminDashboard = () => {
           </>
         )}
       </div>
-      <AdminFooter />
     </AdminLayout>
   );
 };
