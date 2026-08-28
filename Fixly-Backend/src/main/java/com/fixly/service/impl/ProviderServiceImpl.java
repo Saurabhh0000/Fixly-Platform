@@ -167,6 +167,13 @@ public class ProviderServiceImpl implements ProviderService {
 		provider.setRating(0.0);
 
 		ServiceProvider saved = providerRepository.save(provider);
+		notificationService.send(
+				1L,
+				"New Provider Application",
+				user.getFullName() + " applied as a "
+						+ category.getName()
+						+ " provider.",
+				NotificationType.PROVIDER);
 
 		return mapToResponse(saved);
 	}
@@ -257,13 +264,10 @@ public class ProviderServiceImpl implements ProviderService {
 						"Provider Not Found"));
 
 		provider.setStatus(ProviderStatus.APPROVED);
-
 		provider.setAvailable(true);
 
 		User user = provider.getUser();
-
 		user.setRole(Role.PROVIDER);
-
 		userRepo.save(user);
 
 		providerRepository.save(provider);
@@ -272,6 +276,12 @@ public class ProviderServiceImpl implements ProviderService {
 				user.getUserId(),
 				"Application Approved 🎉",
 				"Congratulations! Your provider application has been approved. You can now login as a Provider.",
+				NotificationType.APPROVAL);
+
+		notificationService.send(
+				1L,
+				"Provider Approved",
+				user.getFullName() + " was approved as a " + provider.getCategory().getName() + " provider.",
 				NotificationType.APPROVAL);
 
 		return mapToResponse(provider);
@@ -306,7 +316,6 @@ public class ProviderServiceImpl implements ProviderService {
 						"Provider Not Found"));
 
 		provider.setStatus(ProviderStatus.REJECTED);
-
 		provider.setAvailable(false);
 
 		providerRepository.save(provider);
@@ -315,6 +324,12 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getUser().getUserId(),
 				"Application Rejected",
 				"Your provider application was rejected. Please update your documents and apply again.",
+				NotificationType.REJECTION);
+
+		notificationService.send(
+				1L,
+				"Provider Rejected",
+				provider.getUser().getFullName() + "'s provider application was rejected.",
 				NotificationType.REJECTION);
 
 		return mapToResponse(provider);
@@ -329,7 +344,6 @@ public class ProviderServiceImpl implements ProviderService {
 						"Provider Not Found"));
 
 		provider.setStatus(ProviderStatus.SUSPENDED);
-
 		provider.setAvailable(false);
 
 		providerRepository.save(provider);
@@ -338,6 +352,12 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getUser().getUserId(),
 				"Provider Account Suspended",
 				"Your provider account has been suspended. Please contact Fixly Support for assistance.",
+				NotificationType.SUSPENDED);
+
+		notificationService.send(
+				1L,
+				"Provider Suspended",
+				provider.getUser().getFullName() + "'s provider account was suspended.",
 				NotificationType.SUSPENDED);
 
 		return mapToResponse(provider);
@@ -352,7 +372,6 @@ public class ProviderServiceImpl implements ProviderService {
 						"Provider Not Found"));
 
 		provider.setStatus(ProviderStatus.APPROVED);
-
 		provider.setAvailable(true);
 
 		providerRepository.save(provider);
@@ -361,6 +380,12 @@ public class ProviderServiceImpl implements ProviderService {
 				provider.getUser().getUserId(),
 				"Provider Account Restored",
 				"Your provider account has been restored. You can start accepting bookings again.",
+				NotificationType.UNSUSPENDED);
+
+		notificationService.send(
+				1L,
+				"Provider Unsuspended",
+				provider.getUser().getFullName() + "'s provider account was restored.",
 				NotificationType.UNSUSPENDED);
 
 		return mapToResponse(provider);

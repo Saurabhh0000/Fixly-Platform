@@ -4,6 +4,10 @@ import {
   FaBriefcase,
   FaCalendarCheck,
   FaCheckCircle,
+  FaThumbsUp,
+  FaTimesCircle,
+  FaPauseCircle,
+  FaPlayCircle,
   FaBell,
 } from "react-icons/fa";
 import { getRecentActivity } from "../../api/adminAnalyticsApi";
@@ -13,6 +17,10 @@ const ICONS = {
   PROVIDER: <FaBriefcase />,
   BOOKING: <FaCalendarCheck />,
   COMPLETED: <FaCheckCircle />,
+  APPROVAL: <FaThumbsUp />,
+  REJECTION: <FaTimesCircle />,
+  SUSPENDED: <FaPauseCircle />,
+  UNSUSPENDED: <FaPlayCircle />,
 };
 
 const RecentActivity = () => {
