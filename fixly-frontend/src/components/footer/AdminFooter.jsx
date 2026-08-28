@@ -20,25 +20,25 @@ const SOCIAL_LINKS = [
   {
     key: "x",
     label: "X (Twitter)",
-    href: "https://x.com/fixly_placeholder",
+    href: "https://x.com/Saurabh75660541",
     icon: <FaXTwitter />,
   },
   {
     key: "github",
     label: "GitHub",
-    href: "https://github.com/fixly-placeholder",
+    href: "https://github.com/Saurabhh0000",
     icon: <FaGithub />,
   },
   {
     key: "instagram",
     label: "Instagram",
-    href: "https://instagram.com/fixly_placeholder",
+    href: "https://www.instagram.com/_._saurabh.__/",
     icon: <FaInstagram />,
   },
   {
     key: "linkedin",
     label: "LinkedIn",
-    href: "https://linkedin.com/company/fixly-placeholder",
+    href: "https://www.linkedin.com/in/saurabh-kumar-fronted-developer/",
     icon: <FaLinkedin />,
   },
 ];
@@ -139,23 +139,25 @@ const AdminFooter = () => {
             </ul>
           </nav>
 
-          <div className="admin-footer-col">
-            <h4 className="admin-col-title">Connect</h4>
-            <div className="admin-social-icons">
-              {SOCIAL_LINKS.map((social) => (
-                
-                  key={social.key}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Fixly on ${social.label}`}
-                  title={social.label}
-                  className="admin-social-btn"
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
+<div className="admin-footer-col">
+  <h4 className="admin-col-title">Connect</h4>
+
+  <div className="admin-social-icons">
+    {SOCIAL_LINKS.map((social) => (
+      <a
+        key={social.key}
+        href={social.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Fixly on ${social.label}`}
+        title={social.label}
+        className="admin-social-btn"
+      >
+        {social.icon}
+      </a>
+    ))}
+  </div>
+</div>
           </div>
         </div>
 
