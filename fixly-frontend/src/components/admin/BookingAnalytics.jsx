@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { FaChartLine } from "react-icons/fa";
 import { getBookingTrends } from "../../api/adminAnalyticsApi";
 
 const GRANULARITIES = [
@@ -88,9 +89,16 @@ const BookingAnalytics = () => {
   return (
     <div className="adm-chart-card">
       <div className="adm-chart-card-header">
-        <div>
-          <h3 className="adm-chart-title">Booking Trends</h3>
-          <p className="adm-chart-sub">Total bookings by status over time</p>
+        <div className="adm-chart-title-row">
+          <span
+            className="adm-title-icon adm-title-icon-green"
+            aria-hidden="true">
+            <FaChartLine />
+          </span>
+          <div>
+            <h3 className="adm-chart-title">Booking Trends</h3>
+            <p className="adm-chart-sub">Total bookings by status over time</p>
+          </div>
         </div>
         <div
           className="adm-granularity-selector"

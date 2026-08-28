@@ -8,6 +8,8 @@ import {
   FaTimesCircle,
   FaRupeeSign,
   FaChartLine,
+  FaCalendarCheck,
+  FaStore,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import AdminLayout from "../layouts/AdminLayout";
@@ -173,7 +175,14 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <h3 className="adm-section-title">Booking Performance</h3>
+            <div className="adm-section-title-row">
+              <span
+                className="adm-title-icon adm-title-icon-lg adm-title-icon-green"
+                aria-hidden="true">
+                <FaCalendarCheck />
+              </span>
+              <h3 className="adm-section-title">Booking Performance</h3>
+            </div>
             <div className="adm-bento-row">
               <BookingAnalytics />
             </div>
@@ -182,7 +191,14 @@ const AdminDashboard = () => {
               <RevenueAnalytics />
             </div>
 
-            <h3 className="adm-section-title">Marketplace Performance</h3>
+            <div className="adm-section-title-row">
+              <span
+                className="adm-title-icon adm-title-icon-lg adm-title-icon-purple"
+                aria-hidden="true">
+                <FaStore />
+              </span>
+              <h3 className="adm-section-title">Marketplace Performance</h3>
+            </div>
             <div className="adm-bento-row adm-bento-row-2">
               <CategoryPerformance period={period} />
               <ProviderAnalytics />

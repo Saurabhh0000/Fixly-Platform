@@ -1,4 +1,5 @@
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
+import { FaChartPie } from "react-icons/fa";
 
 const COLORS = {
   Completed: "#16A34A",
@@ -22,9 +23,16 @@ const BookingStatusChart = ({ overview }) => {
   return (
     <div className="adm-chart-card">
       <div className="adm-chart-card-header">
-        <div>
-          <h3 className="adm-chart-title">Booking Status</h3>
-          <p className="adm-chart-sub">For the selected period</p>
+        <div className="adm-chart-title-row">
+          <span
+            className="adm-title-icon adm-title-icon-blue"
+            aria-hidden="true">
+            <FaChartPie />
+          </span>
+          <div>
+            <h3 className="adm-chart-title">Booking Status</h3>
+            <p className="adm-chart-sub">For the selected period</p>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaTrophy } from "react-icons/fa";
 import { getTopProviders } from "../../api/adminAnalyticsApi";
 
 const initials = (name = "") =>
@@ -34,11 +34,18 @@ const TopProviders = () => {
   return (
     <div className="adm-chart-card">
       <div className="adm-chart-card-header">
-        <div>
-          <h3 className="adm-chart-title">Top Performing Providers</h3>
-          <p className="adm-chart-sub">
-            Ranked by completed bookings, all time
-          </p>
+        <div className="adm-chart-title-row">
+          <span
+            className="adm-title-icon adm-title-icon-amber"
+            aria-hidden="true">
+            <FaTrophy />
+          </span>
+          <div>
+            <h3 className="adm-chart-title">Top Performing Providers</h3>
+            <p className="adm-chart-sub">
+              Ranked by completed bookings, all time
+            </p>
+          </div>
         </div>
       </div>
 

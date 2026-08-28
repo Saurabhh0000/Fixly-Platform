@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { FaRupeeSign } from "react-icons/fa";
 import { getRevenueTrends } from "../../api/adminAnalyticsApi";
 
 const GRANULARITIES = [
@@ -71,12 +72,19 @@ const RevenueAnalytics = () => {
   return (
     <div className="adm-chart-card">
       <div className="adm-chart-card-header">
-        <div>
-          <h3 className="adm-chart-title">Revenue Analytics</h3>
-          <p className="adm-chart-sub">
-            Based on completed bookings at each provider's current price per
-            visit
-          </p>
+        <div className="adm-chart-title-row">
+          <span
+            className="adm-title-icon adm-title-icon-green"
+            aria-hidden="true">
+            <FaRupeeSign />
+          </span>
+          <div>
+            <h3 className="adm-chart-title">Revenue Analytics</h3>
+            <p className="adm-chart-sub">
+              Based on completed bookings at each provider's current price per
+              visit
+            </p>
+          </div>
         </div>
         <div
           className="adm-granularity-selector"

@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { FaLayerGroup } from "react-icons/fa";
 import { getCategoryPerformance } from "../../api/adminAnalyticsApi";
 
 const CategoryPerformance = ({ period }) => {
@@ -36,11 +37,18 @@ const CategoryPerformance = ({ period }) => {
   return (
     <div className="adm-chart-card">
       <div className="adm-chart-card-header">
-        <div>
-          <h3 className="adm-chart-title">Category Performance</h3>
-          <p className="adm-chart-sub">
-            Bookings by service category, for the selected period
-          </p>
+        <div className="adm-chart-title-row">
+          <span
+            className="adm-title-icon adm-title-icon-amber"
+            aria-hidden="true">
+            <FaLayerGroup />
+          </span>
+          <div>
+            <h3 className="adm-chart-title">Category Performance</h3>
+            <p className="adm-chart-sub">
+              Bookings by service category, for the selected period
+            </p>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
+import { FaUserTie } from "react-icons/fa";
 import { getProviderAnalytics } from "../../api/adminAnalyticsApi";
 
 const COLORS = {
@@ -34,9 +35,16 @@ const ProviderAnalytics = () => {
   return (
     <div className="adm-chart-card">
       <div className="adm-chart-card-header">
-        <div>
-          <h3 className="adm-chart-title">Provider Analytics</h3>
-          <p className="adm-chart-sub">Provider status breakdown, all time</p>
+        <div className="adm-chart-title-row">
+          <span
+            className="adm-title-icon adm-title-icon-purple"
+            aria-hidden="true">
+            <FaUserTie />
+          </span>
+          <div>
+            <h3 className="adm-chart-title">Provider Analytics</h3>
+            <p className="adm-chart-sub">Provider status breakdown, all time</p>
+          </div>
         </div>
       </div>
 

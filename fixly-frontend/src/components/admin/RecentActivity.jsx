@@ -9,6 +9,7 @@ import {
   FaPauseCircle,
   FaPlayCircle,
   FaBell,
+  FaStream,
 } from "react-icons/fa";
 import { getRecentActivity } from "../../api/adminAnalyticsApi";
 
@@ -47,9 +48,16 @@ const RecentActivity = () => {
   return (
     <div className="adm-chart-card">
       <div className="adm-chart-card-header">
-        <div>
-          <h3 className="adm-chart-title">Recent Platform Activity</h3>
-          <p className="adm-chart-sub">Latest events across Fixly</p>
+        <div className="adm-chart-title-row">
+          <span
+            className="adm-title-icon adm-title-icon-indigo"
+            aria-hidden="true">
+            <FaStream />
+          </span>
+          <div>
+            <h3 className="adm-chart-title">Recent Platform Activity</h3>
+            <p className="adm-chart-sub">Latest events across Fixly</p>
+          </div>
         </div>
       </div>
 
