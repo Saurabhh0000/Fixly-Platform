@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -14,7 +14,7 @@ const CategoryPerformance = ({ period }) => {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState("loading");
 
-  useEffect(() => {
+  const load = useCallback(() => {
     let active = true;
     setStatus("loading");
     getCategoryPerformance(period)
@@ -28,6 +28,10 @@ const CategoryPerformance = ({ period }) => {
       active = false;
     };
   }, [period]);
+
+  useEffect(() => load(), [load]);
+
+  const tall = data.length > 8;
 
   return (
     <div className="adm-chart-card">
@@ -44,42 +48,65 @@ const CategoryPerformance = ({ period }) => {
         <div className="adm-chart-skeleton">Loading dashboard...</div>
       )}
       {status === "error" && (
-        <div className="adm-chart-empty">Unable to load analytics.</div>
+        <div className="adm-chart-empty">
+          <div className="adm-chart-empty-title">Unable to load analytics</div>
+          We couldn't retrieve category data.
+          <div>
+            <button className="adm-retry-btn" onClick={load}>
+              Retry
+            </button>
+          </div>
+        </div>
       )}
       {status === "empty" && (
         <div className="adm-chart-empty">
-          No booking data available for this period.
+          <div className="adm-chart-empty-title">No category data yet</div>
+          Category performance will appear here once bookings come in.
         </div>
       )}
       {status === "ready" && (
-        <ResponsiveContainer
-          width="100%"
-          height={Math.max(220, data.length * 44)}>
-          <BarChart
-            data={data}
-            layout="vertical"
-            margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis
-              type="number"
-              allowDecimals={false}
-              tick={{ fontSize: 11, fill: "#64748b" }}
-            />
-            <YAxis
-              type="category"
-              dataKey="categoryName"
-              width={110}
-              tick={{ fontSize: 12, fill: "#0f172a" }}
-            />
-            <Tooltip />
-            <Bar
-              dataKey="totalBookings"
-              name="Bookings"
-              fill="#16a34a"
-              radius={[0, 6, 6, 0]}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className={tall ? "adm-cat-scroll" : ""}>
+          <ResponsiveContainer
+            width="100%"
+            height={Math.max(240, data.length * 42)}>
+            <BarChart
+              data={data}
+              layout="vertical"
+              margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#EEF2F6"
+                horizontal={false}
+              />
+              <XAxis
+                type="number"
+                allowDecimals={false}
+                tick={{ fontSize: 11, fill: "#64748B" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                type="category"
+                dataKey="categoryName"
+                width={110}
+                tick={{ fontSize: 12, fill: "#0F172A", fontWeight: 600 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                formatter={(v) => [`${v} bookings`, ""]}
+                cursor={{ fill: "#F0FDF4" }}
+              />
+              <Bar
+                dataKey="totalBookings"
+                name="Bookings"
+                fill="#16A34A"
+                radius={[0, 8, 8, 0]}
+                maxBarSize={22}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       )}
     </div>
   );

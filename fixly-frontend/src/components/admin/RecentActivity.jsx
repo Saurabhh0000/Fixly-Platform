@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   FaUserPlus,
   FaBriefcase,
@@ -27,8 +27,9 @@ const RecentActivity = () => {
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState("loading");
 
-  useEffect(() => {
+  const load = useCallback(() => {
     let active = true;
+    setStatus("loading");
     getRecentActivity(10)
       .then((res) => {
         if (!active) return;
@@ -40,6 +41,8 @@ const RecentActivity = () => {
       active = false;
     };
   }, []);
+
+  useEffect(() => load(), [load]);
 
   return (
     <div className="adm-chart-card">
@@ -54,10 +57,20 @@ const RecentActivity = () => {
         <div className="adm-chart-skeleton">Loading dashboard...</div>
       )}
       {status === "error" && (
-        <div className="adm-chart-empty">Unable to load analytics.</div>
+        <div className="adm-chart-empty">
+          <div className="adm-chart-empty-title">Unable to load activity</div>
+          <div>
+            <button className="adm-retry-btn" onClick={load}>
+              Retry
+            </button>
+          </div>
+        </div>
       )}
       {status === "empty" && (
-        <div className="adm-chart-empty">No recent activity yet.</div>
+        <div className="adm-chart-empty">
+          <div className="adm-chart-empty-title">No recent activity</div>
+          Platform events will show up here as they happen.
+        </div>
       )}
       {status === "ready" && (
         <div className="adm-activity-list">

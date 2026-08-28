@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   FaUsers,
   FaUserTie,
@@ -29,7 +29,7 @@ const AdminDashboard = () => {
   const [overview, setOverview] = useState(null);
   const [status, setStatus] = useState("loading");
 
-  useEffect(() => {
+  const load = useCallback(() => {
     let active = true;
     setStatus("loading");
     getOverview(period)
@@ -48,6 +48,8 @@ const AdminDashboard = () => {
     };
   }, [period]);
 
+  useEffect(() => load(), [load]);
+
   return (
     <AdminLayout>
       <div className="adm-wrapper">
@@ -55,78 +57,141 @@ const AdminDashboard = () => {
 
         {status === "loading" && (
           <div className="adm-kpi-grid">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div className="adm-skeleton-card" key={i} />
+            <div className="adm-kpi-revenue">
+              <div className="adm-skeleton-card" style={{ height: 168 }} />
+            </div>
+            <div className="adm-kpi-bookings">
+              <div className="adm-skeleton-card" style={{ height: 168 }} />
+            </div>
+            <div className="adm-kpi-providers">
+              <div className="adm-skeleton-card" style={{ height: 168 }} />
+            </div>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div className="adm-kpi-users" key={i}>
+                <div className="adm-skeleton-card" />
+              </div>
             ))}
+            <div className="adm-kpi-avg">
+              <div className="adm-skeleton-card" style={{ height: 96 }} />
+            </div>
           </div>
         )}
 
         {status === "error" && (
-          <div className="adm-chart-empty adm-page-error">
-            Some analytics could not be loaded. Please refresh the page.
+          <div className="adm-chart-card adm-page-error">
+            <div className="adm-chart-empty-title">
+              Unable to load analytics
+            </div>
+            We couldn't retrieve the latest dashboard data.
+            <div>
+              <button className="adm-retry-btn" onClick={load}>
+                Retry
+              </button>
+            </div>
           </div>
         )}
 
         {status === "ready" && overview && (
           <>
             <div className="adm-kpi-grid">
-              <AdminStatCard
-                icon={<FaUsers />}
-                title="Total Users"
-                value={overview.totalUsers.toLocaleString()}
-                subtitle="All time"
-              />
-              <AdminStatCard
-                icon={<FaUserTie />}
-                title="Total Providers"
-                value={overview.totalProviders.toLocaleString()}
-                subtitle={`${overview.approvedProviders} approved · ${overview.pendingProviders} pending`}
-              />
-              <AdminStatCard
-                icon={<FaClipboardList />}
-                title="Total Bookings"
-                value={overview.totalBookings.toLocaleString()}
-                subtitle="Selected period"
-              />
-              <AdminStatCard
-                icon={<FaCheckCircle />}
-                title="Completed Bookings"
-                value={overview.completedBookings.toLocaleString()}
-                subtitle={`${overview.bookingCompletionRate}% completion rate`}
-              />
-              <AdminStatCard
-                icon={<FaHourglassHalf />}
-                title="Pending Bookings"
-                value={overview.pendingBookings.toLocaleString()}
-                subtitle="Awaiting provider response"
-              />
-              <AdminStatCard
-                icon={<FaTimesCircle />}
-                title="Cancelled Bookings"
-                value={overview.cancelledBookings.toLocaleString()}
-                subtitle={`${overview.bookingCancellationRate}% cancellation rate`}
-              />
-              <AdminStatCard
-                icon={<FaRupeeSign />}
-                title="Total Revenue"
-                value={`₹${overview.totalRevenue.toLocaleString()}`}
-                subtitle="Completed bookings, selected period"
-              />
-              <AdminStatCard
-                icon={<FaChartLine />}
-                title="Average Booking Value"
-                value={`₹${overview.averageBookingValue.toFixed(0)}`}
-                subtitle="Per completed booking"
-              />
+              <div className="adm-kpi-revenue">
+                <AdminStatCard
+                  size="lg"
+                  tone="revenue"
+                  icon={<FaRupeeSign />}
+                  title="Total Revenue"
+                  value={`₹${overview.totalRevenue.toLocaleString("en-IN")}`}
+                  subtitle="Completed bookings, selected period"
+                />
+              </div>
+              <div className="adm-kpi-bookings">
+                <AdminStatCard
+                  size="lg"
+                  tone="info"
+                  icon={<FaClipboardList />}
+                  title="Total Bookings"
+                  value={overview.totalBookings.toLocaleString("en-IN")}
+                  subtitle="Selected period"
+                />
+              </div>
+              <div className="adm-kpi-providers">
+                <AdminStatCard
+                  icon={<FaUserTie />}
+                  title="Total Providers"
+                  value={overview.totalProviders.toLocaleString("en-IN")}
+                  subtitle={`${overview.approvedProviders} approved · ${overview.pendingProviders} pending`}
+                />
+              </div>
+
+              <div className="adm-kpi-users">
+                <AdminStatCard
+                  icon={<FaUsers />}
+                  title="Total Users"
+                  value={overview.totalUsers.toLocaleString("en-IN")}
+                  subtitle="All time"
+                />
+              </div>
+              <div className="adm-kpi-completed">
+                <AdminStatCard
+                  tone="default"
+                  icon={<FaCheckCircle />}
+                  title="Completed Bookings"
+                  value={overview.completedBookings.toLocaleString("en-IN")}
+                  subtitle={`${overview.bookingCompletionRate}% completion rate`}
+                />
+              </div>
+              <div className="adm-kpi-pending">
+                <AdminStatCard
+                  tone="warning"
+                  icon={<FaHourglassHalf />}
+                  title="Pending Bookings"
+                  value={overview.pendingBookings.toLocaleString("en-IN")}
+                  subtitle="Awaiting provider response"
+                />
+              </div>
+              <div className="adm-kpi-cancelled">
+                <AdminStatCard
+                  tone="danger"
+                  icon={<FaTimesCircle />}
+                  title="Cancelled Bookings"
+                  value={overview.cancelledBookings.toLocaleString("en-IN")}
+                  subtitle={`${overview.bookingCancellationRate}% cancellation rate`}
+                />
+              </div>
+
+              <div className="adm-kpi-avg">
+                <AdminStatCard
+                  size="avg"
+                  tone="neutral"
+                  icon={<FaChartLine />}
+                  title="Average Booking Value"
+                  value={`₹${overview.averageBookingValue.toFixed(0)}`}
+                  subtitle="Per completed booking"
+                />
+              </div>
             </div>
 
-            <BookingAnalytics />
-            <ProviderAnalytics />
-            <RevenueAnalytics />
-            <BookingStatusChart overview={overview} />
-            <CategoryPerformance period={period} />
-            <TopProviders />
-            <RecentActivity />
+            <h3 className="adm-section-title">Booking Performance</h3>
+            <div className="adm-bento-row">
+              <BookingAnalytics />
+            </div>
+            <div className="adm-bento-row adm-bento-row-2">
+              <BookingStatusChart overview={overview} />
+              <RevenueAnalytics />
+            </div>
+
+            <h3 className="adm-section-title">Marketplace Performance</h3>
+            <div className="adm-bento-row adm-bento-row-2">
+              <CategoryPerformance period={period} />
+              <ProviderAnalytics />
+            </div>
+
+            <div className="adm-bento-row">
+              <TopProviders />
+            </div>
+            <div className="adm-bento-row">
+              <RecentActivity />
+            </div>
           </>
         )}
       </div>

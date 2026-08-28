@@ -5,13 +5,20 @@ const PERIODS = [
   { key: "year", label: "This Year" },
 ];
 
+const getGreeting = () => {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+};
+
 const AnalyticsHeader = ({ period, onPeriodChange }) => {
   return (
     <div className="adm-analytics-header">
       <div>
-        <h2 className="adm-analytics-title">Admin Dashboard</h2>
+        <h2 className="adm-analytics-title">{getGreeting()}, Admin 👋</h2>
         <p className="adm-analytics-sub">
-          Monitor Fixly's platform performance, users, providers and bookings.
+          Here's what's happening across Fixly today.
         </p>
       </div>
       <div
