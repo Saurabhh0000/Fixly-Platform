@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import com.fixly.enums.ProviderStatus;
 import com.fixly.entity.ServiceProvider;
 
 @Repository
@@ -44,5 +44,10 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 			@Param("city") String city);
 
 	Optional<ServiceProvider> findByUser_UserId(Long userId);
+
+	long countByStatus(ProviderStatus status);
+
+	@Query("SELECT AVG(p.rating) FROM ServiceProvider p WHERE p.rating > 0")
+	Double averageRating();
 
 }

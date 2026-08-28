@@ -74,6 +74,11 @@ public class BookingServiceImpl implements BookingService {
 				user.getFullName() + " booked your " +
 						provider.getCategory().getName() + " service.",
 				NotificationType.BOOKING);
+		notificationService.send(
+				1L,
+				"New Booking Created",
+				user.getFullName() + " booked a " + provider.getCategory().getName() + " service.",
+				NotificationType.BOOKING);
 
 		return mapToResponse(save);
 	}
@@ -132,6 +137,11 @@ public class BookingServiceImpl implements BookingService {
 				"Job Completed",
 				"The booking has been marked as completed.",
 				NotificationType.COMPLETED);
+		notificationService.send(
+				1L,
+				"Booking Completed",
+				"Booking #" + booking.getBookingId() + " was marked completed.",
+				NotificationType.COMPLETED);
 
 		return mapToResponse(save);
 	}
@@ -160,6 +170,11 @@ public class BookingServiceImpl implements BookingService {
 				booking.getProvider().getUser().getUserId(),
 				"Booking Cancelled",
 				booking.getUser().getFullName() + " cancelled the booking.",
+				NotificationType.BOOKING);
+		notificationService.send(
+				1L,
+				"Booking Cancelled",
+				"Booking #" + booking.getBookingId() + " was cancelled.",
 				NotificationType.BOOKING);
 
 		return mapToResponse(save);

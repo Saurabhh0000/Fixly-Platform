@@ -17,6 +17,7 @@ import com.fixly.repository.ServiceProviderRepository;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.AuthService;
 import com.fixly.exception.BadRequestException;
+import com.fixly.service.NotificationService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -29,6 +30,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private ServiceProviderRepository serviceProviderRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     /* ================= REGISTER ================= */
     @Override
@@ -65,6 +69,12 @@ public class AuthServiceImpl implements AuthService {
         response.setEmail(user.getEmail());
         response.setRole(user.getRole().name());
         response.setMessage("Registration successful");
+
+        notificationService.send(
+                1L,
+                "New User Registered",
+                user.getFullName() + " created a new Fixly account.",
+                com.fixly.enums.NotificationType.ACCOUNT);
 
         return response;
     }

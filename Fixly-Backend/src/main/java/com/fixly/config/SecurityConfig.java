@@ -58,17 +58,7 @@ public class SecurityConfig {
                                                                 HttpMethod.GET,
                                                                 "/uploads/**")
                                                 .permitAll()
-                                                /*
-                                                 * /api/chat is intentionally public: it must work for
-                                                 * unauthenticated Home-page visitors asking general
-                                                 * questions. ChatServiceImpl resolves the authenticated
-                                                 * user (if any) itself via SecurityContextHolder and
-                                                 * branches accordingly — private topics (bookings,
-                                                 * notifications, account, etc.) return a "please log in"
-                                                 * response instead of real data when there's no
-                                                 * authenticated user, rather than relying on this filter
-                                                 * to block the request outright.
-                                                 */
+
                                                 .requestMatchers("/api/chat").permitAll()
 
                                                 /* ================= AUTHENTICATED (ALL ROLES) ================= */
@@ -99,7 +89,9 @@ public class SecurityConfig {
                                                 .hasRole("PROVIDER")
 
                                                 /* ================= ADMIN ================= */
-                                                .requestMatchers("/api/categories/**", "/api/admin/providers/**")
+                                                /* ================= ADMIN ================= */
+                                                .requestMatchers("/api/categories/**", "/api/admin/providers/**",
+                                                                "/api/admin/analytics/**")
                                                 .hasRole("ADMIN")
 
                                                 /* ================= PREFLIGHT ================= */
