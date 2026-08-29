@@ -47,30 +47,85 @@ public final class ChatIntentRules {
                         new ChatIntentRule(BOOKING_ACCEPT_REJECT, 880, Set.of(
                                         "how do i accept a booking", "how do i reject a booking", "accept booking",
                                         "reject booking", "accept a booking", "reject a booking",
-                                        "why hasnt my provider accepted", "provider cancelled my booking",
-                                        "my booking was rejected", "i received a booking request",
+                                        "why hasnt my provider accepted", "my booking was rejected",
+                                        "i received a booking request",
                                         "what happens after accepting")),
 
+                        /*
+                         * ── BOOKING_CANCEL ──
+                         * "cancel"/"cancelled"/"canceled" as bare tokens cover the vast
+                         * majority of Part-1 phrasings ("cancel my booking", "can I cancel
+                         * my service", "why can't I cancel", "which bookings did I cancel").
+                         * A few phrasings genuinely contain neither word and need explicit
+                         * entries. Sub-intent (asking to cancel now vs. asking about a past
+                         * cancellation) is resolved inside ChatServiceImpl, not here.
+                         */
                         new ChatIntentRule(BOOKING_CANCEL, 870, Set.of(
-                                        "cancel my booking", "cancel booking", "how to cancel", "cancellation",
-                                        "can i cancel", "cancel service", "cancel appointment")),
+                                        "cancel", "cancelled", "canceled", "cancellation",
+                                        "i dont want the service anymore", "i do not want the service anymore",
+                                        "i accidentally booked the wrong service",
+                                        "accidentally booked the wrong service")),
 
+                        /*
+                         * ── BOOKING_RESCHEDULE ──
+                         * Bare "change"/"move" are too generic to use as tokens (would
+                         * collide with "change my password", "change my address", etc. at
+                         * higher priority than those topics), so this stays phrase-based.
+                         */
                         new ChatIntentRule(BOOKING_RESCHEDULE, 865, Set.of(
-                                        "reschedule", "change my booking date", "change booking date",
-                                        "change my address after booking", "can i change my booking",
-                                        "book a service at another address")),
+                                        "reschedule", "rescheduled", "postpone", "postponed",
+                                        "change my booking date", "change my service date",
+                                        "change my booking", "change tomorrows booking",
+                                        "change my address after booking",
+                                        "can i change my booking", "can i change tomorrows booking",
+                                        "i want another date", "can i move my booking", "move my booking",
+                                        "i selected the wrong date", "wrong date",
+                                        "my booking date doesnt work", "my booking date doesnt work for me",
+                                        "book a service at another address",
+                                        "book the same service for another date",
+                                        "can i book the same service for another date",
+                                        "what date did i change my booking to",
+                                        "which service did i recently reschedule")),
 
                         new ChatIntentRule(BOOKING_QUEUE, 860, Set.of(
                                         "too many pending requests", "why did my booking disappear",
                                         "completed booking is not showing", "my completed booking",
                                         "manage bookings", "how do i manage bookings", "manage my bookings")),
 
+                        /*
+                         * ── BOOKING_STATUS ──
+                         * Extended with Part 3 (latest/recent/upcoming), Part 6 (upcoming
+                         * list), Part 7 (recent completed), Part 11 (status phrasing), and
+                         * the date-scoped phrases from Part 17. Sub-intent (latest vs.
+                         * upcoming vs. today vs. recent-completed vs. provider counts) is
+                         * resolved inside ChatServiceImpl using the same normalized text.
+                         */
                         new ChatIntentRule(BOOKING_STATUS, 850, Set.of(
                                         "booking status", "my booking is still pending", "where is my booking",
                                         "track my booking", "what does pending mean", "what does accepted mean",
                                         "what does completed mean", "what happens after i place a booking",
                                         "what happens if provider doesnt arrive", "provider hasnt arrived",
-                                        "provider arrived but", "my booking")),
+                                        "provider arrived but", "my booking",
+                                        "latest booking", "recent booking", "last booking", "current booking",
+                                        "upcoming booking", "upcoming bookings", "my upcoming bookings",
+                                        "next booking", "most recent booking", "bookings coming up",
+                                        "next service", "next job", "what is my next job",
+                                        "booking today", "bookings today", "any bookings today",
+                                        "do i have a booking today", "do i have any bookings today",
+                                        "booking tomorrow", "bookings tomorrow", "do i have bookings tomorrow",
+                                        "any bookings this week", "bookings this week", "this week",
+                                        "has my booking been accepted", "did the provider accept",
+                                        "is my service confirmed", "what happened to my booking",
+                                        "is my booking pending", "is my provider coming",
+                                        "whats happening with my latest booking",
+                                        "last completed service", "recent completed bookings",
+                                        "which service did i complete recently", "when was my last service",
+                                        "show my recent completed bookings",
+                                        "how many bookings do i have", "how many jobs did i complete",
+                                        "recent completed jobs", "show my recent completed jobs",
+                                        "who booked me recently", "who is my latest customer",
+                                        "pending requests", "do i have any pending requests",
+                                        "show my pending bookings")),
 
                         new ChatIntentRule(BOOKING_CREATE, 840, Set.of(
                                         "how do i book", "book a service", "make a booking", "want to book",
@@ -91,9 +146,19 @@ public final class ChatIntentRules {
                                         "update my provider profile", "change my service", "change my price",
                                         "update my experience", "update provider profile")),
 
+                        /*
+                         * ── RATING ──
+                         * Extended with Part 8 (user reviews) and the provider-facing
+                         * review phrasings from Part 9.
+                         */
                         new ChatIntentRule(RATING, 780, Set.of(
                                         "rating", "ratings", "review", "reviews", "how to rate", "rate a provider",
-                                        "leave a review", "provider rating", "change my review", "feedback")),
+                                        "leave a review", "provider rating", "change my review", "feedback",
+                                        "my recent reviews", "recent reviews", "my reviews",
+                                        "what did i rate", "which providers have i reviewed",
+                                        "what was my last rating", "did i review my last booking",
+                                        "how many reviews do i have",
+                                        "what rating did my latest customer give me")),
 
                         new ChatIntentRule(ADDRESS, 770, Set.of(
                                         "address", "add an address", "wrong address", "multiple addresses",

@@ -2,6 +2,7 @@ package com.fixly.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -64,4 +65,40 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 			AND b.status IN :statuses
 			""")
 	List<Booking> findExpiredBookings(@Param("date") LocalDate date, @Param("statuses") List<BookingStatus> statuses);
+
+	// ── Chatbot support (ChatBookingContextService) ──────────────────
+
+	Optional<Booking> findTopByUserUserIdOrderByBookingIdDesc(Long userId);
+
+	Optional<Booking> findTopByUserUserIdAndStatusOrderByBookingIdDesc(Long userId, BookingStatus status);
+
+	Optional<Booking> findTopByUserUserIdAndStatusOrderByCancelledAtDesc(Long userId, BookingStatus status);
+
+	List<Booking> findByUserUserIdAndStatusInOrderByServiceDateAsc(Long userId, List<BookingStatus> statuses);
+
+	List<Booking> findByUserUserIdAndStatusOrderByCancelledAtDesc(Long userId, BookingStatus status);
+
+	List<Booking> findByUserUserIdAndStatusInAndServiceDateGreaterThanEqualOrderByServiceDateAsc(
+			Long userId, List<BookingStatus> statuses, LocalDate fromDate);
+
+	List<Booking> findByUserUserIdAndServiceDate(Long userId, LocalDate date);
+
+	Optional<Booking> findTopByProviderProviderIdOrderByBookingIdDesc(Long providerId);
+
+	Optional<Booking> findTopByProviderProviderIdAndStatusOrderByBookingIdDesc(Long providerId, BookingStatus status);
+
+	Optional<Booking> findTopByProviderProviderIdAndStatusOrderByCancelledAtDesc(Long providerId, BookingStatus status);
+
+	List<Booking> findByProviderProviderIdAndStatusOrderByServiceDateAsc(Long providerId, BookingStatus status);
+
+	List<Booking> findByProviderProviderIdAndStatusOrderByBookingIdDesc(
+			Long providerId, BookingStatus status, Pageable pageable);
+
+	List<Booking> findByProviderProviderIdAndStatusInOrderByServiceDateAsc(Long providerId,
+			List<BookingStatus> statuses);
+
+	List<Booking> findByProviderProviderIdAndStatusInAndServiceDateGreaterThanEqualOrderByServiceDateAsc(
+			Long providerId, List<BookingStatus> statuses, LocalDate fromDate);
+
+	List<Booking> findByProviderProviderIdAndServiceDate(Long providerId, LocalDate date);
 }

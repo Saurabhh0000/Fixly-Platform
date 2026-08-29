@@ -1,5 +1,9 @@
 package com.fixly.service.impl;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -10,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fixly.chat.AuthenticatedUserResolver;
+import com.fixly.chat.ChatBookingContextService;
 import com.fixly.chat.ChatIntent;
 import com.fixly.chat.ChatIntentDetector;
+import com.fixly.chat.ChatReviewContextService;
 import com.fixly.chat.ChatRoutes;
 import com.fixly.chat.ChatTopic;
 import com.fixly.chat.ServiceCategoryMatcher;
@@ -20,6 +26,7 @@ import com.fixly.dto.request.ChatRequest;
 import com.fixly.dto.response.ChatAction;
 import com.fixly.dto.response.ChatResponse;
 import com.fixly.entity.Booking;
+import com.fixly.entity.Review;
 import com.fixly.entity.ServiceCategory;
 import com.fixly.entity.ServiceProvider;
 import com.fixly.entity.User;
@@ -39,6 +46,8 @@ import com.fixly.service.NotificationService;
 public class ChatServiceImpl implements ChatService {
 
         private static final Logger log = LoggerFactory.getLogger(ChatServiceImpl.class);
+
+        private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
 
         @Autowired
         private AuthenticatedUserResolver userResolver;
@@ -64,6 +73,12 @@ public class ChatServiceImpl implements ChatService {
         @Autowired
         private NotificationService notificationService;
 
+        @Autowired
+        private ChatBookingContextService bookingContext;
+
+        @Autowired
+        private ChatReviewContextService reviewContext;
+
         @Override
         public ChatResponse handleMessage(ChatRequest request) {
 
@@ -88,10 +103,11 @@ public class ChatServiceImpl implements ChatService {
                         throw e;
                 } catch (Exception e) {
                         // A failed data lookup should degrade gracefully, not break the chat.
+                        // Never surface SQL/Hibernate/stack-trace detail to the client (Part 30).
                         log.error("Chat handler failed for topic={} userId={}",
                                         topic, user != null ? user.getUserId() : "guest", e);
                         return ChatResponse.of(
-                                        "I'm sorry, I'm having trouble processing that right now. Please try again or use Help & Support.")
+                                        "I'm having trouble accessing your booking information right now. Please try again shortly.")
                                         .withIntent("ERROR")
                                         .withFollowUp(false);
                 }
@@ -110,12 +126,12 @@ public class ChatServiceImpl implements ChatService {
                         case BOOKING_CREATE -> bookingCreate(role);
                         case BOOKING_STATUS -> bookingStatus(role, user, normalized);
                         case BOOKING_ACCEPT_REJECT -> bookingAcceptReject(role, user);
-                        case BOOKING_CANCEL -> bookingCancel(role, user);
-                        case BOOKING_RESCHEDULE -> bookingReschedule();
+                        case BOOKING_CANCEL -> bookingCancel(role, user, normalized);
+                        case BOOKING_RESCHEDULE -> bookingReschedule(role, user, normalized);
                         case BOOKING_OTP -> bookingOtp(role, user);
                         case BOOKING_QUEUE -> bookingQueue(role, user);
                         case PAYMENT -> payment();
-                        case RATING -> rating(role, user);
+                        case RATING -> rating(role, user, normalized);
                         case ADDRESS -> address(user);
                         case ACCOUNT -> account(role, user);
                         case ACCOUNT_PASSWORD -> accountPassword(user);
@@ -138,6 +154,14 @@ public class ChatServiceImpl implements ChatService {
                 return ChatResponse.of(
                                 "You'll need to be logged in to " + whatTheyNeedToDo + ". Please log in to your Fixly "
                                                 + "account and ask me again.",
+                                new ChatAction("Log In", ChatRoutes.LOGIN))
+                                .withFollowUp(false);
+        }
+
+        /** Part 25's exact guest-boundary wording for personal-data requests. */
+        private ChatResponse loginRequiredForPrivateData() {
+                return ChatResponse.of(
+                                "Please log in to Fixly first so I can securely access your account information.",
                                 new ChatAction("Log In", ChatRoutes.LOGIN))
                                 .withFollowUp(false);
         }
@@ -223,7 +247,7 @@ public class ChatServiceImpl implements ChatService {
                                 .withFollowUp(true);
         }
 
-        /* ===================== BOOKING ===================== */
+        /* ===================== BOOKING CREATE ===================== */
 
         private ChatResponse bookingCreate(Role role) {
                 if (role == Role.PROVIDER) {
@@ -246,6 +270,44 @@ public class ChatServiceImpl implements ChatService {
                                 new ChatAction("Browse Services", ChatRoutes.SEARCH));
         }
 
+        /*
+         * =========================================================================
+         * BOOKING STATUS — personalized (Part 3, 6, 7, 9, 10, 11, 17).
+         * =========================================================================
+         */
+
+        private enum StatusQuery {
+                LATEST, UPCOMING, TODAY, TOMORROW, THIS_WEEK, RECENT_COMPLETED, PENDING_LIST, COUNTS
+        }
+
+        private StatusQuery classifyStatusQuery(String normalized) {
+                if (normalized.contains("today"))
+                        return StatusQuery.TODAY;
+                if (normalized.contains("tomorrow"))
+                        return StatusQuery.TOMORROW;
+                if (normalized.contains("this week"))
+                        return StatusQuery.THIS_WEEK;
+                if (normalized.contains("how many"))
+                        return StatusQuery.COUNTS;
+                if (normalized.contains("pending requests") || normalized.contains("pending booking")
+                                || normalized.contains("show my pending bookings")
+                                || normalized.contains("do i have any pending requests")) {
+                        return StatusQuery.PENDING_LIST;
+                }
+                if (normalized.contains("upcoming") || normalized.contains("coming up")
+                                || normalized.contains("next booking") || normalized.contains("next service")
+                                || normalized.contains("next job")) {
+                        return StatusQuery.UPCOMING;
+                }
+                if (normalized.contains("completed")
+                                && (normalized.contains("recent") || normalized.contains("last")
+                                                || normalized.contains("which service did i complete")
+                                                || normalized.contains("when was my last service"))) {
+                        return StatusQuery.RECENT_COMPLETED;
+                }
+                return StatusQuery.LATEST;
+        }
+
         private ChatResponse bookingStatus(Role role, User user, String normalized) {
                 if (normalized.contains("mean")) {
                         String meaning = explainStatusMeaning(normalized);
@@ -254,42 +316,151 @@ public class ChatServiceImpl implements ChatService {
                 }
 
                 if (user == null) {
-                        return loginRequired("check the status of your own booking");
+                        return loginRequiredForPrivateData();
                 }
+
+                StatusQuery query = classifyStatusQuery(normalized);
 
                 if (role == Role.PROVIDER) {
-                        ServiceProvider provider = providerRepository.findByUser_UserId(user.getUserId()).orElse(null);
-                        if (provider == null) {
-                                return ChatResponse.of(
-                                                "I don't see an active provider profile on your account yet, so there's no "
-                                                                + "booking activity to report.",
-                                                new ChatAction("Become a Provider", ChatRoutes.BECOME_PROVIDER));
-                        }
-                        List<Booking> bookings = bookingRepository.findByProviderProviderId(provider.getProviderId());
-                        return ChatResponse.of(summarizeProviderBookings(bookings),
-                                        new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
+                        return providerBookingStatus(user, query);
                 }
+                return userBookingStatus(user, query);
+        }
 
-                List<Booking> bookings = bookingRepository.findByUserUserId(user.getUserId());
-                if (bookings.isEmpty()) {
+        private ChatResponse userBookingStatus(User user, StatusQuery query) {
+                Long userId = user.getUserId();
+
+                return switch (query) {
+                        case TODAY -> {
+                                List<Booking> today = bookingContext.getBookingsForUserOnDate(
+                                                userId, LocalDate.now(ChatBookingContextService.FIXLY_ZONE));
+                                yield formatUserBookingList(today, "today");
+                        }
+                        case TOMORROW -> {
+                                List<Booking> tomorrow = bookingContext.getBookingsForUserOnDate(
+                                                userId,
+                                                LocalDate.now(ChatBookingContextService.FIXLY_ZONE).plusDays(1));
+                                yield formatUserBookingList(tomorrow, "tomorrow");
+                        }
+                        case THIS_WEEK -> {
+                                LocalDate today = LocalDate.now(ChatBookingContextService.FIXLY_ZONE);
+                                LocalDate weekEnd = today.plusDays(6);
+                                List<Booking> upcoming = bookingContext.getUpcomingBookingsForUser(userId).stream()
+                                                .filter(b -> !b.getServiceDate().isAfter(weekEnd))
+                                                .toList();
+                                yield formatUserBookingList(upcoming, "this week");
+                        }
+                        case UPCOMING -> {
+                                List<Booking> upcoming = bookingContext.getUpcomingBookingsForUser(userId);
+                                yield formatUserBookingList(upcoming, null);
+                        }
+                        case RECENT_COMPLETED -> {
+                                Optional<Booking> completed = bookingContext.getRecentCompletedBookingForUser(userId);
+                                yield completed.isEmpty()
+                                                ? ChatResponse.of(
+                                                                "I couldn't find any completed bookings on your account yet.")
+                                                : ChatResponse.of(
+                                                                "Your most recently completed service:\n\n"
+                                                                                + formatUserBookingDetail(
+                                                                                                completed.get()),
+                                                                new ChatAction("View My Bookings",
+                                                                                ChatRoutes.MY_BOOKINGS));
+                        }
+                        case COUNTS -> {
+                                List<Booking> all = bookingRepository.findByUserUserId(userId);
+                                yield ChatResponse.of(summarizeUserBookings(all),
+                                                new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+                        }
+                        case PENDING_LIST -> {
+                                // Users don't have a "pending requests" concept the way providers do —
+                                // fall through to their latest booking, which is the closest meaningful answer.
+                                yield latestUserBookingResponse(userId);
+                        }
+                        case LATEST -> latestUserBookingResponse(userId);
+                };
+        }
+
+        private ChatResponse latestUserBookingResponse(Long userId) {
+                Optional<Booking> latest = bookingContext.getLatestBookingForUser(userId);
+                if (latest.isEmpty()) {
                         return ChatResponse.of(
                                         "You don't have any bookings yet. Once you book a service, I'll be able to walk you "
                                                         + "through its status here.",
                                         new ChatAction("Browse Services", ChatRoutes.SEARCH));
                 }
-
-                Booking latest = bookings.get(bookings.size() - 1);
-                String statusExplain = statusMeaning(latest.getStatus());
+                Booking b = latest.get();
+                String statusExplain = statusMeaning(b.getStatus());
                 return ChatResponse.of(
-                                "Your most recent booking (with "
-                                                + safe(latest.getProvider() != null
-                                                                && latest.getProvider().getUser() != null
-                                                                                ? latest.getProvider().getUser()
-                                                                                                .getFullName()
-                                                                                : "your provider")
-                                                + ") is currently " + latest.getStatus().name() + ". " + statusExplain
-                                                + " You can see full details and any earlier bookings in My Bookings.",
+                                "Your most recent booking is currently " + b.getStatus().name() + ". " + statusExplain
+                                                + "\n\n" + formatUserBookingDetail(b),
                                 new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+        }
+
+        private ChatResponse providerBookingStatus(User user, StatusQuery query) {
+                ServiceProvider provider = providerRepository.findByUser_UserId(user.getUserId()).orElse(null);
+                if (provider == null) {
+                        return ChatResponse.of(
+                                        "I don't see an active provider profile on your account yet, so there's no "
+                                                        + "booking activity to report.",
+                                        new ChatAction("Become a Provider", ChatRoutes.BECOME_PROVIDER));
+                }
+                Long providerId = provider.getProviderId();
+
+                return switch (query) {
+                        case TODAY -> formatProviderBookingList(
+                                        bookingContext.getBookingsForProviderOnDate(
+                                                        providerId,
+                                                        LocalDate.now(ChatBookingContextService.FIXLY_ZONE)),
+                                        "today");
+                        case TOMORROW -> formatProviderBookingList(
+                                        bookingContext.getBookingsForProviderOnDate(
+                                                        providerId,
+                                                        LocalDate.now(ChatBookingContextService.FIXLY_ZONE)
+                                                                        .plusDays(1)),
+                                        "tomorrow");
+                        case THIS_WEEK -> {
+                                LocalDate today = LocalDate.now(ChatBookingContextService.FIXLY_ZONE);
+                                LocalDate weekEnd = today.plusDays(6);
+                                List<Booking> upcoming = bookingContext.getUpcomingBookingsForProvider(providerId)
+                                                .stream()
+                                                .filter(b -> !b.getServiceDate().isAfter(weekEnd))
+                                                .toList();
+                                yield formatProviderBookingList(upcoming, "this week");
+                        }
+                        case UPCOMING -> formatProviderBookingList(
+                                        bookingContext.getUpcomingBookingsForProvider(providerId), null);
+                        case PENDING_LIST -> {
+                                List<Booking> pending = bookingContext.getPendingBookingsForProvider(providerId);
+                                yield pending.isEmpty()
+                                                ? ChatResponse.of(
+                                                                "You don't have any pending booking requests right now.")
+                                                : formatProviderBookingList(pending, "pending");
+                        }
+                        case RECENT_COMPLETED -> {
+                                List<Booking> completed = bookingContext
+                                                .getRecentCompletedBookingsForProvider(providerId, 3);
+                                yield completed.isEmpty()
+                                                ? ChatResponse.of(
+                                                                "I couldn't find any completed jobs on your account yet.")
+                                                : formatProviderBookingList(completed, "recently completed");
+                        }
+                        case COUNTS -> {
+                                List<Booking> bookings = bookingRepository.findByProviderProviderId(providerId);
+                                yield ChatResponse.of(summarizeProviderBookings(bookings),
+                                                new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
+                        }
+                        case LATEST -> {
+                                Optional<Booking> latest = bookingContext.getLatestBookingForProvider(providerId);
+                                yield latest.isEmpty()
+                                                ? ChatResponse.of("You don't have any booking requests yet.")
+                                                : ChatResponse.of(
+                                                                "Your latest booking is:\n\n"
+                                                                                + formatProviderBookingDetail(
+                                                                                                latest.get()),
+                                                                new ChatAction("Provider Dashboard",
+                                                                                ChatRoutes.PROVIDER_DASHBOARD));
+                        }
+                };
         }
 
         private String explainStatusMeaning(String normalized) {
@@ -338,6 +509,19 @@ public class ChatServiceImpl implements ChatService {
                                 + "Pending requests are waiting on you to accept them from your Provider Dashboard.";
         }
 
+        private String summarizeUserBookings(List<Booking> bookings) {
+                if (bookings.isEmpty()) {
+                        return "You don't have any bookings yet.";
+                }
+                long pending = bookings.stream().filter(b -> b.getStatus() == BookingStatus.PENDING).count();
+                long accepted = bookings.stream().filter(b -> b.getStatus() == BookingStatus.ACCEPTED).count();
+                long completed = bookings.stream().filter(b -> b.getStatus() == BookingStatus.COMPLETED).count();
+                long cancelled = bookings.stream().filter(b -> b.getStatus() == BookingStatus.CANCELLED).count();
+
+                return "You have " + bookings.size() + " total booking(s): " + pending + " pending, " + accepted
+                                + " accepted, " + completed + " completed, and " + cancelled + " cancelled.";
+        }
+
         private ChatResponse bookingAcceptReject(Role role, User user) {
                 if (role == Role.PROVIDER) {
                         return ChatResponse.of(
@@ -370,37 +554,231 @@ public class ChatServiceImpl implements ChatService {
                                 new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
         }
 
-        private ChatResponse bookingCancel(Role role, User user) {
-                if (role == Role.PROVIDER) {
-                        return ChatResponse.of(
-                                        "You can cancel a booking you've accepted from your Provider Dashboard. Cancelling "
-                                                        + "notifies the customer immediately, so it's best to only do this when you "
-                                                        + "genuinely can't complete the job. A booking that's already COMPLETED or "
-                                                        + "already CANCELLED can't be cancelled again.");
-                }
-                if (user == null) {
-                        return ChatResponse.of(
-                                        "Cancellation generally works like this: open the booking from My Bookings and cancel "
-                                                        + "it there, as long as it isn't already completed or cancelled. Log in to "
-                                                        + "manage your own bookings.",
-                                        new ChatAction("Log In", ChatRoutes.LOGIN));
-                }
-                return ChatResponse.of(
-                                "If you need to cancel a booking, open My Bookings and select the booking you want to "
-                                                + "cancel. Before confirming, check the current status — a booking that's already "
-                                                + "COMPLETED or CANCELLED can't be cancelled again. If cancelling isn't available "
-                                                + "for a booking that should still be cancellable, please contact Help & Support "
-                                                + "with the booking details so it can be reviewed.",
-                                new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+        /*
+         * =========================================================================
+         * BOOKING CANCEL — informational (Part 4) vs. action guidance (Part 12/15).
+         * The chatbot NEVER cancels a booking itself (Part 32) — it only informs
+         * and points to My Bookings / Provider Dashboard, where the real
+         * confirmation-with-reason flow lives.
+         * =========================================================================
+         */
+
+        private static final List<String> RETROSPECTIVE_CANCEL_PHRASES = List.of(
+                        "what was my last cancelled", "which booking did i cancel", "when did i cancel",
+                        "why was my booking cancelled", "why was my booking canceled",
+                        "tell me about my cancelled booking", "tell me about my canceled booking",
+                        "did i cancel my last booking", "show my recent cancelled booking",
+                        "recent cancelled booking", "which bookings did i cancel");
+
+        private boolean isRetrospectiveCancelQuery(String normalized) {
+                return RETROSPECTIVE_CANCEL_PHRASES.stream().anyMatch(normalized::contains);
         }
 
-        private ChatResponse bookingReschedule() {
+        private ChatResponse bookingCancel(Role role, User user, String normalized) {
+                if (role == Role.PROVIDER) {
+                        return providerBookingCancel(user, normalized);
+                }
+                if (user == null) {
+                        if (isRetrospectiveCancelQuery(normalized)) {
+                                return loginRequiredForPrivateData();
+                        }
+                        // Generic "how does cancellation work" is fine for guests (Part 25).
+                        return ChatResponse.of(
+                                        "If you need to cancel a booking, open My Bookings and select the booking you want to "
+                                                        + "cancel — as long as it isn't already completed or cancelled, you'll be asked "
+                                                        + "for a short cancellation reason before it's confirmed. Log in to manage your "
+                                                        + "own bookings.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
+                }
+                return userBookingCancel(user, normalized);
+        }
+
+        private ChatResponse userBookingCancel(User user, String normalized) {
+                Long userId = user.getUserId();
+
+                if (isRetrospectiveCancelQuery(normalized)) {
+                        Optional<Booking> cancelled = bookingContext.getRecentCancelledBookingForUser(userId);
+                        if (cancelled.isEmpty()) {
+                                return ChatResponse
+                                                .of("I couldn't find any recently cancelled bookings on your account.");
+                        }
+                        return ChatResponse.of(formatCancelledBookingDetail(cancelled.get(), true),
+                                        new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+                }
+
+                List<Booking> active = bookingContext.getActiveBookingsForUser(userId);
+                if (active.isEmpty()) {
+                        return ChatResponse.of(
+                                        "You don't currently have any bookings that can be cancelled — cancellation is only "
+                                                        + "available for bookings that are still Pending or Accepted.",
+                                        new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+                }
+
+                Optional<Booking> matched = active.size() == 1
+                                ? Optional.of(active.get(0))
+                                : findBookingMatchingText(active, normalized);
+
+                if (matched.isPresent()) {
+                        Booking b = matched.get();
+                        return ChatResponse.of(
+                                        "Your " + categoryOf(b) + " booking is currently " + b.getStatus().name()
+                                                        + " for " + DATE_FMT.format(b.getServiceDate()) + " with "
+                                                        + providerNameOf(b)
+                                                        + ". If you no longer need the service, you can cancel it "
+                                                        + "from My Bookings — Fixly will ask you to provide a cancellation reason "
+                                                        + "before confirming.",
+                                        new ChatAction("My Bookings", ChatRoutes.MY_BOOKINGS))
+                                        .withSuggestions(List.of("Reschedule instead", "How do I reschedule?"));
+                }
+
                 return ChatResponse.of(
-                                "I don't see a dedicated reschedule feature in Fixly right now — changing the date or "
-                                                + "address of an existing booking isn't something I can confirm is supported. If "
-                                                + "your plans have changed, the safest option is to cancel the current booking (if "
-                                                + "it's still cancellable) and create a new one with the correct date or address.",
-                                new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+                                "I found multiple bookings that can be cancelled. Which one would you like to cancel?",
+                                new ChatAction("My Bookings", ChatRoutes.MY_BOOKINGS))
+                                .withSuggestions(suggestionLabelsFor(active));
+        }
+
+        private ChatResponse providerBookingCancel(User user, String normalized) {
+                ServiceProvider provider = providerRepository.findByUser_UserId(user.getUserId()).orElse(null);
+                if (provider == null) {
+                        return ChatResponse.of("I don't see an active provider profile on your account yet.",
+                                        new ChatAction("Become a Provider", ChatRoutes.BECOME_PROVIDER));
+                }
+                Long providerId = provider.getProviderId();
+
+                if (isRetrospectiveCancelQuery(normalized)) {
+                        Optional<Booking> cancelled = bookingContext.getRecentCancelledBookingForProvider(providerId);
+                        if (cancelled.isEmpty()) {
+                                return ChatResponse
+                                                .of("I couldn't find any recently cancelled bookings on your account.");
+                        }
+                        return ChatResponse.of(formatCancelledBookingDetail(cancelled.get(), false),
+                                        new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
+                }
+
+                List<Booking> active = bookingContext.getActiveBookingsForProvider(providerId);
+                if (active.isEmpty()) {
+                        return ChatResponse.of(
+                                        "You don't currently have any bookings that can be cancelled — cancellation is only "
+                                                        + "available for bookings that are still Pending or Accepted.",
+                                        new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
+                }
+
+                Optional<Booking> matched = active.size() == 1
+                                ? Optional.of(active.get(0))
+                                : findBookingMatchingText(active, normalized);
+
+                if (matched.isPresent()) {
+                        Booking b = matched.get();
+                        return ChatResponse.of(
+                                        "Your booking with " + b.getUser().getFullName() + " for " + categoryOf(b)
+                                                        + " is currently " + b.getStatus().name() + " for "
+                                                        + DATE_FMT.format(b.getServiceDate())
+                                                        + ". You can cancel it from your "
+                                                        + "Provider Dashboard — please only do this if you genuinely can't complete "
+                                                        + "the job, since the customer is notified immediately and you'll be asked "
+                                                        + "for a cancellation reason.",
+                                        new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
+                }
+
+                return ChatResponse.of(
+                                "I found multiple bookings that can be cancelled. Which one would you like to cancel?",
+                                new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD))
+                                .withSuggestions(suggestionLabelsFor(active));
+        }
+
+        /*
+         * =========================================================================
+         * BOOKING RESCHEDULE — real business rule: only a CANCELLED booking can
+         * be rescheduled (BookingServiceImpl.rescheduleBooking moves it back to
+         * PENDING with a new date). A booking that's still Pending/Accepted/
+         * Completed is NOT reschedule-eligible; that's explained, not assumed.
+         * =========================================================================
+         */
+
+        private static final List<String> RESCHEDULE_HISTORY_PHRASES = List.of(
+                        "when did i reschedule", "what was the old date", "what is the new date",
+                        "how many times did i reschedule", "which service did i recently reschedule",
+                        "what date did i change my booking to", "tell me about my recent reschedule");
+
+        private static final String RESCHEDULE_HISTORY_LIMITATION = "Your current booking shows the latest service date, but Fixly does not currently store a "
+                        + "complete reschedule history.";
+
+        private ChatResponse bookingReschedule(Role role, User user, String normalized) {
+                if (role == Role.PROVIDER) {
+                        return ChatResponse.of(
+                                        "Rescheduling is done by the customer, not the provider — a customer can reschedule "
+                                                        + "one of their own cancelled bookings to a new date from My Bookings, which sends "
+                                                        + "it back to you as a new Pending request.");
+                }
+
+                boolean isHistoryQuery = RESCHEDULE_HISTORY_PHRASES.stream().anyMatch(normalized::contains);
+
+                if (user == null) {
+                        if (isHistoryQuery) {
+                                return loginRequiredForPrivateData();
+                        }
+                        return ChatResponse.of(
+                                        "On Fixly, rescheduling applies to a cancelled booking: cancel it if it's still active, "
+                                                        + "then use the reschedule option on that cancelled booking to pick a new date — "
+                                                        + "it goes back to Pending for the provider to confirm. Log in to manage your own "
+                                                        + "bookings.",
+                                        new ChatAction("Log In", ChatRoutes.LOGIN));
+                }
+
+                Long userId = user.getUserId();
+
+                if (isHistoryQuery) {
+                        Optional<Booking> latest = bookingContext.getLatestBookingForUser(userId);
+                        String currentDateNote = latest
+                                        .map(b -> " Your latest booking currently shows a service date of "
+                                                        + DATE_FMT.format(b.getServiceDate()) + ".")
+                                        .orElse("");
+                        return ChatResponse.of(RESCHEDULE_HISTORY_LIMITATION + currentDateNote,
+                                        new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+                }
+
+                List<Booking> eligible = bookingContext.getRescheduleEligibleBookingsForUser(userId);
+
+                if (eligible.isEmpty()) {
+                        Optional<Booking> latest = bookingContext.getLatestBookingForUser(userId);
+                        if (latest.isEmpty()) {
+                                return ChatResponse.of("You don't have any bookings yet.",
+                                                new ChatAction("Browse Services", ChatRoutes.SEARCH));
+                        }
+                        Booking b = latest.get();
+                        if (b.getStatus() == BookingStatus.CANCELLED) {
+                                // Shouldn't happen (would appear in eligible list), but keep it consistent.
+                                eligible = List.of(b);
+                        } else {
+                                return ChatResponse.of(
+                                                "Your latest booking is currently " + b.getStatus().name()
+                                                                + ", so it can't be rescheduled — only a cancelled booking can be rebooked "
+                                                                + "with a new date. If you need a different date, you can cancel this booking "
+                                                                + "first from My Bookings, then reschedule it.",
+                                                new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+                        }
+                }
+
+                Optional<Booking> matched = eligible.size() == 1
+                                ? Optional.of(eligible.get(0))
+                                : findBookingMatchingText(eligible, normalized);
+
+                if (matched.isPresent()) {
+                        Booking b = matched.get();
+                        return ChatResponse.of(
+                                        "Your " + categoryOf(b) + " booking (originally "
+                                                        + DATE_FMT.format(b.getServiceDate())
+                                                        + ") is cancelled and eligible for rescheduling. You can pick a new date for it "
+                                                        + "from My Bookings, and it will go back to Pending for the provider to confirm.",
+                                        new ChatAction("My Bookings", ChatRoutes.MY_BOOKINGS))
+                                        .withSuggestions(List.of("View My Bookings"));
+                }
+
+                return ChatResponse.of(
+                                "You have " + eligible.size() + " cancelled bookings eligible for rescheduling. "
+                                                + "Which one would you like to reschedule?",
+                                new ChatAction("My Bookings", ChatRoutes.MY_BOOKINGS))
+                                .withSuggestions(suggestionLabelsFor(eligible));
         }
 
         private ChatResponse bookingOtp(Role role, User user) {
@@ -475,14 +853,44 @@ public class ChatServiceImpl implements ChatService {
                                 new ChatAction("Help & Support", ChatRoutes.HELP_SUPPORT));
         }
 
-        /* ===================== RATING ===================== */
+        /*
+         * =========================================================================
+         * RATING — generic explanation (unchanged) plus real review data (Part 8/9).
+         * =========================================================================
+         */
 
-        private ChatResponse rating(Role role, User user) {
+        private static final List<String> PERSONAL_REVIEW_PHRASES = List.of(
+                        "my recent reviews", "recent reviews", "my reviews", "what did i rate",
+                        "which providers have i reviewed", "what was my last rating",
+                        "did i review my last booking", "how many reviews do i have",
+                        "what rating did my latest customer give me", "show my recent reviews");
+
+        private ChatResponse rating(Role role, User user, String normalized) {
+                boolean isPersonalQuery = PERSONAL_REVIEW_PHRASES.stream().anyMatch(normalized::contains);
+
                 if (role == Role.PROVIDER) {
                         ServiceProvider provider = providerRepository.findByUser_UserId(user.getUserId()).orElse(null);
                         if (provider == null) {
                                 return ChatResponse.of("I don't see an active provider profile on your account yet.");
                         }
+
+                        if (isPersonalQuery) {
+                                if (normalized.contains("how many")) {
+                                        long count = reviewRepository
+                                                        .countByBookingProviderProviderId(provider.getProviderId());
+                                        return ChatResponse.of("You have " + count
+                                                        + " review(s) on your provider profile, "
+                                                        + "with an average rating of " + provider.getRating() + "★.");
+                                }
+                                List<Review> recent = reviewContext
+                                                .getRecentReviewsForProvider(provider.getProviderId(), 3);
+                                if (recent.isEmpty()) {
+                                        return ChatResponse.of("You haven't received any reviews yet.");
+                                }
+                                return ChatResponse.of("Here are your most recent reviews:\n\n"
+                                                + formatReviewList(recent, true));
+                        }
+
                         long count = reviewRepository.countByBookingProviderProviderId(provider.getProviderId());
                         String ratingText = count > 0
                                         ? "Your profile currently shows a rating of " + provider.getRating()
@@ -492,6 +900,19 @@ public class ChatServiceImpl implements ChatService {
                         return ChatResponse.of(ratingText + " Your rating updates automatically as customers review "
                                         + "your completed bookings — there's no manual way to edit it.");
                 }
+
+                if (isPersonalQuery) {
+                        if (user == null) {
+                                return loginRequiredForPrivateData();
+                        }
+                        List<Review> recent = reviewContext.getRecentReviewsForUser(user.getUserId(), 3);
+                        if (recent.isEmpty()) {
+                                return ChatResponse.of("You haven't submitted any reviews yet.");
+                        }
+                        return ChatResponse
+                                        .of("Here are your most recent reviews:\n\n" + formatReviewList(recent, false));
+                }
+
                 return ChatResponse.of(
                                 "You can rate a provider from a completed booking in My Bookings — reviews aren't "
                                                 + "available until a booking is marked COMPLETED, and you can only submit one "
@@ -606,10 +1027,6 @@ public class ChatServiceImpl implements ChatService {
         }
 
         private ChatResponse providerVerification(User user) {
-                // NOTE: user.role only flips to PROVIDER on approval (see
-                // ProviderServiceImpl.approveProvider). Someone with a PENDING,
-                // VERIFYING, or REJECTED application is still role=USER, so this
-                // must be keyed on "is there a provider record at all", not role.
                 if (user == null) {
                         return ChatResponse.of(
                                         "Fixly verifies providers by reviewing their submitted identity and service documents "
@@ -720,6 +1137,201 @@ public class ChatServiceImpl implements ChatService {
                                 .withFollowUp(true);
         }
 
+        /* ===================== FORMATTING HELPERS ===================== */
+
+        private String categoryOf(Booking b) {
+                return b.getProvider() != null && b.getProvider().getCategory() != null
+                                ? b.getProvider().getCategory().getName()
+                                : "Service";
+        }
+
+        private String providerNameOf(Booking b) {
+                return b.getProvider() != null && b.getProvider().getUser() != null
+                                ? b.getProvider().getUser().getFullName()
+                                : "your provider";
+        }
+
+        private boolean canShowPhone(Booking b) {
+                return b.getStatus() == BookingStatus.ACCEPTED || b.getStatus() == BookingStatus.COMPLETED;
+        }
+
+        /** Detail block for a booking from the USER's point of view. */
+        private String formatUserBookingDetail(Booking b) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Booking #").append(b.getBookingId()).append("\n");
+                sb.append("Service: ").append(categoryOf(b)).append("\n");
+                sb.append("Provider: ").append(providerNameOf(b)).append("\n");
+                sb.append("Date: ").append(DATE_FMT.format(b.getServiceDate())).append("\n");
+                if (b.getAddress() != null) {
+                        sb.append("Area: ").append(b.getAddress().getArea())
+                                        .append(", ").append(b.getAddress().getCity()).append("\n");
+                }
+                sb.append("Status: ").append(b.getStatus().name()).append("\n");
+                if (b.getProvider() != null) {
+                        sb.append("Price: ₹").append(b.getProvider().getPricePerVisit()).append("\n");
+                }
+                if (canShowPhone(b) && b.getProvider() != null && b.getProvider().getUser() != null
+                                && b.getProvider().getUser().getPhone() != null) {
+                        sb.append("Provider phone: ").append(b.getProvider().getUser().getPhone()).append("\n");
+                }
+                if (b.getStatus() == BookingStatus.ACCEPTED && b.getOtp() != null) {
+                        sb.append("Your service verification OTP: ").append(b.getOtp()).append("\n");
+                }
+                if (b.getReview() != null) {
+                        sb.append("You've already reviewed this booking (").append(b.getReview().getRating())
+                                        .append("★).\n");
+                } else if (b.getStatus() == BookingStatus.COMPLETED) {
+                        sb.append("You haven't reviewed this booking yet.\n");
+                }
+                return sb.toString().stripTrailing();
+        }
+
+        /** Detail block for a booking from the PROVIDER's point of view. */
+        private String formatProviderBookingDetail(Booking b) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Customer: ").append(b.getUser() != null ? b.getUser().getFullName() : "Customer")
+                                .append("\n");
+                sb.append("Service: ").append(categoryOf(b)).append("\n");
+                sb.append("Date: ").append(DATE_FMT.format(b.getServiceDate())).append("\n");
+                if (b.getAddress() != null) {
+                        sb.append("Area: ").append(b.getAddress().getArea()).append("\n");
+                        if (b.getAddress().getPincode() != null) {
+                                sb.append("Pincode: ").append(b.getAddress().getPincode()).append("\n");
+                        }
+                }
+                sb.append("Status: ").append(b.getStatus().name()).append("\n");
+                if (b.getProvider() != null) {
+                        sb.append("Price: ₹").append(b.getProvider().getPricePerVisit()).append("\n");
+                }
+                if (canShowPhone(b) && b.getUser() != null && b.getUser().getPhone() != null) {
+                        sb.append("Customer phone: ").append(b.getUser().getPhone()).append("\n");
+                }
+                if (b.getReview() != null) {
+                        sb.append("Customer rated this booking ").append(b.getReview().getRating()).append("★.\n");
+                }
+                return sb.toString().stripTrailing();
+        }
+
+        private String formatCancelledBookingDetail(Booking b, boolean fromUserPerspective) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Booking #").append(b.getBookingId()).append(" — ").append(categoryOf(b)).append("\n");
+                if (fromUserPerspective) {
+                        sb.append("Provider: ").append(providerNameOf(b)).append("\n");
+                } else if (b.getUser() != null) {
+                        sb.append("Customer: ").append(b.getUser().getFullName()).append("\n");
+                }
+                sb.append("Original service date: ").append(DATE_FMT.format(b.getServiceDate())).append("\n");
+                sb.append("Cancellation reason: ")
+                                .append(b.getCancellationReason() != null && !b.getCancellationReason().isBlank()
+                                                ? b.getCancellationReason()
+                                                : "not available")
+                                .append("\n");
+                if (b.getCancelledAt() != null) {
+                        sb.append("Cancelled at: ")
+                                        .append(b.getCancelledAt().format(
+                                                        DateTimeFormatter.ofPattern("d MMMM yyyy, h:mm a",
+                                                                        Locale.ENGLISH)))
+                                        .append("\n");
+                }
+                if (b.getCancelledBy() != null) {
+                        sb.append("Cancelled by: ").append(b.getCancelledBy()).append("\n");
+                }
+                sb.append("Current status: ").append(b.getStatus().name());
+                return sb.toString();
+        }
+
+        private ChatResponse formatUserBookingList(List<Booking> bookings, String periodLabel) {
+                if (bookings.isEmpty()) {
+                        String scope = periodLabel == null ? "" : " " + periodLabel;
+                        return ChatResponse.of("You don't have any upcoming bookings" + scope + ".",
+                                        new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.append("You have ").append(bookings.size()).append(" booking(s)")
+                                .append(periodLabel == null ? "" : " " + periodLabel).append(":\n\n");
+                int i = 1;
+                for (Booking b : bookings) {
+                        sb.append(i++).append(". ").append(categoryOf(b)).append("\n");
+                        sb.append("   Provider: ").append(providerNameOf(b)).append("\n");
+                        sb.append("   Date: ").append(DATE_FMT.format(b.getServiceDate())).append("\n");
+                        sb.append("   Status: ").append(b.getStatus().name()).append("\n");
+                        if (b.getProvider() != null) {
+                                sb.append("   Price: ₹").append(b.getProvider().getPricePerVisit()).append("\n");
+                        }
+                }
+                return ChatResponse.of(sb.toString().stripTrailing(),
+                                new ChatAction("View My Bookings", ChatRoutes.MY_BOOKINGS));
+        }
+
+        private ChatResponse formatProviderBookingList(List<Booking> bookings, String periodLabel) {
+                if (bookings.isEmpty()) {
+                        String scope = periodLabel == null ? "" : " " + periodLabel;
+                        return ChatResponse.of("You don't have any bookings" + scope + ".",
+                                        new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.append("You have ").append(bookings.size()).append(" booking(s)")
+                                .append(periodLabel == null ? "" : " " + periodLabel).append(":\n\n");
+                int i = 1;
+                for (Booking b : bookings) {
+                        sb.append(i++).append(". ").append(categoryOf(b)).append("\n");
+                        sb.append("   Customer: ").append(b.getUser() != null ? b.getUser().getFullName() : "Customer")
+                                        .append("\n");
+                        sb.append("   Date: ").append(DATE_FMT.format(b.getServiceDate())).append("\n");
+                        sb.append("   Status: ").append(b.getStatus().name()).append("\n");
+                        if (b.getProvider() != null) {
+                                sb.append("   Price: ₹").append(b.getProvider().getPricePerVisit()).append("\n");
+                        }
+                }
+                return ChatResponse.of(sb.toString().stripTrailing(),
+                                new ChatAction("Provider Dashboard", ChatRoutes.PROVIDER_DASHBOARD));
+        }
+
+        private String formatReviewList(List<Review> reviews, boolean isProviderView) {
+                StringBuilder sb = new StringBuilder();
+                int i = 1;
+                for (Review r : reviews) {
+                        Booking b = r.getBooking();
+                        sb.append(i++).append(". ");
+                        if (isProviderView && b != null && b.getUser() != null) {
+                                sb.append(b.getUser().getFullName()).append(" — ");
+                        } else if (!isProviderView && b != null) {
+                                sb.append(providerNameOf(b)).append(" — ");
+                        }
+                        sb.append(b != null ? categoryOf(b) : "Service").append("\n");
+                        sb.append("   Rating: ").append(r.getRating()).append("★\n");
+                        if (r.getComment() != null && !r.getComment().isBlank()) {
+                                sb.append("   Comment: ").append(r.getComment()).append("\n");
+                        }
+                }
+                return sb.toString().stripTrailing();
+        }
+
+        /**
+         * Stateless disambiguation (Part 14/15 — no session storage). Matches the
+         * user's free-typed reply, or a clicked suggestion label, against each
+         * candidate's category name. Returns empty if zero or more than one
+         * candidate matches, in which case the caller should keep asking.
+         */
+        private Optional<Booking> findBookingMatchingText(List<Booking> candidates, String normalized) {
+                List<Booking> matches = new ArrayList<>();
+                for (Booking b : candidates) {
+                        String category = categoryOf(b).toLowerCase(Locale.ROOT);
+                        if (!category.isBlank() && normalized.contains(category)) {
+                                matches.add(b);
+                        }
+                }
+                return matches.size() == 1 ? Optional.of(matches.get(0)) : Optional.empty();
+        }
+
+        private List<String> suggestionLabelsFor(List<Booking> candidates) {
+                List<String> labels = new ArrayList<>();
+                for (Booking b : candidates) {
+                        labels.add(categoryOf(b) + " on " + DATE_FMT.format(b.getServiceDate()));
+                }
+                return labels;
+        }
+
         /* ===================== INTENT RESOLUTION ===================== */
 
         private ChatIntent resolveIntent(ChatTopic topic, Role role) {
@@ -754,9 +1366,5 @@ public class ChatServiceImpl implements ChatService {
                         case PROVIDER_SUSPENSION -> ChatIntent.PROVIDER_SUSPENSION;
                         default -> ChatIntent.UNKNOWN;
                 };
-        }
-
-        private String safe(String s) {
-                return s == null ? "your provider" : s;
         }
 }

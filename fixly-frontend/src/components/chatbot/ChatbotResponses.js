@@ -24,12 +24,22 @@
  *   - fixlyApi's own request interceptor attaches the real auth header
  *     automatically; nothing here touches auth directly.
  *   - `lastIntent` is remembered across calls in this session so short
- *     follow-up replies ("Deep cleaning") can be understood by the backend.
+ *     follow-up replies ("Deep cleaning", "Plumbing") can be understood
+ *     by the backend.
  *   - Errors are NOT swallowed here — they propagate up to whatever calls
  *     getResponseForText/getResponseById (FixlyChatbot.jsx), which already
  *     catches them and displays its own ERROR_TEXT. This file's job is
  *     just to call the API and shape the response, not to decide what the
  *     user sees on failure.
+ *
+ * NOTE ON QUICK QUESTIONS (Phase 3 — account-aware chatbot):
+ *   Quick-question `label` text is sent to the backend as the literal
+ *   chat message — the backend's ChatIntentDetector matches on that text
+ *   the same way it matches anything a person types. `id` only exists to
+ *   look the label up locally; the backend never sees the id and doesn't
+ *   need to. Labels below were chosen to land cleanly on the intended
+ *   ChatIntentRules keyword (see ChatIntentRules.java) rather than being
+ *   arbitrary marketing copy.
  * =============================================================================
  */
 
@@ -51,24 +61,37 @@ async function callChatApi(message) {
  * QUICK QUESTIONS — role-aware. These are UI-only; the backend
  * independently determines the real role from Spring Security for every
  * answer, so this never functions as an authorization mechanism.
+ *
+ * Kept to 6 per role per Part 28 ("do not overload the UI"). Each label
+ * is written to match a specific ChatIntentRules keyword:
+ *   - "My latest booking"        -> BOOKING_STATUS ("latest booking")
+ *   - "My upcoming bookings"     -> BOOKING_STATUS ("my upcoming bookings")
+ *   - "How can I cancel?"        -> BOOKING_CANCEL ("cancel" token)
+ *   - "How can I reschedule?"    -> BOOKING_RESCHEDULE ("reschedule" token)
+ *   - "My recent reviews"        -> RATING ("my recent reviews")
+ *   - "How does booking work?"   -> BOOKING_CREATE ("how does booking work")
+ *   - "Pending requests"         -> BOOKING_STATUS ("pending requests")
+ *   - "My upcoming jobs"         -> BOOKING_STATUS ("upcoming booking" + "next job")
+ *   - "Recent completed jobs"    -> BOOKING_STATUS ("recent completed jobs")
+ *   - "How do I manage bookings?"-> BOOKING_QUEUE ("how do i manage bookings")
  * ---------------------------------------------------------------------- */
 
 export const USER_QUICK_QUESTIONS = [
-  { id: "booking_how", label: "How does booking work?" },
-  { id: "service_generic", label: "Find a service" },
-  { id: "booking_status_quick", label: "Where is my booking?" },
-  { id: "cancellation_quick", label: "How can I cancel a booking?" },
-  { id: "payment_quick", label: "How does payment work?" },
-  { id: "provider_register", label: "How can I become a provider?" },
+  { id: "user_latest_booking", label: "My latest booking" },
+  { id: "user_upcoming_bookings", label: "My upcoming bookings" },
+  { id: "user_how_cancel", label: "How can I cancel?" },
+  { id: "user_how_reschedule", label: "How can I reschedule?" },
+  { id: "user_recent_reviews", label: "My recent reviews" },
+  { id: "user_booking_how", label: "How does booking work?" },
 ];
 
 export const PROVIDER_QUICK_QUESTIONS = [
+  { id: "provider_latest_booking", label: "My latest booking" },
+  { id: "provider_pending_requests", label: "Pending requests" },
+  { id: "provider_upcoming_jobs", label: "My upcoming jobs" },
+  { id: "provider_recent_completed", label: "Recent completed jobs" },
+  { id: "provider_recent_reviews", label: "Recent reviews" },
   { id: "provider_manage_bookings", label: "How do I manage bookings?" },
-  { id: "provider_accept_booking", label: "How do I accept a booking?" },
-  { id: "provider_otp", label: "How does OTP verification work?" },
-  { id: "provider_complete_service", label: "How do I complete a service?" },
-  { id: "provider_availability", label: "How can I manage availability?" },
-  { id: "provider_ratings", label: "How do ratings work?" },
 ];
 
 // Backward compatible with existing Home-page usage, which imports
