@@ -49,6 +49,10 @@
   max-width: 1180px;
   margin: 0 auto;
 }
+.fixly-green {
+  color: #22c55e;
+  font-weight: 700;
+}
 
 /* ================= TOP: BRAND + NAV ================= */
 .fixly-footer-top {

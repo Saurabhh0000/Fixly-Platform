@@ -97,13 +97,16 @@ const HomeFooter = () => {
             </h3>
 
             <p className="fixly-footer-tagline">
-              Trusted home services, made simple.
+              India's trusted platform for{" "}
+              <span className="fixly-green">home services</span>.
             </p>
 
             <p className="fixly-footer-desc">
-              Fixly connects you with verified professionals for plumbing,
-              electrical, cleaning, appliance repair and more — with quality and
-              transparency built in.
+              Fixly connects you with{" "}
+              <span className="fixly-green">verified professionals</span> for
+              plumbing, electrical, cleaning, appliance repair and more — with{" "}
+              <span className="fixly-green">quality</span> and{" "}
+              <span className="fixly-green">transparency</span> built in.
             </p>
 
             <ul className="fixly-footer-trust">
