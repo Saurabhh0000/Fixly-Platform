@@ -1,214 +1,356 @@
+/* ============================================================
+   FIXLY HOME FOOTER — Scoped .fixly-footer-* prefix.
+   Premium SaaS-style footer for the public homepage.
+   ============================================================ */
+
 .fixly-footer {
-  background: #020617;
-  color: #e5e7eb;
-  padding: 64px 20px;
-  font-family: "Nunito", sans-serif;
+  --footer-bg: #020617;
+  --footer-bg-soft: #0f172a;
+  --footer-text: #f8fafc;
+  --footer-text-muted: #94a3b8;
+  --footer-text-faint: #64748b;
+  --footer-border: rgba(255, 255, 255, 0.08);
+  --footer-accent: #22c55e;
+  --footer-accent-soft: rgba(34, 197, 94, 0.12);
+
+  position: relative;
+  background: var(--footer-bg);
+  color: var(--footer-text-muted);
+  font-family: "Nunito", system-ui, sans-serif;
+  padding: 64px 20px 28px;
   box-sizing: border-box;
+  width: 100%;
   overflow-x: hidden;
+  border-top: 1px solid var(--footer-border);
 }
 
-/* CONTAINER */
-.footer-container {
-  max-width: 1100px;
-  margin: auto;
+.fixly-footer *,
+.fixly-footer *::before,
+.fixly-footer *::after {
+  box-sizing: border-box;
+}
+
+/* subtle background glow, restrained */
+.fixly-footer::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 640px;
+  height: 240px;
+  max-width: 90vw;
+  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.fixly-footer-inner {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* ================= TOP: BRAND + NAV ================= */
+.fixly-footer-top {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 48px;
+  grid-template-columns: 1.1fr 1.6fr;
+  gap: 56px;
+  align-items: start;
 }
 
-/* BRAND */
-.footer-logo {
-  font-size: 2.2rem;
+/* ---- Brand ---- */
+.fixly-footer-logo {
+  font-size: clamp(1.6rem, 2.6vw, 2rem);
   font-weight: 900;
+  color: var(--footer-text);
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
-.footer-logo span {
-  color: #22c55e;
+.fixly-footer-logo span {
+  color: var(--footer-accent);
 }
 
-.footer-tagline {
-  margin-top: 8px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #f9fafb;
-}
-
-.footer-desc {
-  margin-top: 14px;
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: #9ca3af;
-  max-width: 520px;
-}
-
-.footer-desc span,
-.footer-tagline span {
-  color: #22c55e;
-  font-weight: 700;
-}
-
-/* BADGES */
-.footer-badges {
-  margin-top: 20px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.footer-badges span {
-  background: #1e293b;
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.25s ease;
-}
-
-.footer-badges span:hover {
-  background: #22c55e;
-  color: #022c22;
-  transform: translateY(-3px);
-}
-
-/* META */
-.footer-meta h4 {
+.fixly-footer-tagline {
+  margin: 10px 0 0;
   font-size: 1rem;
-  font-weight: 800;
-  margin-bottom: 14px;
+  font-weight: 700;
+  color: var(--footer-text);
 }
 
-/* SOCIAL — single source of truth for icon styling. Icons inherit color
-   from the <a> via currentColor, so only the anchor needs to be styled;
-   this replaces the previous duplicated `.footer-social svg` rules,
-   which caused conflicting spacing (margin-right stacking with the
-   flex gap) and conflicting hover effects (svg:hover scaling while
-   a:hover translated). */
-.footer-social {
+.fixly-footer-desc {
+  margin: 12px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--footer-text-muted);
+  max-width: 440px;
+}
+
+/* ---- Trust indicators ---- */
+.fixly-footer-trust {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fixly-footer-trust-item {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 9px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #cbd5e1;
 }
 
-.footer-social a {
-  width: 38px;
-  height: 38px;
-  display: flex;
+.fixly-footer-trust-icon {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  font-size: 1.25rem;
-  border-radius: 8px;
-  transition: color 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--footer-accent-soft);
+  color: var(--footer-accent);
+  font-size: 0.72rem;
 }
 
-.footer-social a:hover {
-  color: #22c55e;
-  transform: translateY(-3px);
+/* ---- Nav columns ---- */
+.fixly-footer-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
 }
 
-.footer-social a:focus-visible {
-  outline: 2px solid #22c55e;
+.fixly-footer-nav-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--footer-text);
+  margin: 0 0 16px;
+}
+
+.fixly-footer-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fixly-footer-nav-link,
+.fixly-footer-nav-text {
+  font-size: 0.85rem;
+  color: var(--footer-text-muted);
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.fixly-footer-nav-link {
+  transition: color 0.2s ease;
+}
+
+.fixly-footer-nav-link:hover {
+  color: var(--footer-accent);
+}
+
+.fixly-footer-nav-link:focus-visible {
+  outline: 2px solid var(--footer-accent);
   outline-offset: 3px;
-  color: #22c55e;
+  border-radius: 2px;
 }
 
-.footer-copy {
-  margin-top: 16px;
-  font-size: 0.75rem;
-  color: #9ca3af;
-  line-height: 1.5;
+.fixly-footer-nav-text {
+  color: var(--footer-text-faint);
+  cursor: default;
 }
 
-/* ============================================================
-   MOBILE (<= 768px)
-   ============================================================ */
+/* ================= SOCIAL ================= */
+.fixly-footer-social-row {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--footer-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.fixly-footer-social-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--footer-text);
+  margin: 0;
+}
+
+.fixly-footer-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fixly-footer-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--footer-border);
+  background: var(--footer-bg-soft);
+  color: var(--footer-text);
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.fixly-footer-social-btn:hover {
+  color: var(--footer-accent);
+  border-color: var(--footer-accent);
+  background: var(--footer-accent-soft);
+  transform: translateY(-2px);
+}
+
+.fixly-footer-social-btn:focus-visible {
+  outline: 2px solid var(--footer-accent);
+  outline-offset: 3px;
+  color: var(--footer-accent);
+}
+
+/* ================= BOTTOM BAR ================= */
+.fixly-footer-bottom {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--footer-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fixly-footer-bottom-text,
+.fixly-footer-bottom-note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--footer-text-faint);
+}
+
+.fixly-footer-bottom-note {
+  color: var(--footer-text-muted);
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 1024px) {
+  .fixly-footer-top {
+    grid-template-columns: 1fr 1.4fr;
+    gap: 40px;
+  }
+}
+
 @media (max-width: 768px) {
   .fixly-footer {
-    padding: 48px 20px 32px;
+    padding: 52px 20px 24px;
   }
 
-  .footer-container {
+  .fixly-footer-top {
     grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
     gap: 36px;
   }
 
-  .footer-logo {
-    font-size: 1.9rem;
+  .fixly-footer-desc {
+    max-width: 100%;
   }
 
-  .footer-desc {
-    margin-left: auto;
-    margin-right: auto;
+  .fixly-footer-nav {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
 
-  .footer-badges {
-    justify-content: center;
+  .fixly-footer-social-row {
+    justify-content: flex-start;
   }
 
-  .footer-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
-  .footer-social {
-    justify-content: center;
-  }
-
-  /* slightly larger tap targets on touch devices */
-  .footer-social a {
+  .fixly-footer-social-btn {
     width: 44px;
     height: 44px;
-    font-size: 1.35rem;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.15rem;
+  }
+
+  .fixly-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 }
 
-/* ============================================================
-   SMALL PHONES (<= 480px)
-   ============================================================ */
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   .fixly-footer {
-    padding: 40px 16px 28px;
+    padding: 44px 16px 20px;
   }
 
-  .footer-container {
-    gap: 28px;
+  .fixly-footer-nav {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px 16px;
   }
 
-  .footer-logo {
-    font-size: 1.6rem;
+  .fixly-footer-trust {
+    gap: 9px;
+  }
+}
+
+@media (max-width: 400px) {
+  .fixly-footer {
+    padding: 36px 14px 18px;
   }
 
-  .footer-tagline {
-    font-size: 0.95rem;
+  .fixly-footer-logo {
+    font-size: 1.4rem;
   }
 
-  .footer-desc {
-    font-size: 0.85rem;
-    padding: 0 4px;
+  .fixly-footer-tagline {
+    font-size: 0.92rem;
   }
 
-  .footer-badges {
-    gap: 8px;
+  .fixly-footer-desc {
+    font-size: 0.83rem;
   }
 
-  .footer-badges span {
-    font-size: 0.7rem;
-    padding: 6px 12px;
+  .fixly-footer-nav {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 14px;
   }
 
-  .footer-social {
-    gap: 10px;
+  .fixly-footer-nav-title {
+    font-size: 0.72rem;
   }
 
-  .footer-copy {
-    font-size: 0.7rem;
-    padding: 0 8px;
+  .fixly-footer-social-title {
+    font-size: 0.78rem;
+  }
+
+  .fixly-footer-bottom-text,
+  .fixly-footer-bottom-note {
+    font-size: 0.68rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fixly-footer-nav-link,
+  .fixly-footer-social-btn {
+    transition: none !important;
   }
 }
