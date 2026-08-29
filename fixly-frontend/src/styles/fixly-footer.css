@@ -353,8 +353,20 @@
     gap: 22px 16px;
   }
 
-  .fixly-footer-trust {
-    gap: 9px;
+ .fixly-footer-trust {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .fixly-footer-trust-item {
+    padding: 7px 10px;
+    font-size: 0.72rem;
+  }
+
+  .fixly-footer-trust-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 0.65rem;
   }
 }
 
@@ -391,6 +403,19 @@
   .fixly-footer-bottom-text,
   .fixly-footer-bottom-note {
     font-size: 0.68rem;
+  }
+   .fixly-footer-trust {
+    gap: 7px;
+  }
+
+  .fixly-footer-trust-item {
+    padding: 7px 9px;
+    font-size: 0.68rem;
+  }
+
+  .fixly-footer-trust-icon {
+    width: 19px;
+    height: 19px;
   }
 }
 
