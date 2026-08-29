@@ -27,6 +27,7 @@ import {
   FaExchangeAlt,
   FaMoneyCheckAlt,
   FaHeart,
+  FaArrowRight,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
@@ -166,6 +167,26 @@ const HomeFooter = () => {
   return (
     <footer className="fixly-footer">
       <div className="fixly-footer-inner">
+        {/* ===== CTA BANNER ===== */}
+        <div className="fixly-footer-cta">
+          <div className="fixly-footer-cta-text">
+            <h4 className="fixly-footer-cta-title">
+              Need a service? We're here to help.
+            </h4>
+            <p className="fixly-footer-cta-sub">
+              Find trusted professionals for your home — quickly and
+              confidently.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="fixly-footer-cta-btn"
+            onClick={() => navigate("/search")}>
+            Explore Services
+            <FaArrowRight aria-hidden="true" />
+          </button>
+        </div>
+
         {/* ===== TOP: BRAND + NAV ===== */}
         <div className="fixly-footer-top">
           <div className="fixly-footer-brand">
