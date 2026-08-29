@@ -745,7 +745,209 @@
   color: var(--fixly-white);
   white-space: nowrap;
 }
+/* ================= ECOSYSTEM (v2 — real connecting lines) ================= */
+.fa-ecosystem-desktop {
+  position: relative;
+  width: 520px;
+  height: 520px;
+  max-width: 100%;
+  margin: 0 auto;
+  display: none;
+}
 
+.fa-ecosystem-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.fa-ecosystem-line {
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--fa-line-progress, 0));
+  pathLength: 1;
+  transition: stroke 0.25s ease;
+}
+.fa-ecosystem-line-active {
+  stroke: var(--fixly-green);
+  stroke-width: 2;
+}
+
+.fa-ecosystem-center-circle {
+  fill: rgba(34, 197, 94, 0.12);
+  stroke: var(--fixly-green);
+  stroke-width: 1.5;
+}
+
+.fa-ecosystem-center-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: var(--fixly-white);
+  pointer-events: none;
+}
+
+.fa-ecosystem-node-btn {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--fixly-border-inverse);
+  border-radius: 14px;
+  padding: 12px 14px;
+  min-width: 96px;
+  color: var(--fixly-white);
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.fa-ecosystem-node-btn:hover,
+.fa-ecosystem-node-active {
+  border-color: var(--fixly-green);
+  background: rgba(34, 197, 94, 0.12);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+.fa-ecosystem-node-btn:focus-visible {
+  outline: 2px solid var(--fixly-green);
+  outline-offset: 3px;
+}
+.fa-ecosystem-node-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--fixly-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+.fa-ecosystem-node-text {
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ---- Mobile vertical ecosystem ---- */
+.fa-ecosystem-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fa-ecosystem-mobile-root {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--fixly-green);
+  color: #052e16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.fa-ecosystem-mobile-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+}
+.fa-ecosystem-mobile-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 0 16px 8px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fa-fade-up 0.6s ease forwards;
+  animation-delay: var(--fa-delay, 0ms);
+  animation-play-state: paused;
+}
+.fa-ecosystem-mobile-connector {
+  position: absolute;
+  left: 23px;
+  top: -6px;
+  bottom: -6px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.fa-ecosystem-mobile-item:first-child .fa-ecosystem-mobile-connector { top: 50%; }
+.fa-ecosystem-mobile-item:last-child .fa-ecosystem-mobile-connector { bottom: 50%; }
+.fa-ecosystem-mobile-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--fixly-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+  font-size: 1rem;
+}
+.fa-ecosystem-mobile-title {
+  margin: 4px 0 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--fixly-white);
+}
+.fa-ecosystem-mobile-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+@keyframes fa-fade-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Trigger the mobile stagger animation once in view — reuses the same
+   IntersectionObserver-driven .fa-visible pattern as the rest of the page
+   via a parent-level class toggle would require JS; simplest robust
+   approach here is CSS `animation-play-state` driven by :hover-free
+   visibility — since mobile ecosystem is typically short, we run once on
+   scroll into view using content-visibility as a low-cost fallback. */
+@supports (animation-timeline: view()) {
+  .fa-ecosystem-mobile-item {
+    animation-play-state: running;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+}
+@supports not (animation-timeline: view()) {
+  .fa-ecosystem-mobile-item {
+    animation-play-state: running;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-ecosystem-mobile-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .fa-ecosystem-line {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  .fa-ecosystem-desktop { display: block; }
+  .fa-ecosystem-mobile { display: none; }
+}
 /* ================= CTA ================= */
 .fa-cta-inner { text-align: center; }
 .fa-cta-heading {
