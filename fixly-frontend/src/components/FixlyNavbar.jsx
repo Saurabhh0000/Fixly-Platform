@@ -111,6 +111,9 @@ const FixlyNavbar = () => {
             <Link to="/" className="fnav-link">
               Home
             </Link>
+            <Link to="/about" className="fnav-link">
+              About
+            </Link>
             <Link to="/login" className="fnav-btn fnav-btn-outline">
               Sign In
             </Link>
@@ -138,6 +141,12 @@ const FixlyNavbar = () => {
               className="fnav-mobile-link"
               onClick={() => setMobileOpen(false)}>
               Home
+            </Link>
+            <Link
+              to="/about"
+              className="fnav-mobile-link"
+              onClick={() => setMobileOpen(false)}>
+              About
             </Link>
             <div className="fnav-mobile-auth-row">
               <Link
