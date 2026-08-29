@@ -4,7 +4,6 @@ import {
   FaBolt,
   FaUserCheck,
   FaStar,
-  FaCreditCard,
   FaInstagram,
   FaLinkedin,
   FaGithub,
@@ -34,8 +33,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "../../styles/fixly-footer.css";
 
-/* Trust indicators — expanded with "Trusted Reviews" / "Easy Payments"
-   per the redesign brief. No fabricated stats. */
+/* Trust indicators — no fabricated stats. */
 const TRUST_INDICATORS = [
   { key: "verified", label: "Background Verified", icon: <FaShieldAlt /> },
   { key: "booking", label: "Instant Booking", icon: <FaBolt /> },
@@ -47,8 +45,7 @@ const TRUST_INDICATORS = [
  * Popular Services — ServiceCategoryMatcher.java (chatbot) and the
  * existing ChatServiceImpl.serviceSearch() action already navigate to
  * `${ChatRoutes.SEARCH}?service=<lowercase-category-name>`, so this is a
- * verified, already-in-use mechanism, not an invented route. Reusing it
- * here rather than inventing /services/plumbing-style paths.
+ * verified, already-in-use mechanism, not an invented route.
  */
 const POPULAR_SERVICES = [
   { key: "plumbing", label: "Plumbing", slug: "plumbing", icon: <FaWrench /> },
@@ -89,8 +86,8 @@ const POPULAR_SERVICES = [
 /*
  * Support topics — only "Help & Support" has a real dedicated route
  * (/help-support). The other three are common booking-problem topics but
- * have no separate page in this app, so per the brief they point to the
- * same /help-support page instead of inventing /booking-help etc.
+ * have no separate page in this app, so they point to the same
+ * /help-support page instead of inventing /booking-help etc.
  */
 const SUPPORT_ITEMS = [
   {
@@ -217,9 +214,9 @@ const HomeFooter = () => {
           </div>
 
           <nav className="fixly-footer-nav" aria-label="Footer navigation">
-            {/* ---- Quick Links ---- */}
+            {/* ---- For Customers (merged former Quick Links) ---- */}
             <div className="fixly-footer-nav-col">
-              <h4 className="fixly-footer-nav-title">Quick Links</h4>
+              <h4 className="fixly-footer-nav-title">For Customers</h4>
               <ul className="fixly-footer-nav-list">
                 <li>
                   <Link className="fixly-footer-nav-link" to="/search">
@@ -227,7 +224,7 @@ const HomeFooter = () => {
                       className="fixly-footer-nav-icon"
                       aria-hidden="true"
                     />
-                    Search Services
+                    Find a Service
                   </Link>
                 </li>
                 <li>
@@ -266,6 +263,18 @@ const HomeFooter = () => {
                     Notifications
                   </button>
                 </li>
+                <li>
+                  <button
+                    type="button"
+                    className="fixly-footer-nav-link fixly-footer-nav-btn"
+                    onClick={() => navigate(authGatedTo("/help-support"))}>
+                    <FaHeadset
+                      className="fixly-footer-nav-icon"
+                      aria-hidden="true"
+                    />
+                    Help & Support
+                  </button>
+                </li>
               </ul>
             </div>
 
@@ -292,48 +301,6 @@ const HomeFooter = () => {
                     </button>
                   </li>
                 ))}
-              </ul>
-            </div>
-
-            {/* ---- For Customers ---- */}
-            <div className="fixly-footer-nav-col">
-              <h4 className="fixly-footer-nav-title">For Customers</h4>
-              <ul className="fixly-footer-nav-list">
-                <li>
-                  <Link className="fixly-footer-nav-link" to="/search">
-                    Find a Service
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    className="fixly-footer-nav-link fixly-footer-nav-btn"
-                    onClick={() =>
-                      navigate(
-                        isProvider
-                          ? "/provider/dashboard"
-                          : authGatedTo("/user/bookings"),
-                      )
-                    }>
-                    My Bookings
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    className="fixly-footer-nav-link fixly-footer-nav-btn"
-                    onClick={() => navigate(authGatedTo("/profile"))}>
-                    Profile
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    className="fixly-footer-nav-link fixly-footer-nav-btn"
-                    onClick={() => navigate(authGatedTo("/help-support"))}>
-                    Help & Support
-                  </button>
-                </li>
               </ul>
             </div>
 
