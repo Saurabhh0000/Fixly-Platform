@@ -19,6 +19,7 @@ import NotificationPage from "./pages/NotificationPage";
 
 import PrivateRoute from "./components/PrivateRoute";
 import AdminCategories from "./pages/AdminCategories";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/about" element={<About />} />
 
         {/* PROFILE & SECURITY */}
         <Route
