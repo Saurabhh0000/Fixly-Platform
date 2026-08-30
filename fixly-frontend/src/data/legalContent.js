@@ -408,7 +408,7 @@ export const TERMS_SECTIONS = [
       },
       {
         type: "p",
-        text: "Legal contact: [Legal Contact Email]",
+        text: "Legal contact: support@fixly.com",
       },
     ],
   },
