@@ -426,3 +426,309 @@ export const SUMMARY_CARDS = [
   { title: "Follow booking and payment rules", key: "rules" },
   { title: "Review the terms before using the platform", key: "review" },
 ];
+
+
+
+/* ... existing TERMS_SECTIONS and SUMMARY_CARDS content stays exactly as before ... */
+
+// ================= PRIVACY POLICY =================
+
+// Centralized metadata, not bracket placeholders — per Privacy Policy spec.
+// NOTE: these are illustrative dates. Update `lastUpdated` only when the
+// Privacy Policy content itself actually changes, not on every deploy.
+export const PRIVACY_METADATA = {
+  effectiveDate: "January 15, 2026",
+  lastUpdated: "January 15, 2026",
+};
+
+export const PRIVACY_SUMMARY_CARDS = [
+  { number: "01", title: "Information", desc: "What we may collect", key: "information" },
+  { number: "02", title: "Purpose", desc: "Why we use information", key: "purpose" },
+  { number: "03", title: "Sharing", desc: "When information may be shared", key: "sharing" },
+  { number: "04", title: "Control", desc: "Choices available to you", key: "control" },
+  { number: "05", title: "Security", desc: "How we protect information", key: "security" },
+];
+
+export const PRIVACY_SECTIONS = [
+  {
+    id: "introduction",
+    number: "01",
+    title: "Introduction",
+    blocks: [
+      {
+        type: "p",
+        text: "This Privacy Policy explains how Fixly collects, uses, protects, and manages information when you use our platform. It applies to customers, service providers, and visitors who interact with Fixly.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "This Privacy Policy is a product/legal-content template and should be reviewed by qualified legal counsel before being used as a binding policy.",
+      },
+    ],
+  },
+  {
+    id: "information-we-collect",
+    number: "02",
+    title: "Information We Collect",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly may collect information in the following general categories, depending on how you use the platform.",
+      },
+    ],
+  },
+  {
+    id: "information-you-provide",
+    number: "03",
+    title: "Information You Provide",
+    blocks: [
+      {
+        type: "list",
+        items: [
+          "Name, email address, and phone number",
+          "Account credentials",
+          "Profile information",
+          "Service preferences and booking details",
+          "Provider profile information, where applicable",
+          "Reviews and ratings you submit",
+          "Communications you send through Fixly, such as support messages",
+        ],
+      },
+    ],
+  },
+  {
+    id: "information-automatic",
+    number: "04",
+    title: "Information Collected Automatically",
+    blocks: [
+      {
+        type: "list",
+        items: [
+          "IP address",
+          "Browser type and device information",
+          "Operating system",
+          "Pages viewed and general usage information",
+          "Approximate location derived from technical information, where applicable to platform functionality",
+        ],
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Fixly does not claim to collect categories of information beyond what is actually used to operate the platform.",
+      },
+    ],
+  },
+  {
+    id: "how-we-use-information",
+    number: "05",
+    title: "How We Use Information",
+    blocks: [
+      {
+        type: "list",
+        items: [
+          "Creating and maintaining your account",
+          "Providing and facilitating bookings between customers and providers",
+          "Managing appointments and service scheduling",
+          "Sending service-related notifications",
+          "Authentication and OTP-based verification",
+          "Security and fraud prevention",
+          "Improving the platform and user experience",
+          "Providing customer support",
+          "Enabling reviews and ratings",
+          "Platform analytics",
+          "Meeting legal obligations where applicable",
+        ],
+      },
+    ],
+  },
+  {
+    id: "how-we-share-information",
+    number: "06",
+    title: "How We Share Information",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly may share information where necessary to operate the platform and deliver the services you request.",
+      },
+      {
+        type: "subheading",
+        text: "Customers and Providers",
+      },
+      {
+        type: "p",
+        text: "When a customer books a service, certain information may need to be shared with the relevant provider to facilitate the booking, such as service details, scheduling information, and location.",
+      },
+      {
+        type: "subheading",
+        text: "Other Recipients",
+      },
+      {
+        type: "list",
+        items: [
+          "Payment processors, to facilitate transactions",
+          "Hosting and infrastructure providers",
+          "Analytics providers",
+          "Customer support providers",
+          "Legal or regulatory authorities, where required by law",
+        ],
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Fixly does not sell personal information to third parties.",
+      },
+    ],
+  },
+  {
+    id: "third-party-service-providers",
+    number: "07",
+    title: "Service Providers and Third Parties",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly may work with third-party vendors who help operate and improve the platform, such as infrastructure, communications, and analytics providers. These parties are expected to handle information in a manner consistent with the purposes for which it was shared.",
+      },
+    ],
+  },
+  {
+    id: "cookies",
+    number: "08",
+    title: "Cookies and Similar Technologies",
+    blocks: [
+      {
+        type: "list",
+        items: [
+          "Essential cookies, used to support authentication and session functionality",
+          "Preference-related cookies, used to remember certain settings",
+          "Analytics-related technologies, where applicable, used to understand platform usage",
+        ],
+      },
+    ],
+  },
+  {
+    id: "payments",
+    number: "09",
+    title: "Payments and Transaction Information",
+    blocks: [
+      {
+        type: "p",
+        text: "Where Fixly facilitates payments, payment information may be processed by an applicable third-party payment service provider. Fixly does not claim to store complete card numbers or CVV data beyond what is required for the platform's actual payment architecture.",
+      },
+    ],
+  },
+  {
+    id: "location-information",
+    number: "10",
+    title: "Location Information",
+    blocks: [
+      {
+        type: "p",
+        text: "Location information may be used to help you discover relevant services or providers, where the platform supports this functionality. Fixly does not claim to perform continuous background location tracking.",
+      },
+    ],
+  },
+  {
+    id: "communications",
+    number: "11",
+    title: "Communications",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly may send service-related communications, including booking confirmations, booking status updates, OTP messages, and account notifications. Where optional marketing communications exist, they will generally be distinguished from essential service communications.",
+      },
+    ],
+  },
+  {
+    id: "data-security",
+    number: "12",
+    title: "Data Security",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly takes reasonable measures intended to help protect information, which may include authentication controls, access controls, secure transmission where applicable, and role-based access to systems.",
+      },
+      {
+        type: "callout",
+        tone: "warning",
+        text: "No method of transmission or storage is completely secure. Fixly cannot guarantee absolute security of information.",
+      },
+    ],
+  },
+  {
+    id: "data-retention",
+    number: "13",
+    title: "Data Retention",
+    blocks: [
+      {
+        type: "p",
+        text: "Information may be retained for as long as reasonably necessary for account functionality, service delivery, business purposes, security, dispute resolution, and applicable legal obligations.",
+      },
+    ],
+  },
+  {
+    id: "privacy-choices",
+    number: "14",
+    title: "Your Privacy Choices",
+    blocks: [
+      {
+        type: "p",
+        text: "Depending on how you use Fixly, you may have choices regarding your account information, communication preferences, and certain personal information associated with your account.",
+      },
+    ],
+  },
+  {
+    id: "account-deletion",
+    number: "15",
+    title: "Account and Data Deletion",
+    blocks: [
+      {
+        type: "p",
+        text: "If you would like to request account or data deletion, please contact Fixly through the available support channel. Requests will be handled in accordance with applicable requirements.",
+      },
+    ],
+  },
+  {
+    id: "childrens-privacy",
+    number: "16",
+    title: "Children's Privacy",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly is not intended for unauthorized use by children, and the platform does not knowingly seek to collect personal information from children in violation of applicable requirements.",
+      },
+    ],
+  },
+  {
+    id: "third-party-links",
+    number: "17",
+    title: "Third-Party Links",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly may contain links or integrations to third-party services. The privacy practices of those third parties are governed by their own privacy policies, not this one.",
+      },
+    ],
+  },
+  {
+    id: "changes-to-policy",
+    number: "18",
+    title: "Changes to This Privacy Policy",
+    blocks: [
+      {
+        type: "p",
+        text: "Fixly may update this Privacy Policy from time to time. When meaningful changes are made, the Last Updated date above will be revised, and appropriate notice may be provided where required.",
+      },
+    ],
+  },
+  {
+    id: "contact-privacy",
+    number: "19",
+    title: "Contact Us",
+    blocks: [
+      {
+        type: "p",
+        text: "If you have questions, concerns, or requests regarding this Privacy Policy or your personal information, please contact Fixly through the available support channel.",
+      },
+    ],
+  },
+];

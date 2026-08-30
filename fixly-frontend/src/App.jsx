@@ -22,7 +22,7 @@ import AdminCategories from "./pages/AdminCategories";
 import About from "./pages/About";
 import HowItWorks from "./pages/HowItWorks";
 import TermsAndConditions from "./pages/TermsAndConditions";
-
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 function App() {
   return (
     <BrowserRouter>
@@ -38,7 +38,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         {/* PROFILE & SECURITY */}
         <Route
           path="/profile"
