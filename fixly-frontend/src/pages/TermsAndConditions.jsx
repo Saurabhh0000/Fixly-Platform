@@ -6,26 +6,32 @@ import TermsSidebar from "../components/legal/TermsSidebar";
 import TermsSection from "../components/legal/TermsSection";
 import TermsContact from "../components/legal/TermsContact";
 import HomeFooter from "../components/footer/HomeFooter";
-import { TERMS_SECTIONS } from "../data/legalContent";
+import { TERMS_SECTIONS, TERMS_METADATA } from "../data/legalContent";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import "../styles/fixly-terms.css";
 
-// Placeholders — not real dates. Replace when Terms are finalized.
-const EFFECTIVE_DATE = "[Effective Date]";
-const LAST_UPDATED = "[Last Updated]";
-
 const TermsAndConditions = () => {
-  const sectionIds = useMemo(() => TERMS_SECTIONS.map((s) => s.id), []);
+  const sectionIds = useMemo(
+    () => TERMS_SECTIONS.map((section) => section.id),
+    [],
+  );
+
   const { activeId, progress } = useScrollSpy(sectionIds);
 
   return (
     <main className="fixly-terms">
       <ReadingProgress progress={progress} />
-      <TermsHero effectiveDate={EFFECTIVE_DATE} lastUpdated={LAST_UPDATED} />
+
+      <TermsHero
+        effectiveDate={TERMS_METADATA.effectiveDate}
+        lastUpdated={TERMS_METADATA.lastUpdated}
+      />
+
       <TermsSummary />
 
       <div className="fterms-container fterms-layout">
         <TermsSidebar activeId={activeId} />
+
         <div className="fterms-content">
           {TERMS_SECTIONS.map((section) => (
             <TermsSection section={section} key={section.id} />
@@ -34,6 +40,7 @@ const TermsAndConditions = () => {
       </div>
 
       <TermsContact />
+
       <HomeFooter />
     </main>
   );

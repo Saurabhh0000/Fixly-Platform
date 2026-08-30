@@ -13,6 +13,11 @@
  *    for /privacy-policy, /cancellation-policy, /refund-policy yet)
  */
 
+export const TERMS_METADATA = {
+  effectiveDate: "August 30, 2026",
+  lastUpdated: "August 30, 2026",
+};
+
 export const TERMS_SECTIONS = [
   {
     id: "acceptance",
