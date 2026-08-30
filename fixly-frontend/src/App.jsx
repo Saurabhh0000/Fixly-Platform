@@ -21,6 +21,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AdminCategories from "./pages/AdminCategories";
 import About from "./pages/About";
 import HowItWorks from "./pages/HowItWorks";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/about" element={<About />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 
         {/* PROFILE & SECURITY */}
         <Route
