@@ -56,6 +56,24 @@ const FOOTER_NAV_SECTIONS = [
       { key: "safety", label: "Safety" },
     ],
   },
+  {
+    key: "legal",
+    title: "Legal",
+    items: [
+      {
+        key: "terms",
+        label: "Terms & Conditions",
+        to: "/terms-and-conditions",
+      },
+      { key: "privacy", label: "Privacy Policy", to: "/privacy-policy" },
+      {
+        key: "cancellation",
+        label: "Cancellation Policy",
+        to: "/cancellation-policy",
+      },
+      { key: "refund", label: "Refund Policy", to: "/refund-policy" },
+    ],
+  },
 ];
 
 const SOCIAL_LINKS = [
