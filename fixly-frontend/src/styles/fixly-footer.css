@@ -57,8 +57,8 @@
 /* ================= TOP: BRAND + NAV ================= */
 .fixly-footer-top {
   display: grid;
-  grid-template-columns: 1.1fr 1.6fr;
-  gap: 56px;
+  grid-template-columns: minmax(390px, 1.05fr) minmax(0, 2fr);
+  gap: 72px;
   align-items: start;
 }
 
@@ -167,8 +167,9 @@
 /* ---- Nav columns ---- */
 .fixly-footer-nav {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  align-items: start;
 }
 
 .fixly-footer-nav-title {
