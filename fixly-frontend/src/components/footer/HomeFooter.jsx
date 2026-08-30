@@ -35,7 +35,7 @@ const FOOTER_NAV_SECTIONS = [
         label: "Become a Provider",
         to: "/become-provider",
       },
-      { key: "how-it-works", label: "How It Works" },
+      { key: "how-it-works", label: "How It Works", to: "/how-it-works" },
     ],
   },
   {

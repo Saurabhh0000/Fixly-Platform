@@ -20,6 +20,7 @@ import NotificationPage from "./pages/NotificationPage";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminCategories from "./pages/AdminCategories";
 import About from "./pages/About";
+import HowItWorks from "./pages/HowItWorks";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/about" element={<About />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
 
         {/* PROFILE & SECURITY */}
         <Route
