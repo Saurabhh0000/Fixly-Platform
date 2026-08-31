@@ -1,0 +1,162 @@
+/* ============================================================
+   FIXLY CONTACT — scoped .fixly-contact-* prefix.
+   ============================================================ */
+
+.fixly-contact {
+  --fct-green: #22c55e;
+  --fct-green-dark: #16a34a;
+  --fct-dark: #020617;
+  --fct-dark-soft: #0f172a;
+  --fct-light: #f8fafc;
+  --fct-soft-green: rgba(34, 197, 94, 0.12);
+  --fct-text: #0f172a;
+  --fct-muted: #64748b;
+  --fct-white: #ffffff;
+  --fct-border: rgba(15, 23, 42, 0.10);
+  --fct-danger: #dc2626;
+
+  font-family: "Nunito", system-ui, sans-serif;
+  color: var(--fct-text);
+  background: var(--fct-white);
+  overflow-x: hidden;
+  width: 100%;
+}
+.fixly-contact *, .fixly-contact *::before, .fixly-contact *::after { box-sizing: border-box; }
+
+.fixly-contact-container { max-width: 1180px; margin: 0 auto; padding: 0 24px; width: 100%; }
+.fixly-contact-visible { opacity: 1 !important; transform: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fixly-contact * { transition: none !important; animation: none !important; }
+  .fixly-contact [class*="fixly-contact-"] { opacity: 1 !important; transform: none !important; }
+}
+
+/* ================= HERO ================= */
+.fixly-contact-hero { position: relative; background: var(--fct-dark); color: var(--fct-white); padding: 80px 0 56px; overflow: hidden; text-align: center; }
+.fixly-contact-hero-glow {
+  position: absolute; top: -160px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 340px; max-width: 140vw;
+  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.14), transparent 70%);
+  pointer-events: none;
+}
+.fixly-contact-hero-inner {
+  position: relative;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fixly-contact-eyebrow {
+  display: inline-block; font-size: 0.74rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--fct-green); margin-bottom: 14px;
+}
+.fixly-contact-hero-title { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 900; margin: 0 0 14px; letter-spacing: -0.02em; }
+.fixly-contact-hero-sub { font-size: 0.95rem; color: #cbd5e1; max-width: 520px; margin: 0 auto; line-height: 1.65; }
+
+/* ================= MAIN GRID ================= */
+.fixly-contact-main { padding: 56px 0 72px; background: var(--fct-light); }
+.fixly-contact-grid { display: grid; grid-template-columns: 0.85fr 1fr; gap: 40px; align-items: start; }
+
+/* ---- LEFT: INFO ---- */
+.fixly-contact-info-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.01em; }
+.fixly-contact-info-desc { font-size: 0.9rem; color: var(--fct-muted); line-height: 1.65; margin: 0 0 28px; }
+
+.fixly-contact-reason-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 34px; }
+.fixly-contact-reason-card {
+  background: var(--fct-white); border: 1px solid var(--fct-border); border-radius: 14px;
+  padding: 16px; transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.fixly-contact-reason-card:hover { transform: translateY(-3px); border-color: var(--fct-green); }
+.fixly-contact-reason-icon {
+  display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+  border-radius: 10px; background: var(--fct-soft-green); color: var(--fct-green-dark);
+  font-size: 0.9rem; margin-bottom: 10px;
+}
+.fixly-contact-reason-title { margin: 0 0 4px; font-size: 0.86rem; font-weight: 800; }
+.fixly-contact-reason-desc { margin: 0; font-size: 0.74rem; color: var(--fct-muted); line-height: 1.5; }
+
+.fixly-contact-trust { background: var(--fct-white); border: 1px solid var(--fct-border); border-radius: 14px; padding: 20px; }
+.fixly-contact-trust-title { margin: 0 0 14px; font-size: 0.92rem; font-weight: 800; }
+.fixly-contact-trust-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.fixly-contact-trust-item { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; font-weight: 600; }
+.fixly-contact-trust-item svg { color: var(--fct-green-dark); flex-shrink: 0; }
+
+/* ---- RIGHT: FORM CARD ---- */
+.fixly-contact-form-card {
+  background: var(--fct-white); border: 1px solid var(--fct-border); border-radius: 18px;
+  padding: 30px; box-shadow: 0 20px 40px -20px rgba(15, 23, 42, 0.15);
+}
+.fixly-contact-form-title { margin: 0 0 6px; font-size: 1.15rem; font-weight: 800; }
+.fixly-contact-form-sub { margin: 0 0 24px; font-size: 0.84rem; color: var(--fct-muted); }
+
+.fixly-contact-form { display: flex; flex-direction: column; gap: 18px; }
+.fixly-contact-field { display: flex; flex-direction: column; gap: 6px; }
+.fixly-contact-label { font-size: 0.82rem; font-weight: 700; color: var(--fct-text); }
+.fixly-contact-required { color: var(--fct-danger); }
+
+.fixly-contact-input {
+  width: 100%; font-family: inherit; font-size: 0.92rem;
+  border: 1.5px solid var(--fct-border); border-radius: 10px;
+  padding: 12px 14px; min-height: 46px; color: var(--fct-text);
+  background: var(--fct-white); transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.fixly-contact-input:focus {
+  outline: none; border-color: var(--fct-green);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+.fixly-contact-input[aria-invalid="true"] { border-color: var(--fct-danger); }
+.fixly-contact-textarea { min-height: 120px; resize: vertical; }
+.fixly-contact-select { cursor: pointer; }
+
+.fixly-contact-error { margin: 0; font-size: 0.76rem; color: var(--fct-danger); font-weight: 600; }
+
+.fixly-contact-submit-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  border: none; border-radius: 12px; background: var(--fct-green); color: #052e16;
+  font-family: inherit; font-weight: 800; font-size: 0.94rem; padding: 14px 24px;
+  min-height: 48px; cursor: pointer; margin-top: 4px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.fixly-contact-submit-btn:hover:not(:disabled) { background: var(--fct-green-dark); transform: translateY(-2px); }
+.fixly-contact-submit-btn:disabled { opacity: 0.75; cursor: not-allowed; }
+.fixly-contact-submit-btn:focus-visible { outline: 2px solid var(--fct-green-dark); outline-offset: 3px; }
+.fixly-contact-spinner { animation: fixly-contact-spin 0.8s linear infinite; }
+@keyframes fixly-contact-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .fixly-contact-spinner { animation: none; } }
+
+/* ---- SUCCESS STATE ---- */
+.fixly-contact-success { text-align: center; padding: 20px 8px; }
+.fixly-contact-success-icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px;
+  border-radius: 50%; background: var(--fct-soft-green); color: var(--fct-green-dark);
+  font-size: 1.5rem; margin-bottom: 16px;
+}
+.fixly-contact-success-title { margin: 0 0 8px; font-size: 1.1rem; font-weight: 800; }
+.fixly-contact-success-text { margin: 0 0 22px; font-size: 0.86rem; color: var(--fct-muted); line-height: 1.6; }
+.fixly-contact-success-btn {
+  border: 1.5px solid var(--fct-border); background: var(--fct-white); color: var(--fct-text);
+  font-family: inherit; font-weight: 700; font-size: 0.86rem; padding: 10px 20px;
+  border-radius: 10px; cursor: pointer; min-height: 44px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.fixly-contact-success-btn:hover { border-color: var(--fct-green); color: var(--fct-green-dark); }
+.fixly-contact-success-btn:focus-visible { outline: 2px solid var(--fct-green); outline-offset: 2px; }
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 1024px) {
+  .fixly-contact-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+
+@media (max-width: 768px) {
+  .fixly-contact-hero { padding: 60px 0 44px; }
+  .fixly-contact-main { padding: 40px 0 56px; }
+  .fixly-contact-container { padding: 0 16px; }
+  .fixly-contact-reason-grid { grid-template-columns: 1fr; }
+  .fixly-contact-form-card { padding: 22px; border-radius: 16px; }
+  .fixly-contact-submit-btn { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .fixly-contact-hero-title { font-size: 1.6rem; }
+  .fixly-contact-form-card { padding: 18px; }
+}
