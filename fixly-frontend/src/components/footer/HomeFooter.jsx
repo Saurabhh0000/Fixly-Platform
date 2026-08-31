@@ -43,7 +43,7 @@ const FOOTER_NAV_SECTIONS = [
     title: "Company",
     items: [
       { key: "about", label: "About Fixly", to: "/about" },
-      { key: "contact", label: "Contact" },
+      { key: "contact", label: "Contact", to: "/contact" },
       { key: "careers", label: "Careers" },
     ],
   },
