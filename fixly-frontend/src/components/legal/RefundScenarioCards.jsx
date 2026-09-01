@@ -2,7 +2,7 @@ import {
   FaBan,
   FaUserTie,
   FaExclamationCircle,
-  FaCutlery,
+  FaTools,
   FaCopy,
 } from "react-icons/fa";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
@@ -25,7 +25,7 @@ const SCENARIOS = [
   },
   {
     title: "Service Partially Completed",
-    icon: <FaCutlery />,
+    icon: <FaTools />,
     text: "Partial completion of a service may require individual review before a decision is reached.",
   },
   {
