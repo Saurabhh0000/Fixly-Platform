@@ -23,6 +23,8 @@ import About from "./pages/About";
 import HowItWorks from "./pages/HowItWorks";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CancellationPolicy from "./pages/CancellationPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
 import Contact from "./pages/Contact";
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/cancellation-policy" element={<CancellationPolicy />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="/contact" element={<Contact />} />
         {/* PROFILE & SECURITY */}
         <Route

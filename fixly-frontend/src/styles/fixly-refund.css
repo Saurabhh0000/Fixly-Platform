@@ -1,0 +1,277 @@
+/* ============================================================
+   FIXLY REFUND POLICY — scoped .frefund-* / .fixly-refund.
+   Reuses TermsSection (fterms-* output), re-skinned scoped under
+   .fixly-refund so other legal pages are unaffected.
+   ============================================================ */
+
+.fixly-refund {
+  --fr-green: #22c55e;
+  --fr-green-dark: #16a34a;
+  --fr-dark: #020617;
+  --fr-dark-soft: #0f172a;
+  --fr-light: #f8fafc;
+  --fr-soft-green: #f0fdf4;
+  --fr-text: #0f172a;
+  --fr-muted: #64748b;
+  --fr-white: #ffffff;
+  --fr-border: rgba(15, 23, 42, 0.08);
+
+  font-family: "Nunito", system-ui, sans-serif;
+  color: var(--fr-text);
+  background: var(--fr-white);
+  overflow-x: hidden;
+  width: 100%;
+}
+.fixly-refund *, .fixly-refund *::before, .fixly-refund *::after { box-sizing: border-box; }
+.frefund-container { max-width: 1240px; margin: 0 auto; padding: 0 24px; width: 100%; }
+.frefund-heading { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 900; margin: 0 0 32px; letter-spacing: -0.02em; }
+.frefund-heading-center { text-align: center; }
+.frefund-visible { opacity: 1 !important; transform: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fixly-refund * { transition: none !important; animation: none !important; }
+  .fixly-refund [class*="frefund-"] { opacity: 1 !important; transform: none !important; }
+}
+
+/* ================= BUTTONS ================= */
+.frefund-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 26px; border-radius: 12px; font-size: 0.92rem; font-weight: 800;
+  font-family: inherit; cursor: pointer; border: 2px solid transparent; min-height: 46px;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.frefund-btn-primary { background: var(--fr-green); color: #052e16; }
+.frefund-btn-primary:hover { background: var(--fr-green-dark); transform: translateY(-2px); }
+.frefund-btn-secondary { background: transparent; color: var(--fr-white); border-color: rgba(255,255,255,0.3); }
+.frefund-btn-secondary:hover { border-color: var(--fr-green); color: var(--fr-green); transform: translateY(-2px); }
+.frefund-btn:focus-visible { outline: 2px solid var(--fr-green); outline-offset: 3px; }
+
+/* ================= HERO ================= */
+.frefund-hero { position: relative; background: var(--fr-dark); color: var(--fr-white); padding: 88px 0 64px; overflow: hidden; }
+.frefund-hero-glow {
+  position: absolute; top: -180px; left: 50%; transform: translateX(-50%);
+  width: 760px; height: 400px; max-width: 140vw;
+  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.14), transparent 70%);
+  pointer-events: none;
+}
+.frefund-hero-inner { position: relative; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; }
+.frefund-hero-icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px;
+  border-radius: 14px; background: rgba(34, 197, 94, 0.14); color: var(--fr-green); font-size: 1.15rem; margin-bottom: 16px;
+}
+.frefund-hero-title { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 900; margin: 0 0 12px; letter-spacing: -0.02em; }
+.frefund-hero-sub { font-size: 1rem; font-weight: 700; margin: 0 0 8px; }
+.frefund-hero-desc { font-size: 0.9rem; color: #cbd5e1; max-width: 460px; line-height: 1.6; margin: 0 0 26px; }
+.frefund-hero-dates { display: flex; gap: 30px; }
+.frefund-hero-dates > div { display: flex; flex-direction: column; gap: 4px; }
+.frefund-hero-date-label { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; }
+.frefund-hero-date-value { font-size: 0.86rem; font-weight: 700; }
+
+.frefund-hero-visual { display: flex; flex-direction: column; gap: 12px; }
+.frefund-hero-flow-node {
+  display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px;
+  font-size: 0.85rem; font-weight: 700; animation: frefund-float 4.5s ease-in-out infinite; animation-delay: var(--frefund-delay, 0ms);
+}
+.frefund-hero-flow-node:nth-child(even) { margin-left: 26px; }
+.frefund-hero-flow-node span { color: var(--fr-green); display: inline-flex; }
+@keyframes frefund-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { .frefund-hero-flow-node { animation: none; } }
+
+/* ================= SUMMARY ================= */
+.frefund-summary { padding: 48px 0; background: var(--fr-light); }
+.frefund-summary-title { font-size: 1.3rem; font-weight: 800; text-align: center; margin: 0 0 28px; }
+.frefund-summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.frefund-summary-card { background: var(--fr-white); border: 1px solid var(--fr-border); border-radius: 14px; padding: 22px 18px; transition: transform 0.2s ease, border-color 0.2s ease; }
+.frefund-summary-card:hover { transform: translateY(-3px); border-color: var(--fr-green); }
+.frefund-summary-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 11px; background: var(--fr-soft-green); color: var(--fr-green-dark); font-size: 1rem; margin-bottom: 14px; }
+.frefund-summary-card-title { margin: 0 0 6px; font-size: 0.92rem; font-weight: 800; }
+.frefund-summary-card-desc { margin: 0; font-size: 0.8rem; color: var(--fr-muted); line-height: 1.55; }
+
+/* ================= LIFECYCLE TIMELINE ================= */
+.frefund-lifecycle-section { padding: 60px 0; }
+.frefund-lifecycle { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.frefund-lifecycle-node {
+  background: var(--fr-white); border: 1px solid var(--fr-border); border-radius: 14px; padding: 18px 14px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.5s ease var(--frefund-delay, 0ms), transform 0.5s ease var(--frefund-delay, 0ms), border-color 0.2s ease;
+}
+.frefund-lifecycle-node:hover { border-color: var(--fr-green); }
+.frefund-lifecycle-num { display: block; font-size: 0.7rem; font-weight: 800; color: var(--fr-green-dark); margin-bottom: 8px; }
+.frefund-lifecycle-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--fr-soft-green); color: var(--fr-green-dark); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; margin-bottom: 10px; }
+.frefund-lifecycle-label { display: block; font-size: 0.82rem; font-weight: 700; }
+
+/* ================= LAYOUT ================= */
+.frefund-layout { display: grid; grid-template-columns: 240px minmax(0, 800px); gap: 48px; padding: 36px 24px 70px; justify-content: center; }
+.frefund-sidebar { position: sticky; top: 90px; align-self: start; max-height: calc(100vh - 120px); overflow-y: auto; }
+.frefund-sidebar-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fr-muted); margin: 0 0 14px; }
+.frefund-sidebar-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.frefund-sidebar-link {
+  position: relative; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  background: none; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600;
+  color: var(--fr-muted); padding: 8px 10px 8px 14px; border-radius: 8px; cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.frefund-sidebar-indicator { position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px; background: transparent; border-radius: 2px; transition: background 0.2s ease; }
+.frefund-sidebar-link:hover { color: var(--fr-text); background: var(--fr-light); }
+.frefund-sidebar-link-active { color: var(--fr-green-dark); font-weight: 800; background: var(--fr-soft-green); }
+.frefund-sidebar-link-active .frefund-sidebar-indicator { background: var(--fr-green); }
+.frefund-sidebar-link:focus-visible { outline: 2px solid var(--fr-green); outline-offset: 2px; }
+
+.frefund-mobile-toc { display: none; margin-bottom: 26px; }
+.frefund-mobile-toc-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; background: var(--fr-light); border: 1px solid var(--fr-border); border-radius: 12px; padding: 14px 16px; font-family: inherit; font-size: 0.86rem; font-weight: 800; cursor: pointer; }
+.frefund-mobile-toc-chevron { transition: transform 0.2s ease; }
+.frefund-mobile-toc-chevron-open { transform: rotate(180deg); }
+.frefund-mobile-toc-list { list-style: none; margin: 8px 0 0; padding: 8px; background: var(--fr-white); border: 1px solid var(--fr-border); border-radius: 12px; max-height: 320px; overflow-y: auto; }
+.frefund-mobile-toc-link { width: 100%; text-align: left; background: none; border: none; font-family: inherit; font-size: 0.82rem; font-weight: 600; color: var(--fr-text); padding: 10px 8px; cursor: pointer; border-radius: 8px; }
+.frefund-mobile-toc-link:hover { background: var(--fr-light); }
+.frefund-mobile-toc-link:focus-visible { outline: 2px solid var(--fr-green); outline-offset: 2px; }
+
+/* ================= Re-skinned TermsSection output ================= */
+.fixly-refund .fterms-legal-section { padding: 30px 0; border-bottom: 1px solid var(--fr-border); scroll-margin-top: 100px; }
+.fixly-refund .fterms-legal-section:last-child { border-bottom: none; }
+.fixly-refund .fterms-legal-number { display: inline-block; font-size: 0.76rem; font-weight: 800; color: var(--fr-green-dark); margin-bottom: 6px; }
+.fixly-refund .fterms-legal-title { font-size: 1.3rem; font-weight: 800; margin: 0 0 14px; letter-spacing: -0.01em; }
+.fixly-refund .fterms-legal-body { display: flex; flex-direction: column; gap: 16px; }
+.fixly-refund .fterms-p { margin: 0; font-size: 0.9rem; line-height: 1.75; }
+.fixly-refund .fterms-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.fixly-refund .fterms-list li { font-size: 0.88rem; line-height: 1.6; }
+.fixly-refund .fterms-callout { display: flex; gap: 12px; border-left: 3px solid var(--fr-green); background: var(--fr-soft-green); border-radius: 0 12px 12px 0; padding: 14px 16px; }
+.fixly-refund .fterms-callout p { margin: 0; font-size: 0.84rem; line-height: 1.6; }
+.fixly-refund .fterms-callout-icon { color: var(--fr-green-dark); font-size: 1rem; margin-top: 2px; flex-shrink: 0; }
+
+/* ================= ELIGIBILITY TREE ================= */
+.frefund-tree {
+  background: var(--fr-light); border: 1px solid var(--fr-border); border-radius: 16px; padding: 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+  opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.frefund-tree-node { font-weight: 800; font-size: 0.9rem; background: var(--fr-white); border: 1px solid var(--fr-border); border-radius: 10px; padding: 10px 16px; }
+.frefund-tree-root { background: var(--fr-dark); color: var(--fr-white); border: none; }
+.frefund-tree-result { background: var(--fr-soft-green); border-color: var(--fr-green); color: var(--fr-green-dark); }
+.frefund-tree-arrow { color: var(--fr-green-dark); }
+.frefund-tree-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.frefund-tree-branch { background: var(--fr-white); border: 1px solid var(--fr-green); border-radius: 10px; padding: 12px; }
+.frefund-tree-branch-muted { border-color: var(--fr-border); opacity: 0.6; }
+.frefund-tree-branch-tag { display: block; font-size: 0.66rem; font-weight: 800; text-transform: uppercase; color: var(--fr-muted); margin-bottom: 6px; }
+.frefund-tree-branch p { margin: 0; font-size: 0.78rem; }
+
+/* ================= SCENARIO CARDS ================= */
+.frefund-scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.frefund-scenario-card {
+  background: var(--fr-white); border: 1px solid var(--fr-border); border-radius: 14px; padding: 18px;
+  opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease var(--frefund-delay,0ms), transform 0.5s ease var(--frefund-delay,0ms), border-color 0.2s ease;
+}
+.frefund-scenario-card:hover { border-color: var(--fr-green); }
+.frefund-scenario-icon { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; background: var(--fr-soft-green); color: var(--fr-green-dark); font-size: 0.9rem; margin-bottom: 10px; }
+.frefund-scenario-card h4 { margin: 0 0 6px; font-size: 0.88rem; font-weight: 800; }
+.frefund-scenario-card p { margin: 0; font-size: 0.78rem; color: var(--fr-muted); line-height: 1.5; }
+
+/* ================= CANCELLATION VS REFUND ================= */
+.frefund-compare {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center;
+  opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.frefund-compare-col { background: var(--fr-light); border: 1px solid var(--fr-border); border-radius: 14px; padding: 20px; }
+.frefund-compare-col-accent { background: var(--fr-soft-green); border-color: var(--fr-green); }
+.frefund-compare-title { margin: 0 0 12px; font-size: 1rem; font-weight: 800; }
+.frefund-compare-col ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.frefund-compare-col li { font-size: 0.82rem; color: var(--fr-muted); line-height: 1.5; }
+.frefund-compare-vs { font-weight: 900; font-size: 0.9rem; color: var(--fr-green-dark); background: var(--fr-white); border: 1px solid var(--fr-border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+
+/* ================= SERVICE COMPLETION ================= */
+.frefund-completion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.frefund-completion-card {
+  background: var(--fr-light); border: 1px solid var(--fr-border); border-radius: 14px; padding: 18px;
+  opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease var(--frefund-delay,0ms), transform 0.5s ease var(--frefund-delay,0ms);
+}
+.frefund-completion-card h4 { margin: 0 0 12px; font-size: 0.88rem; font-weight: 800; }
+.frefund-completion-steps { margin: 0 0 10px; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+.frefund-completion-steps li { font-size: 0.76rem; color: var(--fr-muted); }
+.frefund-completion-note { margin: 0; font-size: 0.72rem; font-style: italic; color: var(--fr-green-dark); font-weight: 700; }
+
+/* ================= PROVIDER SITUATIONS ================= */
+.frefund-provider-list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.frefund-provider-list li { background: var(--fr-light); border: 1px solid var(--fr-border); border-radius: 10px; padding: 12px 14px; font-size: 0.84rem; font-weight: 600; }
+
+/* ================= RULES FORMULA ================= */
+.frefund-formula {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px;
+  background: var(--fr-light); border: 1px solid var(--fr-border); border-radius: 14px; padding: 22px;
+  opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.frefund-formula-item { font-size: 0.82rem; font-weight: 700; background: var(--fr-white); border: 1px solid var(--fr-border); border-radius: 8px; padding: 8px 12px; }
+.frefund-formula-plus { margin-left: 10px; color: var(--fr-muted); }
+.frefund-formula-equals { font-weight: 900; color: var(--fr-green-dark); font-size: 1.1rem; }
+.frefund-formula-result { font-weight: 800; background: var(--fr-soft-green); border: 1px solid var(--fr-green); border-radius: 8px; padding: 8px 14px; color: var(--fr-green-dark); }
+.frefund-formula-placeholders { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+.frefund-formula-placeholders span { font-size: 0.7rem; font-style: italic; color: var(--fr-muted); background: var(--fr-white); border: 1px dashed var(--fr-border); border-radius: 6px; padding: 4px 10px; }
+
+/* ================= PROCESSING TIMELINE ================= */
+.frefund-processing {
+  list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px;
+  opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.frefund-processing-step {
+  flex: 1; min-width: 130px; background: var(--fr-light); border: 1px solid var(--fr-border); border-radius: 12px;
+  padding: 14px 12px; text-align: center; opacity: 0; transform: translateY(10px);
+  animation: frefund-proc-in 0.5s ease forwards; animation-delay: var(--frefund-delay, 0ms);
+}
+@keyframes frefund-proc-in { to { opacity: 1; transform: none; } }
+.frefund-processing-icon { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; background: var(--fr-soft-green); color: var(--fr-green-dark); margin: 0 auto 8px; font-size: 0.85rem; }
+.frefund-processing-step span:last-child { display: block; font-size: 0.72rem; font-weight: 700; }
+
+/* ================= DISPUTE CHECKLIST ================= */
+.frefund-checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.frefund-checklist li { display: flex; align-items: center; gap: 10px; font-size: 0.86rem; }
+.frefund-checklist svg { color: var(--fr-green-dark); flex-shrink: 0; }
+
+/* ================= CONTACT ================= */
+.frefund-contact { background: var(--fr-light); padding: 56px 0; text-align: center; }
+.frefund-contact-title { font-size: 1.4rem; font-weight: 900; margin: 0 0 12px; }
+.frefund-contact-text { color: var(--fr-muted); max-width: 480px; margin: 0 auto 22px; font-size: 0.88rem; }
+.frefund-contact-btn { border: none; background: var(--fr-green); color: #052e16; font-family: inherit; font-weight: 800; font-size: 0.9rem; padding: 13px 26px; border-radius: 12px; cursor: pointer; min-height: 46px; transition: transform 0.2s ease, background-color 0.2s ease; }
+.frefund-contact-btn:hover { background: var(--fr-green-dark); transform: translateY(-2px); }
+.frefund-contact-btn:focus-visible { outline: 2px solid var(--fr-green); outline-offset: 3px; }
+
+/* ================= CTA ================= */
+.frefund-cta { background: linear-gradient(135deg, var(--fr-dark) 0%, var(--fr-dark-soft) 100%); color: var(--fr-white); padding: 64px 0; text-align: center; }
+.frefund-cta-inner { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.frefund-cta-heading { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 900; margin: 0 0 12px; letter-spacing: -0.02em; }
+.frefund-cta-sub { color: #cbd5e1; max-width: 480px; margin: 0 auto 26px; font-size: 0.9rem; }
+.frefund-cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 1100px) {
+  .frefund-hero-inner { grid-template-columns: 1fr; }
+  .frefund-hero-visual { max-width: 360px; }
+  .frefund-summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .frefund-lifecycle { grid-template-columns: repeat(2, 1fr); }
+  .frefund-layout { grid-template-columns: 220px minmax(0, 1fr); gap: 32px; }
+  .frefund-scenario-grid, .frefund-completion-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .frefund-layout { grid-template-columns: 1fr; padding: 30px 18px 56px; }
+  .frefund-sidebar { display: none; }
+  .frefund-mobile-toc { display: block; }
+}
+
+@media (max-width: 768px) {
+  .frefund-hero { padding: 64px 0 48px; }
+  .frefund-hero-dates { flex-direction: column; gap: 12px; }
+  .frefund-lifecycle { grid-template-columns: 1fr; }
+  .frefund-summary-grid { grid-template-columns: 1fr; }
+  .frefund-compare { grid-template-columns: 1fr; }
+  .frefund-compare-vs { margin: 0 auto; }
+  .frefund-tree-split, .frefund-scenario-grid, .frefund-completion-grid, .frefund-provider-list { grid-template-columns: 1fr; }
+  .frefund-cta-row .frefund-btn { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .frefund-container { padding: 0 16px; }
+  .frefund-hero-title { font-size: 1.7rem; }
+  .fixly-refund .fterms-legal-title { font-size: 1.1rem; }
+}

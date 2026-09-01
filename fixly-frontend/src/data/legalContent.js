@@ -12,6 +12,10 @@
  *    non-clickable text per current routing decision (no live routes
  *    for /privacy-policy, /cancellation-policy, /refund-policy yet)
  */
+import CancellationDecisionFlow from "../components/legal/CancellationDecisionFlow";
+import ReschedulingVisual from "../components/legal/ReschedulingVisual";
+import NoShowComparison from "../components/legal/NoShowComparison";
+import RefundTimeline from "../components/legal/RefundTimeline";
 
 export const TERMS_METADATA = {
   effectiveDate: "August 30, 2026",
@@ -728,6 +732,484 @@ export const PRIVACY_SECTIONS = [
       {
         type: "p",
         text: "If you have questions, concerns, or requests regarding this Privacy Policy or your personal information, please contact Fixly through the available support channel.",
+      },
+    ],
+  },
+];
+
+
+// ================= REFUND POLICY =================
+import RefundEligibilityTree from "../components/legal/RefundEligibilityTree";
+import RefundScenarioCards from "../components/legal/RefundScenarioCards";
+import CancellationRefundComparison from "../components/legal/CancellationRefundComparison";
+import ServiceCompletionRefund from "../components/legal/ServiceCompletionRefund";
+import ProviderRefundSituations from "../components/legal/ProviderRefundSituations";
+import RefundRulesFormula from "../components/legal/RefundRulesFormula";
+import RefundProcessingTimeline from "../components/legal/RefundProcessingTimeline";
+import RefundDisputeChecklist from "../components/legal/RefundDisputeChecklist";
+
+export const REFUND_POLICY_CONFIG = {
+  effectiveDate: "[Effective Date]",
+  lastUpdated: "[Last Updated]",
+  processingTime: "[Refund Processing Time]",
+  eligibilityRule: "[Refund Eligibility Rule]",
+};
+
+export const REFUND_SUMMARY_CARDS = [
+  {
+    key: "eligibility",
+    title: "Eligibility",
+    desc: "Refund eligibility depends on the circumstances of the booking and applicable Fixly policy.",
+  },
+  {
+    key: "cancellation",
+    title: "Cancellation",
+    desc: "Cancellation and refund eligibility are related but are not necessarily the same thing.",
+  },
+  {
+    key: "processing",
+    title: "Processing",
+    desc: "Once a refund is approved or initiated, processing may depend on the applicable payment process.",
+  },
+  {
+    key: "support",
+    title: "Support",
+    desc: "If you believe you are entitled to a refund, contact Fixly support with your booking details.",
+  },
+];
+
+export const REFUND_SECTIONS = [
+  {
+    id: "overview",
+    number: "01",
+    title: "Overview",
+    blocks: [
+      {
+        type: "p",
+        text: "This Refund Policy explains how Fixly generally approaches refund eligibility, service cancellations, payment processing, and refund-related requests.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "This Refund Policy is a product/legal-content template and should be reviewed by qualified legal counsel before being used as a binding policy.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Cancellation, refund eligibility, and refund processing are related but distinct concepts — a cancellation does not automatically determine a refund amount, and eligibility does not automatically mean funds are processed instantly.",
+      },
+    ],
+  },
+  {
+    id: "eligibility",
+    number: "02",
+    title: "Refund Eligibility",
+    blocks: [
+      {
+        type: "p",
+        text: "Whether a refund applies generally depends on booking status, service status, and applicable Fixly policy.",
+      },
+      {
+        type: "custom",
+        render: () => <RefundEligibilityTree key="eligibility-tree" />,
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Applicable Eligibility Rule: [Refund Eligibility Rule]",
+      },
+    ],
+  },
+  {
+    id: "customer-refunds",
+    number: "03",
+    title: "Customer Refund Scenarios",
+    blocks: [
+      {
+        type: "p",
+        text: "Common situations that may prompt a refund question include the following. None of these automatically guarantee a full refund.",
+      },
+      {
+        type: "custom",
+        render: () => <RefundScenarioCards key="scenario-cards" />,
+      },
+    ],
+  },
+  {
+    id: "cancellation-vs-refund",
+    number: "04",
+    title: "Cancellation vs Refund",
+    blocks: [
+      {
+        type: "p",
+        text: "It helps to understand that cancellation and refund are two separate concepts within the booking lifecycle.",
+      },
+      {
+        type: "custom",
+        render: () => <CancellationRefundComparison key="cxl-vs-refund" />,
+      },
+    ],
+  },
+  {
+    id: "service-not-completed",
+    number: "05",
+    title: "Service Not Completed",
+    blocks: [
+      {
+        type: "p",
+        text: "When a service is not completed as scheduled, the applicable outcome depends on the specific situation.",
+      },
+      {
+        type: "custom",
+        render: () => <ServiceCompletionRefund key="service-completion" />,
+      },
+    ],
+  },
+  {
+    id: "provider-situations",
+    number: "06",
+    title: "Provider-Related Situations",
+    blocks: [
+      {
+        type: "p",
+        text: "Certain refund questions relate specifically to the service provider's side of a booking.",
+      },
+      {
+        type: "custom",
+        render: () => <ProviderRefundSituations key="provider-situations" />,
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Fixly may review booking and service information before determining the applicable outcome. Provider-side penalties, if any, are not defined by this page.",
+      },
+    ],
+  },
+  {
+    id: "refund-rules",
+    number: "07",
+    title: "How the Applicable Refund Is Determined",
+    blocks: [
+      {
+        type: "p",
+        text: "Several factors together may determine the applicable refund outcome for a given booking.",
+      },
+      {
+        type: "custom",
+        render: () => <RefundRulesFormula key="refund-rules-formula" />,
+      },
+    ],
+  },
+  {
+    id: "processing",
+    number: "08",
+    title: "Refund Processing",
+    blocks: [
+      {
+        type: "p",
+        text: "Once a refund is approved, it generally moves through the following stages before reaching the customer.",
+      },
+      {
+        type: "custom",
+        render: () => <RefundProcessingTimeline key="processing-timeline" />,
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Refund Processing Time: [Refund Processing Time]. The time after initiation may also depend on the payment method and payment provider.",
+      },
+    ],
+  },
+  {
+    id: "payment-method",
+    number: "09",
+    title: "Where Will My Refund Go?",
+    blocks: [
+      {
+        type: "list",
+        items: [
+          "Refunds are normally associated with the original payment method, where supported.",
+          "Payment processing may depend on the payment provider used for the original transaction.",
+          "Customers should retain transaction and payment information related to their booking.",
+          "Any discrepancies should be reported to Fixly support.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "exclusions",
+    number: "10",
+    title: "When a Refund May Not Apply",
+    blocks: [
+      {
+        type: "p",
+        text: "Refund eligibility may be limited where applicable policy does not provide for a refund. Conceptual categories that may be relevant include a service already being completed, a request falling outside applicable policy, a customer-related issue, an unsupported payment condition, or insufficient evidence for a disputed claim.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Applicable Exclusion Rule: [Applicable Exclusion Rule]",
+      },
+    ],
+  },
+  {
+    id: "exceptions",
+    number: "11",
+    title: "Exceptional Circumstances",
+    blocks: [
+      {
+        type: "p",
+        text: "Unusual situations — such as emergencies, safety concerns, provider inability to complete a service, or platform/payment issues — may require individual review.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Fixly may review exceptional circumstances based on the information available. Review does not automatically guarantee a specific outcome.",
+      },
+    ],
+  },
+  {
+    id: "disputes",
+    number: "12",
+    title: "Questions About a Refund Decision?",
+    blocks: [
+      {
+        type: "p",
+        text: "If you have a question about how a refund decision was reached, the following information helps Fixly review your case:",
+      },
+      {
+        type: "custom",
+        render: () => <RefundDisputeChecklist key="dispute-checklist" />,
+      },
+    ],
+  },
+  {
+    id: "support",
+    number: "13",
+    title: "Support",
+    blocks: [
+      {
+        type: "p",
+        text: "If you have a question about refund eligibility or believe a refund has not been handled correctly, contact Fixly support with your booking details.",
+      },
+    ],
+  },
+];
+
+// ================= CANCELLATION POLICY =================
+
+export const CANCELLATION_METADATA = {
+  effectiveDate: "[Effective Date]",
+  lastUpdated: "[Last Updated]",
+};
+
+export const CANCELLATION_SUMMARY_CARDS = [
+  {
+    key: "before",
+    title: "Before Service",
+    desc: "Cancellation rules depend on when a booking is cancelled relative to the scheduled service.",
+  },
+  {
+    key: "acceptance",
+    title: "After Provider Acceptance",
+    desc: "Once a provider accepts a booking, cancellation may be handled differently than for a pending request.",
+  },
+  {
+    key: "reschedule",
+    title: "Rescheduling",
+    desc: "Bookings may be changed to a new date or time where the platform and provider allow it.",
+  },
+  {
+    key: "exceptional",
+    title: "Exceptional Situations",
+    desc: "Genuine exceptional circumstances may be reviewed by Fixly on a case-by-case basis.",
+  },
+];
+
+export const CANCELLATION_SECTIONS = [
+  {
+    id: "overview",
+    number: "01",
+    title: "Overview",
+    blocks: [
+      {
+        type: "p",
+        text: "This Cancellation Policy explains how cancellations, rescheduling, missed appointments, and related charges are generally handled on Fixly for both customers and service providers.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "This Cancellation Policy is a product/legal-content template and should be reviewed by qualified legal counsel before being used as a binding policy.",
+      },
+    ],
+  },
+  {
+    id: "customer-cancellations",
+    number: "02",
+    title: "Customer Cancellations",
+    blocks: [
+      {
+        type: "p",
+        text: "Customers are encouraged to cancel a booking as early as possible if a service is no longer needed, since late cancellations may affect provider availability.",
+      },
+      {
+        type: "list",
+        items: [
+          "Cancellation handling depends on the current booking status.",
+          "A booking that has already been accepted by a provider may be treated differently than a pending request.",
+          "A completed service cannot be cancelled.",
+          "Cancellation information shown during the booking flow should be reviewed before confirming a cancellation.",
+        ],
+      },
+      {
+        type: "custom",
+        render: () => <CancellationDecisionFlow key="customer-decision-flow" />,
+      },
+    ],
+  },
+  {
+    id: "provider-cancellations",
+    number: "03",
+    title: "Provider Cancellations",
+    blocks: [
+      {
+        type: "p",
+        text: "Providers are expected to honor bookings they have accepted, and to cancel as early as possible when genuinely unable to provide the service.",
+      },
+      {
+        type: "list",
+        items: [
+          "Repeated cancellations by a provider may affect their reliability standing on the platform.",
+          "Customers should be informed promptly when a provider needs to cancel.",
+          "Genuine emergencies may require individual review rather than a fixed automatic rule.",
+        ],
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Applicable consequences: [Provider Cancellation Rules]",
+      },
+    ],
+  },
+  {
+    id: "rescheduling",
+    number: "04",
+    title: "Rescheduling a Booking",
+    blocks: [
+      {
+        type: "p",
+        text: "Rescheduling allows a booking's date or time to be changed rather than cancelled outright, where availability and provider confirmation allow it.",
+      },
+      {
+        type: "list",
+        items: [
+          "Rescheduling may depend on the provider's availability for the new date or time.",
+          "Provider confirmation may be required before a rescheduled booking is finalized.",
+          "Changing a date or time does not automatically mean the original booking was cancelled.",
+          "Users should confirm the updated booking status after requesting a change.",
+        ],
+      },
+      {
+        type: "custom",
+        render: () => <ReschedulingVisual key="rescheduling-visual" />,
+      },
+    ],
+  },
+  {
+    id: "no-shows",
+    number: "05",
+    title: "No-Show & Missed Appointments",
+    blocks: [
+      {
+        type: "p",
+        text: "A no-show occurs when a scheduled appointment is missed by either the customer or the provider.",
+      },
+      {
+        type: "custom",
+        render: () => <NoShowComparison key="no-show-comparison" />,
+      },
+    ],
+  },
+  {
+    id: "cancellation-charges",
+    number: "06",
+    title: "Cancellation Charges",
+    blocks: [
+      {
+        type: "p",
+        text: "Any applicable cancellation charge should be communicated to the user through the booking flow before confirmation, wherever such a charge applies.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Applicable Cancellation Charge: [Cancellation Fee / Rule]",
+      },
+    ],
+  },
+  {
+    id: "refunds",
+    number: "07",
+    title: "Refunds After Cancellation",
+    blocks: [
+      {
+        type: "p",
+        text: "Cancellation, refund eligibility, and refund processing are related but distinct steps. A cancellation being confirmed does not automatically determine refund eligibility, and refund eligibility does not automatically mean funds are processed instantly.",
+      },
+      {
+        type: "custom",
+        render: () => <RefundTimeline key="refund-timeline" />,
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Refund Processing Time: [Refund Processing Time]",
+      },
+    ],
+  },
+  {
+    id: "exceptions",
+    number: "08",
+    title: "Exceptional Circumstances",
+    blocks: [
+      {
+        type: "p",
+        text: "Exceptional situations — such as emergencies, safety concerns, a provider's inability to complete a service, or platform issues — may require individual review.",
+      },
+      {
+        type: "callout",
+        tone: "note",
+        text: "Requests may be reviewed by Fixly based on the circumstances and applicable policy. Review does not automatically guarantee a specific outcome.",
+      },
+    ],
+  },
+  {
+    id: "disputes",
+    number: "09",
+    title: "Cancellation Disputes",
+    blocks: [
+      {
+        type: "p",
+        text: "If you disagree with how a cancellation was handled, contact Fixly support with your booking information and an explanation of the situation.",
+      },
+      {
+        type: "list",
+        items: [
+          "Provide your booking details when contacting support.",
+          "Explain the reason for the dispute clearly.",
+          "Fixly may review available booking information as part of the process.",
+          "Outcomes are determined based on applicable platform policy.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "support",
+    number: "10",
+    title: "Support",
+    blocks: [
+      {
+        type: "p",
+        text: "If you have questions about a specific cancellation, contact Fixly through the available support channel with your booking details.",
       },
     ],
   },

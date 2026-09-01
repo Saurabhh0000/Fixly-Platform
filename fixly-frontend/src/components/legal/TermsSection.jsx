@@ -23,6 +23,11 @@ const Block = ({ block }) => {
           <span className="fterms-placeholder-note">{block.note}</span>
         </p>
       );
+    case "custom":
+      // Backward-compatible extension: renders an arbitrary component
+      // supplied inline in the section data. Unused by existing Terms/
+      // Privacy content, so those pages are unaffected.
+      return block.render ? block.render() : null;
     default:
       return null;
   }
