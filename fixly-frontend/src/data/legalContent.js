@@ -811,7 +811,7 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <RefundEligibilityTree key="eligibility-tree" />,
+        component: RefundEligibilityTree,
       },
       {
         type: "callout",
@@ -831,7 +831,8 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <RefundScenarioCards key="scenario-cards" />,
+        
+        component: RefundScenarioCards,
       },
     ],
   },
@@ -846,7 +847,8 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <CancellationRefundComparison key="cxl-vs-refund" />,
+        
+        component: CancellationRefundComparison,
       },
     ],
   },
@@ -861,7 +863,8 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <ServiceCompletionRefund key="service-completion" />,
+        
+        component: ServiceCompletionRefund,
       },
     ],
   },
@@ -876,7 +879,8 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <ProviderRefundSituations key="provider-situations" />,
+        
+        component: ProviderRefundSituations,
       },
       {
         type: "callout",
@@ -896,7 +900,8 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <RefundRulesFormula key="refund-rules-formula" />,
+        
+        component: RefundRulesFormula,
       },
     ],
   },
@@ -911,7 +916,8 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <RefundProcessingTimeline key="processing-timeline" />,
+        
+        component: RefundProcessingTimeline,
       },
       {
         type: "callout",
@@ -979,7 +985,8 @@ export const REFUND_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <RefundDisputeChecklist key="dispute-checklist" />,
+        
+        component: RefundDisputeChecklist,
       },
     ],
   },
@@ -1063,7 +1070,8 @@ export const CANCELLATION_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <CancellationDecisionFlow key="customer-decision-flow" />,
+        
+        component: CancellationDecisionFlow,
       },
     ],
   },
@@ -1111,7 +1119,8 @@ export const CANCELLATION_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <ReschedulingVisual key="rescheduling-visual" />,
+        
+        component: ReschedulingVisual,
       },
     ],
   },
@@ -1126,7 +1135,8 @@ export const CANCELLATION_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <NoShowComparison key="no-show-comparison" />,
+        
+        component: NoShowComparison,
       },
     ],
   },
@@ -1157,7 +1167,8 @@ export const CANCELLATION_SECTIONS = [
       },
       {
         type: "custom",
-        render: () => <RefundTimeline key="refund-timeline" />,
+        
+        component: RefundTimeline,
       },
       {
         type: "callout",
