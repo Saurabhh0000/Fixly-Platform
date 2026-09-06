@@ -90,9 +90,8 @@ public class SecurityConfig {
                                                 .hasRole("PROVIDER")
 
                                                 /* ================= ADMIN ================= */
-                                                /* ================= ADMIN ================= */
                                                 .requestMatchers("/api/categories/**", "/api/admin/providers/**",
-                                                                "/api/admin/analytics/**")
+                                                                "/api/admin/analytics/**", "/api/admin/contact/**")
                                                 .hasRole("ADMIN")
 
                                                 /* ================= PREFLIGHT ================= */

@@ -1,12 +1,10 @@
 import { useState, useContext, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
 import {
   FiSearch,
   FiX,
   FiMail,
   FiPhone,
   FiChevronDown,
-  FiClock,
   FiShield,
   FiCalendar,
   FiEye,
@@ -26,20 +24,21 @@ import {
   FiUserPlus,
   FiTrendingUp,
   FiSettings,
-  FiAlertTriangle,
-  FiInfo,
+  FiClock,
+  FiMessageSquare,
 } from "react-icons/fi";
 
 import { AuthContext } from "../context/AuthContext";
 import "../styles/help-support.css";
 import UserLayout from "../layouts/UserLayout";
 import ProviderLayout from "../layouts/ProviderLayout";
+import ContactModal from "../components/contact/ContactModal";
+import HelpTopicModal from "../components/help/HelpTopicModal";
 
 /* ══════════════════════════════════════════════════════════════
-   CATEGORY DATA
-   Each category now carries a `detail` object that powers the
-   expanded accordion panel: intro copy, numbered steps, optional
-   notes/tips, and optional action links/buttons.
+   CATEGORY DATA — unchanged from the existing implementation.
+   The `detail` shape (intro/steps/notes/tips/links) now powers
+   HelpTopicModal instead of an inline accordion panel.
    ══════════════════════════════════════════════════════════════ */
 
 const USER_CATEGORIES = [
@@ -501,7 +500,7 @@ const PROVIDER_FAQS = [
   },
 ];
 
-/* ── Hero Artwork ────────────────────────────────────────────── */
+/* ── Hero Artwork — unchanged ─────────────────────────────────── */
 const RING_LABELS = [
   { label: "Users", angle: 0, ring: 1 },
   { label: "Providers", angle: 51.4, ring: 1 },
@@ -537,10 +536,8 @@ function HeroArtwork() {
           </radialGradient>
         </defs>
 
-        {/* Ambient glow */}
         <ellipse cx={cx} cy={cy} rx="190" ry="190" fill="url(#artGlow)" />
 
-        {/* Concentric rings — solid outlines */}
         {rings.map((r, i) => (
           <circle
             key={r}
@@ -552,7 +549,6 @@ function HeroArtwork() {
           />
         ))}
 
-        {/* Dashed decorative rings on 2nd and 4th */}
         <circle
           cx={cx}
           cy={cy}
@@ -572,7 +568,6 @@ function HeroArtwork() {
           strokeLinecap="round"
         />
 
-        {/* Outer orbit ring with node dots */}
         <circle
           cx={cx}
           cy={cy}
@@ -583,7 +578,6 @@ function HeroArtwork() {
           strokeLinecap="round"
         />
 
-        {/* 7 orbital nodes on outermost ring */}
         {RING_LABELS.slice(0, 7).map(({ label, angle }) => {
           const rad = (angle * Math.PI) / 180;
           const nx = cx + rings[0] * Math.sin(rad);
@@ -598,7 +592,6 @@ function HeroArtwork() {
                 : "start";
           return (
             <g key={label} className="hs-art-node">
-              {/* Spoke */}
               <line
                 x1={cx + rings[2] * Math.sin(rad)}
                 y1={cy - rings[2] * Math.cos(rad)}
@@ -607,10 +600,8 @@ function HeroArtwork() {
                 stroke="rgba(34,197,94,0.12)"
                 strokeWidth="0.5"
               />
-              {/* Node dot */}
               <circle cx={nx} cy={ny} r="3.5" fill="rgba(74,222,128,0.60)" />
               <circle cx={nx} cy={ny} r="1.5" fill="#4ade80" />
-              {/* Label */}
               <text
                 x={lx}
                 y={ly + 4}
@@ -626,7 +617,6 @@ function HeroArtwork() {
           );
         })}
 
-        {/* Animated orbit dot — ring 1 */}
         <circle r="3" fill="#22c55e" opacity="0.80">
           <animateMotion
             dur="20s"
@@ -635,7 +625,6 @@ function HeroArtwork() {
           />
         </circle>
 
-        {/* Animated orbit dot — ring 2, opposite direction */}
         <circle r="2.5" fill="#4ade80" opacity="0.55">
           <animateMotion
             dur="15s"
@@ -644,7 +633,6 @@ function HeroArtwork() {
           />
         </circle>
 
-        {/* Animated orbit dot — ring 3 */}
         <circle r="2" fill="#86efac" opacity="0.50">
           <animateMotion
             dur="11s"
@@ -653,13 +641,11 @@ function HeroArtwork() {
           />
         </circle>
 
-        {/* Core glow */}
         <circle cx={cx} cy={cy} r="22" fill="url(#coreGlow)" />
         <circle cx={cx} cy={cy} r="9" fill="rgba(74,222,128,0.35)" />
         <circle cx={cx} cy={cy} r="4.5" fill="rgba(74,222,128,0.70)" />
         <circle cx={cx} cy={cy} r="2" fill="#4ade80" />
 
-        {/* Center label */}
         <text
           x={cx}
           y={cy + 24}
@@ -672,7 +658,6 @@ function HeroArtwork() {
           FIXLY
         </text>
 
-        {/* Cross-hairs at center */}
         <line
           x1={cx - 14}
           y1={cy}
@@ -690,7 +675,6 @@ function HeroArtwork() {
           strokeWidth="0.5"
         />
 
-        {/* Scattered micro-dots — static atmosphere */}
         {[
           [330, 60],
           [380, 140],
@@ -714,133 +698,29 @@ function HeroArtwork() {
   );
 }
 
-/* ── Category Accordion Card ─────────────────────────────────── */
-function CategoryCard({ cat, isOpen, onToggle }) {
-  const panelRef = useRef(null);
-  const [height, setHeight] = useState(0);
-  const triggerId = "cat-trigger-" + cat.id;
-  const panelId = "cat-panel-" + cat.id;
-
-  useEffect(() => {
-    if (panelRef.current) setHeight(isOpen ? panelRef.current.scrollHeight : 0);
-  }, [isOpen]);
-
-  // Re-measure if content reflows (e.g. window resize) while open
-  useEffect(() => {
-    if (!isOpen) return;
-    const onResize = () => {
-      if (panelRef.current) setHeight(panelRef.current.scrollHeight);
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [isOpen]);
-
-  const {
-    intro,
-    steps = [],
-    notes = [],
-    tips = [],
-    links = [],
-  } = cat.detail || {};
-
+/* ── Help Topic Card — compact, fully clickable, opens the modal ── */
+function HelpTopicCard({ cat, onOpen }) {
   return (
-    <article
-      className={
-        "hs-card" +
-        (cat.isCta ? " hs-card--cta" : "") +
-        (isOpen ? " hs-card--open" : "")
-      }>
-      <button
-        type="button"
-        className="hs-card-trigger"
-        id={triggerId}
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        aria-controls={panelId}>
-        <div className="hs-card-icon-wrap" aria-hidden>
-          <span className="hs-card-icon">{cat.icon}</span>
-        </div>
-        <div className="hs-card-body">
-          <h3 className="hs-card-title">{cat.title}</h3>
-          <p className="hs-card-desc">{cat.desc}</p>
-        </div>
-        <span className="hs-card-chevron" aria-hidden>
-          <FiChevronDown />
-        </span>
-      </button>
-
-      <div
-        id={panelId}
-        className="hs-card-panel"
-        role="region"
-        aria-labelledby={triggerId}
-        style={{ maxHeight: height + "px" }}
-        ref={panelRef}>
-        <div className="hs-card-detail">
-          <p className="hs-detail-intro">{intro}</p>
-
-          {steps.length > 0 && (
-            <div className="hs-detail-block">
-              <h4 className="hs-detail-heading">Step-by-step</h4>
-              <ol className="hs-detail-steps">
-                {steps.map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ol>
-            </div>
-          )}
-
-          {notes.length > 0 && (
-            <div className="hs-detail-notice hs-detail-notice--warning">
-              <FiAlertTriangle className="hs-detail-notice-icon" aria-hidden />
-              <div>
-                <span className="hs-detail-notice-label">Important</span>
-                {notes.map((n, i) => (
-                  <p key={i}>{n}</p>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {tips.length > 0 && (
-            <div className="hs-detail-notice hs-detail-notice--tip">
-              <FiInfo className="hs-detail-notice-icon" aria-hidden />
-              <div>
-                <span className="hs-detail-notice-label">Helpful tip</span>
-                {tips.map((t, i) => (
-                  <p key={i}>{t}</p>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {links.length > 0 && (
-            <div className="hs-detail-actions">
-              {links.map((l, i) =>
-                l.to ? (
-                  <Link key={i} to={l.to} className="hs-detail-btn">
-                    {l.label}
-                    <FiArrowRight aria-hidden />
-                  </Link>
-                ) : (
-                  <a
-                    key={i}
-                    href={l.href}
-                    className="hs-detail-btn hs-detail-btn--ghost">
-                    {l.label}
-                    <FiArrowRight aria-hidden />
-                  </a>
-                ),
-              )}
-            </div>
-          )}
-        </div>
+    <button
+      type="button"
+      className="hs-topic-card"
+      onClick={() => onOpen(cat)}
+      aria-haspopup="dialog">
+      <div className="hs-topic-card-icon-wrap" aria-hidden>
+        <span className="hs-topic-card-icon">{cat.icon}</span>
       </div>
-    </article>
+      <div className="hs-topic-card-body">
+        <h3 className="hs-topic-card-title">{cat.title}</h3>
+        <p className="hs-topic-card-desc">{cat.desc}</p>
+        <span className="hs-topic-card-link">
+          Read guide <FiArrowRight aria-hidden />
+        </span>
+      </div>
+    </button>
   );
 }
 
-/* ── FAQ Item ────────────────────────────────────────────────── */
+/* ── FAQ Item — unchanged ──────────────────────────────────────── */
 function FaqItem({ item, index, isOpen, onToggle }) {
   const bodyRef = useRef(null);
   const [height, setHeight] = useState(0);
@@ -876,7 +756,7 @@ function FaqItem({ item, index, isOpen, onToggle }) {
   );
 }
 
-/* ── Contact Card ────────────────────────────────────────────── */
+/* ── Contact Card — unchanged ──────────────────────────────────── */
 function ContactCard({ role }) {
   const isProvider = role === "PROVIDER";
   return (
@@ -937,7 +817,7 @@ function ContactCard({ role }) {
   );
 }
 
-/* ── Role Chip ───────────────────────────────────────────────── */
+/* ── Role Chip — unchanged ─────────────────────────────────────── */
 function RoleChip({ role }) {
   return (
     <div className="hs-role-chip">
@@ -956,7 +836,7 @@ function RoleChip({ role }) {
   );
 }
 
-/* ── Empty State ─────────────────────────────────────────────── */
+/* ── Empty State — unchanged ───────────────────────────────────── */
 function EmptyState({ loggedIn }) {
   return (
     <main className="hs-empty">
@@ -978,12 +858,29 @@ function EmptyState({ loggedIn }) {
   );
 }
 
-/* ── Page ────────────────────────────────────────────────────── */
+/* ── Search helper: checks title, desc, intro, steps, notes, tips ── */
+function matchesQuery(cat, query) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+  const detail = cat.detail || {};
+  const haystacks = [
+    cat.title,
+    cat.desc,
+    detail.intro,
+    ...(detail.steps || []),
+    ...(detail.notes || []),
+    ...(detail.tips || []),
+  ];
+  return haystacks.some((h) => (h || "").toLowerCase().includes(q));
+}
+
+/* ── Page ───────────────────────────────────────────────────────── */
 export default function HelpSupport() {
   const { user } = useContext(AuthContext);
   const [query, setQuery] = useState("");
   const [openFaq, setOpenFaq] = useState(null);
-  const [openCategory, setOpenCategory] = useState(null);
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [contactOpen, setContactOpen] = useState(false);
   const searchRef = useRef(null);
 
   const isUser = user?.role === "USER";
@@ -996,16 +893,19 @@ export default function HelpSupport() {
       : [];
   const faqs = isUser ? USER_FAQS : isProvider ? PROVIDER_FAQS : [];
   const roleLabel = isUser ? "Customer" : isProvider ? "Provider" : "";
-  const filtered = query.trim()
-    ? categories.filter(
-        (c) =>
-          c.title.toLowerCase().includes(query.toLowerCase()) ||
-          c.desc.toLowerCase().includes(query.toLowerCase()),
-      )
+  const trimmedQuery = query.trim();
+  const filtered = trimmedQuery
+    ? categories.filter((c) => matchesQuery(c, trimmedQuery))
     : categories;
 
   if (!hasRole) return <EmptyState loggedIn={!!user} />;
   const Layout = isProvider ? ProviderLayout : UserLayout;
+
+  // Topic modal "Contact Us" → close topic modal, then open ContactModal.
+  const handleContactFromTopic = () => {
+    setSelectedTopic(null);
+    setContactOpen(true);
+  };
 
   return (
     <Layout>
@@ -1020,13 +920,13 @@ export default function HelpSupport() {
             <div className="hs-hero-left">
               <div className="hs-eyebrow">
                 <FiTool className="hs-eyebrow-icon" aria-hidden />
-                <span>Fixly Support</span>
+                <span>Help &amp; Support</span>
               </div>
 
               <h1 className="hs-hero-title">
-                Help &amp;
+                How can we
                 <br />
-                <em className="hs-title-accent">Support</em>
+                <em className="hs-title-accent">help?</em>
               </h1>
 
               <p className="hs-hero-sub">
@@ -1062,25 +962,31 @@ export default function HelpSupport() {
                 )}
               </div>
 
-              <div
-                className="hs-hero-pills"
-                role="list"
-                aria-label="Contact options">
-                <a
-                  href="mailto:support@fixly.in"
-                  className="hs-pill"
-                  role="listitem">
-                  <FiMail className="hs-pill-icon" aria-hidden />
-                  support@fixly.in
-                </a>
-                <a href="tel:+919876543210" className="hs-pill" role="listitem">
-                  <FiPhone className="hs-pill-icon" aria-hidden />
-                  +91 98765 43210
-                </a>
-                <span className="hs-pill hs-pill--muted" role="listitem">
-                  <FiClock className="hs-pill-icon" aria-hidden />
-                  Mon – Sat, 9 AM – 6 PM
-                </span>
+              <div className="hs-hero-cta-row">
+                <button
+                  type="button"
+                  className="hs-hero-contact-btn"
+                  onClick={() => setContactOpen(true)}>
+                  <FiMessageSquare aria-hidden />
+                  Contact Us
+                </button>
+
+                <div
+                  className="hs-hero-pills"
+                  role="list"
+                  aria-label="Contact options">
+                  <a
+                    href="mailto:support@fixly.in"
+                    className="hs-pill"
+                    role="listitem">
+                    <FiMail className="hs-pill-icon" aria-hidden />
+                    support@fixly.in
+                  </a>
+                  <span className="hs-pill hs-pill--muted" role="listitem">
+                    <FiClock className="hs-pill-icon" aria-hidden />
+                    Mon – Sat, 9 AM – 6 PM
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -1099,8 +1005,8 @@ export default function HelpSupport() {
                   <div>
                     <span className="hs-section-eyebrow">Browse topics</span>
                     <h2 id="hs-cat-heading" className="hs-section-title">
-                      {query
-                        ? `Results for "${query}"`
+                      {trimmedQuery
+                        ? `Results for "${trimmedQuery}"`
                         : `${roleLabel} Help Topics`}
                     </h2>
                   </div>
@@ -1110,16 +1016,20 @@ export default function HelpSupport() {
                   </span>
                 </div>
 
+                {!trimmedQuery && (
+                  <p className="hs-section-note">
+                    Find answers and step-by-step guides for common Fixly
+                    questions.
+                  </p>
+                )}
+
                 {filtered.length > 0 ? (
                   <div className="hs-grid">
                     {filtered.map((cat) => (
-                      <CategoryCard
+                      <HelpTopicCard
                         key={cat.id}
                         cat={cat}
-                        isOpen={openCategory === cat.id}
-                        onToggle={() =>
-                          setOpenCategory((p) => (p === cat.id ? null : cat.id))
-                        }
+                        onOpen={setSelectedTopic}
                       />
                     ))}
                   </div>
@@ -1127,20 +1037,22 @@ export default function HelpSupport() {
                   <div className="hs-no-results" role="status">
                     <FiSearch className="hs-no-results-icon" aria-hidden />
                     <p>
-                      No topics matched <strong>"{query}"</strong>.{" "}
-                      <button
-                        className="hs-link-btn"
-                        onClick={() => setQuery("")}>
-                        Clear search
-                      </button>{" "}
-                      to see all topics.
+                      No help topics found for <strong>"{trimmedQuery}"</strong>
+                      . Try a different search term or contact our support team.
                     </p>
+                    <button
+                      type="button"
+                      className="hs-no-results-btn"
+                      onClick={() => setContactOpen(true)}>
+                      <FiMessageSquare aria-hidden />
+                      Contact Us
+                    </button>
                   </div>
                 )}
               </section>
 
               {/* FAQ section */}
-              {!query && (
+              {!trimmedQuery && (
                 <section
                   className="hs-section"
                   aria-labelledby="hs-faq-heading">
@@ -1166,6 +1078,26 @@ export default function HelpSupport() {
                   </div>
                 </section>
               )}
+
+              {/* Bottom support CTA */}
+              <section
+                className="hs-bottom-cta"
+                aria-labelledby="hs-bottom-cta-title">
+                <h2 id="hs-bottom-cta-title" className="hs-bottom-cta-title">
+                  Still need help?
+                </h2>
+                <p className="hs-bottom-cta-text">
+                  Our support team is here to help with bookings, accounts,
+                  providers, payments and more.
+                </p>
+                <button
+                  type="button"
+                  className="hs-bottom-cta-btn"
+                  onClick={() => setContactOpen(true)}>
+                  <FiMessageSquare aria-hidden />
+                  Contact Us
+                </button>
+              </section>
             </div>
 
             {/* Sidebar */}
@@ -1176,6 +1108,14 @@ export default function HelpSupport() {
           </div>
         </main>
       </div>
+
+      <HelpTopicModal
+        topic={selectedTopic}
+        onClose={() => setSelectedTopic(null)}
+        onContactClick={handleContactFromTopic}
+      />
+
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </Layout>
   );
 }
