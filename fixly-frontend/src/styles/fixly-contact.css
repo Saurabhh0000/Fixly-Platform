@@ -137,9 +137,72 @@
   border-radius: 10px; cursor: pointer; min-height: 44px;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
+
 .fixly-contact-success-btn:hover { border-color: var(--fct-green); color: var(--fct-green-dark); }
 .fixly-contact-success-btn:focus-visible { outline: 2px solid var(--fct-green); outline-offset: 2px; }
 
+/* ================= CONTACT US MODAL ================= */
+.fixly-contact-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 2000;
+  animation: fixly-contact-modal-fade 0.2s ease;
+}
+@keyframes fixly-contact-modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fixly-contact-modal-dialog {
+  position: relative;
+  background: var(--fct-white);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  animation: fixly-contact-modal-pop 0.22s ease;
+}
+@keyframes fixly-contact-modal-pop {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.fixly-contact-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--fct-border);
+  background: var(--fct-light);
+  color: var(--fct-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.fixly-contact-modal-close:hover { background: #fee2e2; color: var(--fct-danger); }
+.fixly-contact-modal-close:focus-visible { outline: 2px solid var(--fct-green); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fixly-contact-modal-overlay,
+  .fixly-contact-modal-dialog { animation: none; }
+}
+
+@media (max-width: 600px) {
+  .fixly-contact-modal-dialog { padding: 22px 18px; border-radius: 16px; max-height: 95vh; }
+}
 /* ================================================================
    RESPONSIVE
    ================================================================ */
