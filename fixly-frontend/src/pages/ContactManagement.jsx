@@ -11,12 +11,9 @@ import {
   FaCheckCircle,
   FaExclamationCircle,
 } from "react-icons/fa";
-import AdminLayout from "../../layouts/AdminLayout";
-import {
-  getAdminContacts,
-  updateContactStatus,
-} from "../../services/contactService";
-import "../../styles/contact-management.css";
+import AdminLayout from "../layouts/AdminLayout";
+import { getAdminContacts, updateContactStatus } from "../api/contactService";
+import "../styles/contact-management.css";
 
 const STATUS_OPTIONS = [
   { value: "", label: "All Statuses" },
