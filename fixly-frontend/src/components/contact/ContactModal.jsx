@@ -4,7 +4,7 @@ import { FiX } from "react-icons/fi";
 import ContactForm from "./ContactForm";
 import ContactSuccess from "./ContactSuccess";
 import { useModalA11y } from "../../hooks/useModalA11y";
-import "../../styles/help-support.css";
+import "../../styles/fixly-contact.css";
 
 const ContactModal = ({ open, onClose }) => {
   const [submitted, setSubmitted] = useState(false);
@@ -27,35 +27,37 @@ const ContactModal = ({ open, onClose }) => {
 
   return createPortal(
     <div
-      className="hs-modal-overlay"
+      className="fixly-contact-modal-overlay"
       onMouseDown={handleOverlayClick}
       role="presentation">
       <div
-        className="hs-modal-panel"
+        className="fixly-contact-modal-dialog"
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="hs-modal-title"
+        aria-labelledby="fixly-contact-modal-title"
         tabIndex={-1}>
         <button
           type="button"
-          className="hs-modal-close"
+          className="fixly-contact-modal-close"
           onClick={onClose}
           aria-label="Close contact form"
           ref={closeBtnRef}>
           <FiX />
         </button>
 
-        <div className="hs-modal-header">
-          <h2 id="hs-modal-title" className="hs-modal-title">
+        <div className="fixly-contact-modal-header">
+          <h2
+            id="fixly-contact-modal-title"
+            className="fixly-contact-modal-title">
             Send us a message
           </h2>
-          <p className="hs-modal-sub">
+          <p className="fixly-contact-modal-sub">
             Fill out the form and we'll get back to you.
           </p>
         </div>
 
-        <div className="hs-modal-body">
+        <div className="fixly-contact-modal-body">
           {submitted ? (
             <ContactSuccess onSendAnother={() => setSubmitted(false)} />
           ) : (

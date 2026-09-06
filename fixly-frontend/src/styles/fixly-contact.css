@@ -1,8 +1,12 @@
 /* ============================================================
    FIXLY CONTACT — scoped .fixly-contact-* prefix.
+   Variables live on :root so createPortal-rendered content
+   (ContactModal renders to document.body, outside .fixly-contact)
+   can always resolve them, whether or not the standalone Contact
+   page is mounted.
    ============================================================ */
 
-.fixly-contact {
+:root {
   --fct-green: #22c55e;
   --fct-green-dark: #16a34a;
   --fct-dark: #020617;
@@ -14,7 +18,9 @@
   --fct-white: #ffffff;
   --fct-border: rgba(15, 23, 42, 0.10);
   --fct-danger: #dc2626;
+}
 
+.fixly-contact {
   font-family: "Nunito", system-ui, sans-serif;
   color: var(--fct-text);
   background: var(--fct-white);
@@ -79,7 +85,7 @@
 .fixly-contact-trust-item { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; font-weight: 600; }
 .fixly-contact-trust-item svg { color: var(--fct-green-dark); flex-shrink: 0; }
 
-/* ---- RIGHT: FORM CARD ---- */
+/* ---- RIGHT: FORM CARD (standalone page) ---- */
 .fixly-contact-form-card {
   background: var(--fct-white); border: 1px solid var(--fct-border); border-radius: 18px;
   padding: 30px; box-shadow: 0 20px 40px -20px rgba(15, 23, 42, 0.15);
@@ -87,6 +93,7 @@
 .fixly-contact-form-title { margin: 0 0 6px; font-size: 1.15rem; font-weight: 800; }
 .fixly-contact-form-sub { margin: 0 0 24px; font-size: 0.84rem; color: var(--fct-muted); }
 
+/* ---- FORM (shared by standalone page AND modal body) ---- */
 .fixly-contact-form { display: flex; flex-direction: column; gap: 18px; }
 .fixly-contact-field { display: flex; flex-direction: column; gap: 6px; }
 .fixly-contact-label { font-size: 0.82rem; font-weight: 700; color: var(--fct-text); }
@@ -103,7 +110,7 @@
   box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
 }
 .fixly-contact-input[aria-invalid="true"] { border-color: var(--fct-danger); }
-.fixly-contact-textarea { min-height: 120px; resize: vertical; }
+.fixly-contact-textarea { min-height: 128px; resize: vertical; }
 .fixly-contact-select { cursor: pointer; }
 
 .fixly-contact-error { margin: 0; font-size: 0.76rem; color: var(--fct-danger); font-weight: 600; }
@@ -122,7 +129,7 @@
 @keyframes fixly-contact-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .fixly-contact-spinner { animation: none; } }
 
-/* ---- SUCCESS STATE ---- */
+/* ---- SUCCESS STATE (shared) ---- */
 .fixly-contact-success { text-align: center; padding: 20px 8px; }
 .fixly-contact-success-icon {
   display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px;
@@ -137,7 +144,6 @@
   border-radius: 10px; cursor: pointer; min-height: 44px;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
-
 .fixly-contact-success-btn:hover { border-color: var(--fct-green); color: var(--fct-green-dark); }
 .fixly-contact-success-btn:focus-visible { outline: 2px solid var(--fct-green); outline-offset: 2px; }
 
@@ -150,7 +156,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   z-index: 2000;
   animation: fixly-contact-modal-fade 0.2s ease;
 }
@@ -159,15 +165,19 @@
   to { opacity: 1; }
 }
 
+/* Column layout: header stays fixed, body scrolls. Height is
+   content-driven (auto) up to max-height — never forced to
+   100vh/90vh. */
 .fixly-contact-modal-dialog {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background: var(--fct-white);
   border-radius: 20px;
-  padding: 32px;
-  max-width: 560px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
+  width: min(620px, calc(100vw - 32px));
+  height: auto;
+  max-height: min(760px, calc(100vh - 40px));
+  overflow: hidden;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
   animation: fixly-contact-modal-pop 0.22s ease;
 }
@@ -176,12 +186,38 @@
   to { opacity: 1; transform: none; }
 }
 
+.fixly-contact-modal-header {
+  flex-shrink: 0;
+  padding: 28px 60px 18px 28px;
+  border-bottom: 1px solid var(--fct-border);
+}
+.fixly-contact-modal-title {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--fct-text);
+  letter-spacing: -0.01em;
+}
+.fixly-contact-modal-sub {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--fct-muted);
+  line-height: 1.5;
+}
+
+.fixly-contact-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 28px 28px;
+}
+
 .fixly-contact-modal-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid var(--fct-border);
   background: var(--fct-light);
@@ -190,9 +226,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
-.fixly-contact-modal-close:hover { background: #fee2e2; color: var(--fct-danger); }
+.fixly-contact-modal-close:hover { background: #fee2e2; color: var(--fct-danger); border-color: #fecaca; }
 .fixly-contact-modal-close:focus-visible { outline: 2px solid var(--fct-green); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -201,10 +238,19 @@
 }
 
 @media (max-width: 600px) {
-  .fixly-contact-modal-dialog { padding: 22px 18px; border-radius: 16px; max-height: 95vh; }
+  .fixly-contact-modal-overlay { padding: 12px; }
+  .fixly-contact-modal-dialog {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    border-radius: 16px;
+  }
+  .fixly-contact-modal-header { padding: 20px 52px 16px 20px; }
+  .fixly-contact-modal-body { padding: 18px 20px 22px; }
+  .fixly-contact-modal-close { top: 14px; right: 14px; }
 }
+
 /* ================================================================
-   RESPONSIVE
+   RESPONSIVE — standalone page
    ================================================================ */
 @media (max-width: 1024px) {
   .fixly-contact-grid { grid-template-columns: 1fr; gap: 32px; }

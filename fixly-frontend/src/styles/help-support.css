@@ -1035,46 +1035,9 @@
    place these classes were referenced; safe no-op if already
    styled elsewhere.
    ══════════════════════════════════════════════════════════════ */
-.hs-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 2000;
-  animation: hs-modal-fade 0.18s ease;
-}
-.hs-modal-panel {
-  position: relative;
-  background: var(--hs-white);
-  border-radius: var(--hs-r-xl);
-  padding: 30px;
-  width: min(560px, calc(100vw - 32px));
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--hs-shadow-lg);
-  animation: hs-modal-pop 0.2s var(--hs-ease-out);
-}
-.hs-modal-close {
-  position: absolute;
-  top: 16px; right: 16px;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--hs-border);
-  background: var(--hs-surf);
-  color: var(--hs-muted);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: background var(--hs-dur), color var(--hs-dur);
-}
-.hs-modal-close:hover { background: var(--hs-amber-50); color: var(--hs-amber-700); }
-.hs-modal-close:focus-visible { outline: 2px solid var(--hs-g500); outline-offset: 2px; }
-.hs-modal-header { margin-bottom: 20px; padding-right: 36px; }
-.hs-modal-title { font-size: 18px; font-weight: 800; color: var(--hs-ink); margin-bottom: 4px; }
-.hs-modal-sub { font-size: 13px; color: var(--hs-body); }
-.hs-modal-body {}
+
+
+
 
 @keyframes hs-modal-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes hs-modal-pop {
@@ -1082,9 +1045,7 @@
   to { opacity: 1; transform: none; }
 }
 
-@media (max-width: 600px) {
-  .hs-modal-panel { padding: 22px; border-radius: var(--hs-r-lg); max-height: 95vh; }
-}
+
 
 /* ══════════════════════════════════════════════════════════════
    HELP TOPIC MODAL
