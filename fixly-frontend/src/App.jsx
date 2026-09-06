@@ -26,6 +26,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CancellationPolicy from "./pages/CancellationPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import Contact from "./pages/Contact";
+import ContactManagement from "./pages/ContactManagement";
 function App() {
   return (
     <BrowserRouter>
@@ -124,6 +125,14 @@ function App() {
           element={
             <PrivateRoute role="ADMIN">
               <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/contact"
+          element={
+            <PrivateRoute role="ADMIN">
+              <ContactManagement />
             </PrivateRoute>
           }
         />

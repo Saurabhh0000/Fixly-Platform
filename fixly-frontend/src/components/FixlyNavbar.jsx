@@ -216,6 +216,10 @@ const FixlyNavbar = () => {
               <Link to="/admin/categories" className="fnav-link">
                 <FaListAlt className="fnav-link-icon" /> Service Categories
               </Link>
+
+              <Link to="/admin/contact" className="fnav-link">
+                <FaEnvelope className="fnav-link-icon" /> Contact Management
+              </Link>
             </>
           )}
 
@@ -388,6 +392,13 @@ const FixlyNavbar = () => {
                   onClick={() => go("/admin/categories")}>
                   <FaListAlt className="fnav-ml-icon" />
                   Service Categories
+                </button>
+
+                <button
+                  className="fnav-mobile-link"
+                  onClick={() => go("/admin/contact")}>
+                  <FaEnvelope className="fnav-ml-icon" />
+                  Contact Management
                 </button>
               </>
             )}
