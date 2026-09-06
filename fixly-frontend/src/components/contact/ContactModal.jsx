@@ -4,7 +4,7 @@ import { FiX } from "react-icons/fi";
 import ContactForm from "./ContactForm";
 import ContactSuccess from "./ContactSuccess";
 import { useModalA11y } from "../../hooks/useModalA11y";
-import "../../styles/fixly-contact.css";
+import "../../styles/help-support.css";
 
 const ContactModal = ({ open, onClose }) => {
   const [submitted, setSubmitted] = useState(false);
