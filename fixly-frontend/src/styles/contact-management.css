@@ -511,30 +511,38 @@
 .fac-pagination-btn:focus-visible { outline: 2px solid var(--fac-primary); outline-offset: 1px; }
 .fac-pagination-page { font-size: 0.78rem; color: var(--fac-text-secondary); font-weight: 600; }
 
-/* ================= DRAWER ================= */
-.fac-drawer-overlay {
+/* ================================================================
+   CENTERED MODAL (replaces the previous right-side drawer)
+   ================================================================ */
+.fac-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 23, 0.5);
+  background: rgba(2, 6, 23, 0.55);
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
   z-index: 2000;
   animation: fac-fade 0.15s ease;
 }
-.fac-drawer-panel {
-  width: min(460px, 100vw);
-  height: 100%;
+.fac-modal-panel {
+  width: min(520px, 100%);
+  max-height: min(640px, 90vh);
   background: var(--fac-card);
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
-  animation: fac-slide-in 0.2s ease;
+  box-shadow: 0 24px 64px rgba(2, 6, 23, 0.28);
+  animation: fac-modal-in 0.18s ease;
 }
 @keyframes fac-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes fac-slide-in { from { transform: translateX(24px); opacity: 0.6; } to { transform: none; opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .fac-drawer-overlay, .fac-drawer-panel { animation: none; } }
+@keyframes fac-modal-in {
+  from { transform: scale(0.96) translateY(6px); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .fac-modal-overlay, .fac-modal-panel { animation: none; } }
 
-.fac-drawer-header {
+.fac-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -542,8 +550,8 @@
   border-bottom: 1px solid var(--fac-border);
   flex-shrink: 0;
 }
-.fac-drawer-title { font-size: 1.05rem; font-weight: 800; margin: 0; }
-.fac-drawer-close {
+.fac-modal-title { font-size: 1.05rem; font-weight: 800; margin: 0; }
+.fac-modal-close {
   width: 34px; height: 34px;
   border-radius: 50%;
   border: 1px solid var(--fac-border);
@@ -552,10 +560,10 @@
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
 }
-.fac-drawer-close:hover { background: var(--fac-red-bg); color: var(--fac-red); }
-.fac-drawer-close:focus-visible { outline: 2px solid var(--fac-primary); outline-offset: 2px; }
+.fac-modal-close:hover { background: var(--fac-red-bg); color: var(--fac-red); }
+.fac-modal-close:focus-visible { outline: 2px solid var(--fac-primary); outline-offset: 2px; }
 
-.fac-drawer-body {
+.fac-modal-body {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
@@ -563,18 +571,18 @@
   flex-direction: column;
   gap: 18px;
 }
-.fac-drawer-row { display: flex; flex-direction: column; gap: 5px; }
-.fac-drawer-label {
+.fac-modal-row { display: flex; flex-direction: column; gap: 5px; }
+.fac-modal-label {
   font-size: 0.68rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--fac-text-muted);
 }
-.fac-drawer-subject { margin: 0; font-size: 1rem; font-weight: 700; }
-.fac-drawer-value { margin: 0; font-size: 0.88rem; font-weight: 600; }
-.fac-drawer-value-sub { margin: 0; font-size: 0.82rem; color: var(--fac-text-secondary); }
-.fac-drawer-message {
+.fac-modal-subject { margin: 0; font-size: 1rem; font-weight: 700; }
+.fac-modal-value { margin: 0; font-size: 0.88rem; font-weight: 600; }
+.fac-modal-value-sub { margin: 0; font-size: 0.82rem; color: var(--fac-text-secondary); }
+.fac-modal-message {
   margin: 0;
   font-size: 0.86rem;
   line-height: 1.6;
@@ -585,7 +593,29 @@
   padding: 12px 14px;
   white-space: pre-wrap;
 }
-.fac-drawer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fac-modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.fac-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px 20px;
+  border-top: 1px solid var(--fac-border);
+  flex-shrink: 0;
+}
+.fac-modal-footer-close {
+  background: var(--fac-primary);
+  color: #fff;
+  border: none;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 9px 20px;
+  border-radius: 9px;
+  cursor: pointer;
+  min-height: 38px;
+}
+.fac-modal-footer-close:hover { background: var(--fac-primary-hover); }
+.fac-modal-footer-close:focus-visible { outline: 2px solid var(--fac-primary-hover); outline-offset: 2px; }
 
 /* ================================================================
    RESPONSIVE
@@ -602,8 +632,9 @@
   .fac-search-wrap { max-width: 100%; }
   .fac-filters { width: 100%; }
   .fac-filter-select { flex: 1; min-width: 0; }
-  .fac-drawer-panel { width: 100vw; }
-  .fac-drawer-grid { grid-template-columns: 1fr; }
+  .fac-modal-overlay { padding: 14px; align-items: flex-end; }
+  .fac-modal-panel { width: 100%; max-height: 88vh; border-radius: 16px 16px 0 0; }
+  .fac-modal-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {

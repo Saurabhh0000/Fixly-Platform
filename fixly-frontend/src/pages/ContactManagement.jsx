@@ -135,12 +135,13 @@ const SkeletonRow = () => (
   </tr>
 );
 
-const ContactDrawer = ({
-  contact,
-  onClose,
-  onStatusChange,
-  statusUpdating,
-}) => {
+/* ================================================================
+   CONTACT DETAILS MODAL
+   Centered overlay modal — replaces the previous right-side drawer.
+   Reuses the same contact/onClose/onStatusChange/statusUpdating
+   props and state the drawer used, so no new state was introduced.
+   ================================================================ */
+const ContactModal = ({ contact, onClose, onStatusChange, statusUpdating }) => {
   const panelRef = useRef(null);
   const closeBtnRef = useRef(null);
 
@@ -169,22 +170,22 @@ const ContactDrawer = ({
 
   return (
     <div
-      className="fac-drawer-overlay"
+      className="fac-modal-overlay"
       onMouseDown={handleOverlayClick}
       role="presentation">
       <div
-        className="fac-drawer-panel"
+        className="fac-modal-panel"
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="fac-drawer-title">
-        <div className="fac-drawer-header">
-          <h2 id="fac-drawer-title" className="fac-drawer-title">
+        aria-labelledby="fac-modal-title">
+        <div className="fac-modal-header">
+          <h2 id="fac-modal-title" className="fac-modal-title">
             Contact Query
           </h2>
           <button
             type="button"
-            className="fac-drawer-close"
+            className="fac-modal-close"
             onClick={onClose}
             aria-label="Close contact query details"
             ref={closeBtnRef}>
@@ -192,14 +193,14 @@ const ContactDrawer = ({
           </button>
         </div>
 
-        <div className="fac-drawer-body">
-          <div className="fac-drawer-row">
-            <span className="fac-drawer-label">Subject</span>
-            <p className="fac-drawer-subject">{contact.subject}</p>
+        <div className="fac-modal-body">
+          <div className="fac-modal-row">
+            <span className="fac-modal-label">Subject</span>
+            <p className="fac-modal-subject">{contact.subject}</p>
           </div>
 
-          <div className="fac-drawer-row">
-            <span className="fac-drawer-label">Status</span>
+          <div className="fac-modal-row">
+            <span className="fac-modal-label">Status</span>
             <StatusSelect
               value={contact.status}
               disabled={statusUpdating}
@@ -208,46 +209,55 @@ const ContactDrawer = ({
             />
           </div>
 
-          <div className="fac-drawer-grid">
-            <div className="fac-drawer-row">
-              <span className="fac-drawer-label">Sender</span>
-              <p className="fac-drawer-value">{contact.name}</p>
-              <p className="fac-drawer-value-sub">{contact.email}</p>
+          <div className="fac-modal-grid">
+            <div className="fac-modal-row">
+              <span className="fac-modal-label">Sender</span>
+              <p className="fac-modal-value">{contact.name}</p>
+              <p className="fac-modal-value-sub">{contact.email}</p>
               {contact.phone && (
-                <p className="fac-drawer-value-sub">{contact.phone}</p>
+                <p className="fac-modal-value-sub">{contact.phone}</p>
               )}
             </div>
 
-            <div className="fac-drawer-row">
-              <span className="fac-drawer-label">Sender Type</span>
+            <div className="fac-modal-row">
+              <span className="fac-modal-label">Sender Type</span>
               <TypeBadge type={contact.userType} />
             </div>
           </div>
 
-          <div className="fac-drawer-row">
-            <span className="fac-drawer-label">Reason</span>
-            <p className="fac-drawer-value">{reasonLabel(contact.reason)}</p>
+          <div className="fac-modal-row">
+            <span className="fac-modal-label">Reason</span>
+            <p className="fac-modal-value">{reasonLabel(contact.reason)}</p>
           </div>
 
-          <div className="fac-drawer-row">
-            <span className="fac-drawer-label">Customer Message</span>
-            <p className="fac-drawer-message">{contact.message}</p>
+          <div className="fac-modal-row">
+            <span className="fac-modal-label">Customer Message</span>
+            <p className="fac-modal-message">{contact.message}</p>
           </div>
 
-          <div className="fac-drawer-grid">
-            <div className="fac-drawer-row">
-              <span className="fac-drawer-label">Created At</span>
-              <p className="fac-drawer-value-sub">
+          <div className="fac-modal-grid">
+            <div className="fac-modal-row">
+              <span className="fac-modal-label">Created At</span>
+              <p className="fac-modal-value-sub">
                 {formatDateTime(contact.createdAt)}
               </p>
             </div>
-            <div className="fac-drawer-row">
-              <span className="fac-drawer-label">Updated At</span>
-              <p className="fac-drawer-value-sub">
+            <div className="fac-modal-row">
+              <span className="fac-modal-label">Updated At</span>
+              <p className="fac-modal-value-sub">
                 {formatDateTime(contact.updatedAt)}
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="fac-modal-footer">
+          <button
+            type="button"
+            className="fac-modal-footer-close"
+            onClick={onClose}>
+            Close
+          </button>
         </div>
       </div>
     </div>
@@ -721,7 +731,7 @@ const ContactManagement = () => {
         </div>
       </div>
 
-      <ContactDrawer
+      <ContactModal
         contact={selectedContact}
         onClose={() => setSelectedId(null)}
         onStatusChange={handleStatusChange}
