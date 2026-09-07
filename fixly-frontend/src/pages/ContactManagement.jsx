@@ -140,6 +140,14 @@ const SkeletonRow = () => (
    Centered overlay modal — replaces the previous right-side drawer.
    Reuses the same contact/onClose/onStatusChange/statusUpdating
    props and state the drawer used, so no new state was introduced.
+
+   IMPORTANT: this must be rendered as a DESCENDANT of
+   .fixly-admin-contact in the JSX tree below, not a sibling — the
+   --fac-* CSS variables are declared on that div (not :root), and
+   custom properties only cascade to actual DOM descendants. No
+   createPortal is used here, so DOM nesting == render tree nesting.
+   position: fixed on the overlay still covers the full viewport
+   regardless of where in the tree it sits.
    ================================================================ */
 const ContactModal = ({ contact, onClose, onStatusChange, statusUpdating }) => {
   const panelRef = useRef(null);
@@ -729,16 +737,19 @@ const ContactManagement = () => {
             </div>
           )}
         </div>
-      </div>
 
-      <ContactModal
-        contact={selectedContact}
-        onClose={() => setSelectedId(null)}
-        onStatusChange={handleStatusChange}
-        statusUpdating={
-          selectedContact ? statusUpdatingIds.has(selectedContact.id) : false
-        }
-      />
+        {/* Modal now rendered INSIDE .fixly-admin-contact so the
+            --fac-* CSS custom properties declared on this div are
+            visible to it via normal DOM inheritance. */}
+        <ContactModal
+          contact={selectedContact}
+          onClose={() => setSelectedId(null)}
+          onStatusChange={handleStatusChange}
+          statusUpdating={
+            selectedContact ? statusUpdatingIds.has(selectedContact.id) : false
+          }
+        />
+      </div>
     </AdminLayout>
   );
 };
