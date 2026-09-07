@@ -8,8 +8,11 @@ import {
   FaUser,
   FaUserTie,
   FaUserSlash,
-  FaCheckCircle,
   FaExclamationCircle,
+  FaClipboardList,
+  FaCheckCircle,
+  FaFire,
+  FaBan,
 } from "react-icons/fa";
 import AdminLayout from "../layouts/AdminLayout";
 import { getAdminContacts, updateContactStatus } from "../api/contactService";
@@ -404,27 +407,54 @@ const ContactManagement = () => {
           </button>
         </div>
 
-        {/* Summary — page-scoped, clearly labeled */}
+        {/* Summary — page-scoped, clearly labeled, bento KPI style */}
         <div className="fac-summary">
-          <div className="fac-summary-item">
-            <span className="fac-summary-label">On This Page</span>
-            <span className="fac-summary-value">{pageCounts.total}</span>
-          </div>
-          <div className="fac-summary-item">
-            <span className="fac-summary-label">New</span>
-            <span className="fac-summary-value fac-summary-value-new">
-              {pageCounts.new}
+          <div className="fac-summary-card fac-summary-tone-blue">
+            <span className="fac-summary-deco" aria-hidden="true" />
+            <span className="fac-summary-icon" aria-hidden="true">
+              <FaClipboardList />
             </span>
+            <div className="fac-summary-body">
+              <span className="fac-summary-value">{pageCounts.total}</span>
+              <span className="fac-summary-title">Total Queries</span>
+              <span className="fac-summary-sub">On this page</span>
+            </div>
           </div>
-          <div className="fac-summary-item">
-            <span className="fac-summary-label">In Progress</span>
-            <span className="fac-summary-value">{pageCounts.inProgress}</span>
-          </div>
-          <div className="fac-summary-item">
-            <span className="fac-summary-label">Resolved</span>
-            <span className="fac-summary-value fac-summary-value-resolved">
-              {pageCounts.resolved}
+
+          <div className="fac-summary-card fac-summary-tone-green">
+            <span className="fac-summary-deco" aria-hidden="true" />
+            <span className="fac-summary-icon" aria-hidden="true">
+              <FaCheckCircle />
             </span>
+            <div className="fac-summary-body">
+              <span className="fac-summary-value">{pageCounts.resolved}</span>
+              <span className="fac-summary-title">Resolved</span>
+              <span className="fac-summary-sub">Closed queries</span>
+            </div>
+          </div>
+
+          <div className="fac-summary-card fac-summary-tone-amber">
+            <span className="fac-summary-deco" aria-hidden="true" />
+            <span className="fac-summary-icon" aria-hidden="true">
+              <FaFire />
+            </span>
+            <div className="fac-summary-body">
+              <span className="fac-summary-value">{pageCounts.new}</span>
+              <span className="fac-summary-title">New</span>
+              <span className="fac-summary-sub">Awaiting review</span>
+            </div>
+          </div>
+
+          <div className="fac-summary-card fac-summary-tone-red">
+            <span className="fac-summary-deco" aria-hidden="true" />
+            <span className="fac-summary-icon" aria-hidden="true">
+              <FaBan />
+            </span>
+            <div className="fac-summary-body">
+              <span className="fac-summary-value">{pageCounts.inProgress}</span>
+              <span className="fac-summary-title">In Progress</span>
+              <span className="fac-summary-sub">Being handled</span>
+            </div>
           </div>
         </div>
 
