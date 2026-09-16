@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import {
@@ -9,7 +9,6 @@ import {
   FaSignOutAlt,
   FaQuestionCircle,
   FaEnvelope,
-  FaBolt,
   FaTachometerAlt,
   FaSearch,
   FaClipboardList,
@@ -26,6 +25,7 @@ import NotificationBell from "./notifications/NotificationBell";
 const FixlyNavbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -54,6 +54,18 @@ const FixlyNavbar = () => {
     return () => window.removeEventListener("resize", handler);
   }, []);
 
+  /* ===== CLOSE DROPDOWN/DRAWER ON ESCAPE ===== */
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "Escape") {
+        setProfileOpen(false);
+        setMobileOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
   const handleLogout = () => {
     logout();
     setProfileOpen(false);
@@ -69,6 +81,12 @@ const FixlyNavbar = () => {
     setMobileOpen(false);
     navigate(path);
   };
+
+  /* ===== ACTIVE ROUTE (UI only — no routing changes) ===== */
+  const isActive = (path) =>
+    path === "/"
+      ? location.pathname === "/"
+      : location.pathname.startsWith(path);
 
   /* ===== ROLE HELPERS ===== */
   const dashboardPath = !user
@@ -108,12 +126,17 @@ const FixlyNavbar = () => {
 
           {/* DESKTOP LINKS */}
           <div className="fnav-desktop-links">
-            <Link to="/" className="fnav-link">
+            <Link
+              to="/"
+              className={`fnav-link ${isActive("/") ? "fnav-link-active" : ""}`}>
               Home
             </Link>
-            <Link to="/about" className="fnav-link">
+            <Link
+              to="/about"
+              className={`fnav-link ${isActive("/about") ? "fnav-link-active" : ""}`}>
               About
             </Link>
+            <span className="fnav-divider" aria-hidden="true" />
             <Link to="/login" className="fnav-btn fnav-btn-outline">
               Sign In
             </Link>
@@ -127,7 +150,8 @@ const FixlyNavbar = () => {
             <button
               className="fnav-hamburger"
               onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="Toggle menu">
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}>
               {mobileOpen ? <FaTimes /> : <FaBars />}
             </button>
           </div>
@@ -138,13 +162,13 @@ const FixlyNavbar = () => {
           <div className="fnav-mobile-drawer">
             <Link
               to="/"
-              className="fnav-mobile-link"
+              className={`fnav-mobile-link ${isActive("/") ? "fnav-mobile-link-active" : ""}`}
               onClick={() => setMobileOpen(false)}>
               Home
             </Link>
             <Link
               to="/about"
-              className="fnav-mobile-link"
+              className={`fnav-mobile-link ${isActive("/about") ? "fnav-mobile-link-active" : ""}`}
               onClick={() => setMobileOpen(false)}>
               About
             </Link>
@@ -187,16 +211,22 @@ const FixlyNavbar = () => {
 
         {/* DESKTOP LINKS */}
         <div className="fnav-desktop-links">
-          <button className="fnav-link" onClick={() => go(dashboardPath)}>
+          <button
+            className={`fnav-link ${isActive(dashboardPath) ? "fnav-link-active" : ""}`}
+            onClick={() => go(dashboardPath)}>
             <FaTachometerAlt className="fnav-link-icon" /> Dashboard
           </button>
 
           {user.role === "USER" && (
             <>
-              <Link to="/search" className="fnav-link">
+              <Link
+                to="/search"
+                className={`fnav-link ${isActive("/search") ? "fnav-link-active" : ""}`}>
                 <FaSearch className="fnav-link-icon" /> Book Service
               </Link>
-              <Link to="/user/bookings" className="fnav-link">
+              <Link
+                to="/user/bookings"
+                className={`fnav-link ${isActive("/user/bookings") ? "fnav-link-active" : ""}`}>
                 <FaClipboardList className="fnav-link-icon" /> My Bookings
               </Link>
               <button
@@ -209,19 +239,27 @@ const FixlyNavbar = () => {
 
           {user.role === "ADMIN" && (
             <>
-              <Link to="/admin/providers" className="fnav-link">
+              <Link
+                to="/admin/providers"
+                className={`fnav-link ${isActive("/admin/providers") ? "fnav-link-active" : ""}`}>
                 <FaShieldAlt className="fnav-link-icon" /> Provider Requests
               </Link>
 
-              <Link to="/admin/categories" className="fnav-link">
+              <Link
+                to="/admin/categories"
+                className={`fnav-link ${isActive("/admin/categories") ? "fnav-link-active" : ""}`}>
                 <FaListAlt className="fnav-link-icon" /> Service Categories
               </Link>
 
-              <Link to="/admin/contact" className="fnav-link">
+              <Link
+                to="/admin/contact"
+                className={`fnav-link ${isActive("/admin/contact") ? "fnav-link-active" : ""}`}>
                 <FaEnvelope className="fnav-link-icon" /> Contact Management
               </Link>
             </>
           )}
+
+          <span className="fnav-divider" aria-hidden="true" />
 
           {/* Notification bell (desktop) */}
           <NotificationBell />
@@ -230,7 +268,9 @@ const FixlyNavbar = () => {
           <div className="fnav-profile-wrap" ref={profileRef}>
             <button
               className={`fnav-profile-trigger ${profileOpen ? "fnav-trigger-active" : ""}`}
-              onClick={() => setProfileOpen(!profileOpen)}>
+              onClick={() => setProfileOpen(!profileOpen)}
+              aria-expanded={profileOpen}
+              aria-haspopup="menu">
               <div className="fnav-avatar">{initial}</div>
               <span className="fnav-trigger-name">
                 {user.fullName.split(" ")[0]}
@@ -241,7 +281,7 @@ const FixlyNavbar = () => {
             </button>
 
             {profileOpen && (
-              <div className="fnav-dropdown">
+              <div className="fnav-dropdown" role="menu">
                 {/* DROPDOWN HEADER */}
                 <div className="fnav-dd-head">
                   <div className="fnav-dd-avatar">{initial}</div>
@@ -262,6 +302,7 @@ const FixlyNavbar = () => {
                 <div className="fnav-dd-items">
                   <button
                     className="fnav-dd-item"
+                    role="menuitem"
                     onClick={() => go("/change-password")}>
                     <span className="fnav-dd-icon fnav-icon-violet">
                       <FaKey />
@@ -278,6 +319,7 @@ const FixlyNavbar = () => {
 
                   <button
                     className="fnav-dd-item"
+                    role="menuitem"
                     onClick={() => go("/profile")}>
                     <span className="fnav-dd-icon fnav-icon-slate">
                       <FaCog />
@@ -292,6 +334,7 @@ const FixlyNavbar = () => {
 
                   <button
                     className="fnav-dd-item"
+                    role="menuitem"
                     onClick={() => go("/help-support")}>
                     <span className="fnav-dd-icon fnav-icon-teal">
                       <FaQuestionCircle />
@@ -305,7 +348,10 @@ const FixlyNavbar = () => {
 
                 {/* LOGOUT */}
                 <div className="fnav-dd-footer">
-                  <button className="fnav-logout-btn" onClick={handleLogout}>
+                  <button
+                    className="fnav-logout-btn"
+                    role="menuitem"
+                    onClick={handleLogout}>
                     <span className="fnav-dd-icon fnav-icon-red">
                       <FaSignOutAlt />
                     </span>
@@ -331,7 +377,8 @@ const FixlyNavbar = () => {
           <button
             className="fnav-hamburger"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu">
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}>
             {mobileOpen ? <FaTimes /> : <FaBars />}
           </button>
         </div>
@@ -343,7 +390,7 @@ const FixlyNavbar = () => {
           {/* USER CARD */}
           <div className="fnav-mobile-user">
             <div className="fnav-mobile-avatar">{initial}</div>
-            <div>
+            <div className="fnav-mobile-user-meta">
               <p className="fnav-mobile-uname">{user.fullName}</p>
               <p className="fnav-mobile-uemail">{user.email}</p>
             </div>
@@ -352,8 +399,10 @@ const FixlyNavbar = () => {
 
           {/* NAV LINKS */}
           <div className="fnav-mobile-nav">
+            <p className="fnav-mobile-section-label">Navigation</p>
+
             <button
-              className="fnav-mobile-link"
+              className={`fnav-mobile-link ${isActive(dashboardPath) ? "fnav-mobile-link-active" : ""}`}
               onClick={() => go(dashboardPath)}>
               <FaTachometerAlt className="fnav-ml-icon" /> Dashboard
             </button>
@@ -361,12 +410,12 @@ const FixlyNavbar = () => {
             {user.role === "USER" && (
               <>
                 <button
-                  className="fnav-mobile-link"
+                  className={`fnav-mobile-link ${isActive("/search") ? "fnav-mobile-link-active" : ""}`}
                   onClick={() => go("/search")}>
                   <FaSearch className="fnav-ml-icon" /> Book Service
                 </button>
                 <button
-                  className="fnav-mobile-link"
+                  className={`fnav-mobile-link ${isActive("/user/bookings") ? "fnav-mobile-link-active" : ""}`}
                   onClick={() => go("/user/bookings")}>
                   <FaClipboardList className="fnav-ml-icon" /> My Bookings
                 </button>
@@ -381,21 +430,21 @@ const FixlyNavbar = () => {
             {user.role === "ADMIN" && (
               <>
                 <button
-                  className="fnav-mobile-link"
+                  className={`fnav-mobile-link ${isActive("/admin/providers") ? "fnav-mobile-link-active" : ""}`}
                   onClick={() => go("/admin/providers")}>
                   <FaShieldAlt className="fnav-ml-icon" />
                   Provider Requests
                 </button>
 
                 <button
-                  className="fnav-mobile-link"
+                  className={`fnav-mobile-link ${isActive("/admin/categories") ? "fnav-mobile-link-active" : ""}`}
                   onClick={() => go("/admin/categories")}>
                   <FaListAlt className="fnav-ml-icon" />
                   Service Categories
                 </button>
 
                 <button
-                  className="fnav-mobile-link"
+                  className={`fnav-mobile-link ${isActive("/admin/contact") ? "fnav-mobile-link-active" : ""}`}
                   onClick={() => go("/admin/contact")}>
                   <FaEnvelope className="fnav-ml-icon" />
                   Contact Management
@@ -408,17 +457,19 @@ const FixlyNavbar = () => {
           <div className="fnav-mobile-account">
             <p className="fnav-mobile-section-label">Account</p>
             <button
-              className="fnav-mobile-link"
+              className={`fnav-mobile-link ${isActive("/change-password") ? "fnav-mobile-link-active" : ""}`}
               onClick={() => go("/change-password")}>
               <FaKey className="fnav-ml-icon fnav-ml-violet" /> Change Password
             </button>
 
-            <button className="fnav-mobile-link" onClick={() => go("/profile")}>
+            <button
+              className={`fnav-mobile-link ${isActive("/profile") ? "fnav-mobile-link-active" : ""}`}
+              onClick={() => go("/profile")}>
               <FaCog className="fnav-ml-icon fnav-ml-slate" /> Settings
             </button>
 
             <button
-              className="fnav-mobile-link"
+              className={`fnav-mobile-link ${isActive("/help-support") ? "fnav-mobile-link-active" : ""}`}
               onClick={() => go("/help-support")}>
               <FaQuestionCircle className="fnav-ml-icon" />
               Help & Support
