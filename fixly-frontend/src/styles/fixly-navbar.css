@@ -610,6 +610,154 @@
 .fnav-mobile-logout:hover { background: #fee2e2; border-color: #fca5a5; }
 .fnav-mobile-logout:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; }
 
+/* ================= AVATAR IMAGE ================= */
+.fnav-avatar-img {
+  object-fit: cover;
+  background: var(--fnav-green-light);
+}
+
+/* ================= SHEET BRAND (mobile header) ================= */
+.fnav-sheet-brand {
+  display: inline-flex;
+  align-items: baseline;
+}
+.fnav-sheet-brand .fnav-logo-fix,
+.fnav-sheet-brand .fnav-logo-ly { font-size: 1.24rem; }
+
+/* ================================================================
+   SIGN OUT CONFIRMATION MODAL
+   z-index sits above the mobile sheet (1600) and dropdowns (2000).
+   ================================================================ */
+.fnav-signout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 2500;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  animation: fnav-so-fade 0.15s ease;
+}
+@keyframes fnav-so-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.fnav-signout-modal {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 32px 28px 24px;
+  width: min(400px, 100%);
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
+  animation: fnav-so-pop 0.18s cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes fnav-so-pop {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fnav-signout-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.78rem;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.fnav-signout-close:hover { background: #fef2f2; color: #dc2626; }
+.fnav-signout-close:focus-visible { outline: 2px solid #16a34a; outline-offset: 2px; }
+
+.fnav-signout-icon {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin: 0 auto 16px;
+}
+
+.fnav-signout-title {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+
+.fnav-signout-desc {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 26px;
+}
+
+.fnav-signout-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.fnav-signout-cancel,
+.fnav-signout-confirm {
+  flex: 1;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 12px 20px;
+  border-radius: 11px;
+  cursor: pointer;
+  min-height: 46px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.fnav-trigger-name {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--fnav-text);
+  max-width: 96px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fnav-signout-cancel {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #0f172a;
+}
+.fnav-signout-cancel:hover { background: #f8fafc; border-color: #cbd5e1; }
+.fnav-signout-cancel:focus-visible { outline: 2px solid #16a34a; outline-offset: 2px; }
+
+.fnav-signout-confirm {
+  background: #fef2f2;
+  border: 1.5px solid #fee2e2;
+  color: #dc2626;
+}
+.fnav-signout-confirm:hover { background: #fee2e2; border-color: #fca5a5; }
+.fnav-signout-confirm:focus-visible { outline: 2px solid #dc2626; outline-offset: 2px; }
+
+@media (max-width: 420px) {
+  .fnav-signout-modal { padding: 28px 20px 20px; border-radius: 18px; }
+  .fnav-signout-actions { flex-direction: column-reverse; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fnav-signout-overlay,
+  .fnav-signout-modal { animation: none; }
+  .fnav-signout-cancel,
+  .fnav-signout-confirm,
+  .fnav-signout-close { transition: none; }
+}
+
 /* ======================================================
    RESPONSIVE
    ====================================================== */

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
@@ -22,6 +23,148 @@ import {
 import "../styles/fixly-navbar.css";
 import NotificationBell from "./notifications/NotificationBell";
 
+/* Base for resolving the stored relative profileImage path. Matches the
+   convention used by the Profile page: {base}/uploads/{relativePath}. */
+const UPLOADS_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(
+  /\/$/,
+  "",
+);
+
+/* ================================================================
+   AVATAR — profile image when available, initials fallback.
+   Never renders a broken image: onError flips to the initials.
+   ================================================================ */
+const FixlyAvatar = ({ user, initial, className }) => {
+  const [imgFailed, setImgFailed] = useState(false);
+  const src =
+    user?.profileImage && !imgFailed
+      ? `${UPLOADS_BASE}/uploads/${user.profileImage}`
+      : null;
+
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt=""
+        className={`${className} fnav-avatar-img`}
+        onError={() => setImgFailed(true)}
+      />
+    );
+  }
+  return <div className={className}>{initial}</div>;
+};
+
+/* ================================================================
+   SIGN OUT CONFIRMATION MODAL
+   Centered, portal-rendered above every navbar layer. Dismissing it
+   never logs out — only the explicit confirm button calls onConfirm.
+   ================================================================ */
+const SignOutModal = ({ open, onCancel, onConfirm }) => {
+  const panelRef = useRef(null);
+  const confirmRef = useRef(null);
+  const previouslyFocused = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    previouslyFocused.current = document.activeElement;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    confirmRef.current?.focus();
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onCancel();
+        return;
+      }
+      if (e.key === "Tab" && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll(
+          'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown, true);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.body.style.overflow = prevOverflow;
+      previouslyFocused.current?.focus?.();
+    };
+  }, [open, onCancel]);
+
+  if (!open) return null;
+
+  const handleOverlayMouseDown = (e) => {
+    // Clicking inside the panel must not dismiss.
+    if (panelRef.current && !panelRef.current.contains(e.target)) onCancel();
+  };
+
+  return createPortal(
+    <div
+      className="fnav-signout-overlay"
+      onMouseDown={handleOverlayMouseDown}
+      role="presentation">
+      <div
+        className="fnav-signout-modal"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="fnav-signout-title"
+        aria-describedby="fnav-signout-desc">
+        <button
+          type="button"
+          className="fnav-signout-close"
+          onClick={onCancel}
+          aria-label="Close sign out confirmation">
+          <FaTimes />
+        </button>
+
+        <div className="fnav-signout-icon" aria-hidden="true">
+          <FaSignOutAlt />
+        </div>
+
+        <h2 id="fnav-signout-title" className="fnav-signout-title">
+          Sign out?
+        </h2>
+        <p id="fnav-signout-desc" className="fnav-signout-desc">
+          Are you sure you want to sign out of your Fixly account?
+        </p>
+
+        <div className="fnav-signout-actions">
+          <button
+            type="button"
+            className="fnav-signout-cancel"
+            onClick={onCancel}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="fnav-signout-confirm"
+            onClick={onConfirm}
+            ref={confirmRef}>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+};
+
 const FixlyNavbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -29,6 +172,7 @@ const FixlyNavbar = () => {
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
 
   const profileRef = useRef(null);
   const navRef = useRef(null);
@@ -54,17 +198,19 @@ const FixlyNavbar = () => {
     return () => window.removeEventListener("resize", handler);
   }, []);
 
-  /* ===== CLOSE DROPDOWN/DRAWER ON ESCAPE ===== */
+  /* ===== CLOSE DROPDOWN/DRAWER ON ESCAPE =====
+     Skipped while the sign-out modal is open — the modal owns Escape
+     in that state (it captures the event before this handler runs). */
   useEffect(() => {
     const handler = (e) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && !signOutOpen) {
         setProfileOpen(false);
         setMobileOpen(false);
       }
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, []);
+  }, [signOutOpen]);
 
   /* ===== LOCK BODY SCROLL WHILE MOBILE SHEET IS OPEN ===== */
   useEffect(() => {
@@ -76,6 +222,7 @@ const FixlyNavbar = () => {
     };
   }, [mobileOpen]);
 
+  /* ===== EXISTING LOGOUT — unchanged ===== */
   const handleLogout = () => {
     logout();
     setProfileOpen(false);
@@ -84,6 +231,19 @@ const FixlyNavbar = () => {
       duration: 3500,
     });
     navigate("/login");
+  };
+
+  /* Opens the confirmation modal. Does NOT log out. */
+  const requestSignOut = () => {
+    setProfileOpen(false);
+    setMobileOpen(false);
+    setSignOutOpen(true);
+  };
+
+  /* Only this path calls the existing logout function. */
+  const confirmSignOut = () => {
+    setSignOutOpen(false);
+    handleLogout();
   };
 
   const go = (path) => {
@@ -122,7 +282,7 @@ const FixlyNavbar = () => {
   if (!user) {
     return (
       <div className="fnav-shell" ref={navRef}>
-        <nav className="fnav-bar">
+        <nav className="fnav-bar" aria-label="Main navigation">
           <div className="fnav-inner">
             {/* LEFT — LOGO */}
             <div className="fnav-zone fnav-zone-left">
@@ -178,7 +338,8 @@ const FixlyNavbar = () => {
                   className="fnav-hamburger"
                   onClick={() => setMobileOpen(!mobileOpen)}
                   aria-label="Toggle menu"
-                  aria-expanded={mobileOpen}>
+                  aria-expanded={mobileOpen}
+                  aria-controls="fnav-mobile-sheet">
                   {mobileOpen ? <FaTimes /> : <FaBars />}
                 </button>
               </div>
@@ -194,9 +355,12 @@ const FixlyNavbar = () => {
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
-            <div className="fnav-mobile-sheet">
+            <div className="fnav-mobile-sheet" id="fnav-mobile-sheet">
               <div className="fnav-sheet-head">
-                <span className="fnav-sheet-title">Menu</span>
+                <span className="fnav-sheet-brand">
+                  <span className="fnav-logo-fix">Fix</span>
+                  <span className="fnav-logo-ly">ly</span>
+                </span>
                 <button
                   className="fnav-sheet-close"
                   onClick={() => setMobileOpen(false)}
@@ -258,7 +422,7 @@ const FixlyNavbar = () => {
      ================================================================ */
   return (
     <div className="fnav-shell" ref={navRef}>
-      <nav className="fnav-bar">
+      <nav className="fnav-bar" aria-label="Main navigation">
         <div className="fnav-inner">
           {/* LEFT — LOGO */}
           <div className="fnav-zone fnav-zone-left">
@@ -322,7 +486,7 @@ const FixlyNavbar = () => {
           {/* RIGHT — ACTIONS */}
           <div className="fnav-zone fnav-zone-right">
             <div className="fnav-desktop-actions">
-              {/* Role status pill (mirrors the reference's "Available" dot) */}
+              {/* Role status pill (mirrors the reference's status dot) */}
               <span className="fnav-status-pill">
                 <span className="fnav-status-dot" aria-hidden="true" />
                 {roleLabel}
@@ -346,7 +510,14 @@ const FixlyNavbar = () => {
                   onClick={() => setProfileOpen(!profileOpen)}
                   aria-expanded={profileOpen}
                   aria-haspopup="menu">
-                  <div className="fnav-avatar">{initial}</div>
+                  <FixlyAvatar
+                    user={user}
+                    initial={initial}
+                    className="fnav-avatar"
+                  />
+                  <span className="fnav-trigger-name">
+                    {user.fullName.split(" ")[0]}
+                  </span>
                   <FaChevronDown
                     className={`fnav-chevron ${profileOpen ? "fnav-chevron-up" : ""}`}
                   />
@@ -356,7 +527,11 @@ const FixlyNavbar = () => {
                   <div className="fnav-dropdown" role="menu">
                     {/* DROPDOWN HEADER */}
                     <div className="fnav-dd-head">
-                      <div className="fnav-dd-avatar">{initial}</div>
+                      <FixlyAvatar
+                        user={user}
+                        initial={initial}
+                        className="fnav-dd-avatar"
+                      />
                       <div className="fnav-dd-meta">
                         <p className="fnav-dd-name">{user.fullName}</p>
                         <div className="fnav-dd-pills">
@@ -422,12 +597,12 @@ const FixlyNavbar = () => {
                       </button>
                     </div>
 
-                    {/* LOGOUT */}
+                    {/* SIGN OUT — opens confirmation modal, never logs out directly */}
                     <div className="fnav-dd-footer">
                       <button
                         className="fnav-logout-btn"
                         role="menuitem"
-                        onClick={handleLogout}>
+                        onClick={requestSignOut}>
                         <span className="fnav-dd-icon fnav-icon-red">
                           <FaSignOutAlt />
                         </span>
@@ -456,7 +631,8 @@ const FixlyNavbar = () => {
                 className="fnav-hamburger"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Toggle menu"
-                aria-expanded={mobileOpen}>
+                aria-expanded={mobileOpen}
+                aria-controls="fnav-mobile-sheet">
                 {mobileOpen ? <FaTimes /> : <FaBars />}
               </button>
             </div>
@@ -472,10 +648,14 @@ const FixlyNavbar = () => {
             onClick={() => setMobileOpen(false)}
             aria-hidden="true"
           />
-          <div className="fnav-mobile-sheet">
+          <div className="fnav-mobile-sheet" id="fnav-mobile-sheet">
             {/* USER CARD */}
             <div className="fnav-mobile-user">
-              <div className="fnav-mobile-avatar">{initial}</div>
+              <FixlyAvatar
+                user={user}
+                initial={initial}
+                className="fnav-mobile-avatar"
+              />
               <div className="fnav-mobile-user-meta">
                 <p className="fnav-mobile-uname">{user.fullName}</p>
                 <p className="fnav-mobile-uemail">{user.email}</p>
@@ -573,13 +753,19 @@ const FixlyNavbar = () => {
               </button>
             </div>
 
-            {/* LOGOUT */}
-            <button className="fnav-mobile-logout" onClick={handleLogout}>
+            {/* SIGN OUT — same confirmation modal as desktop */}
+            <button className="fnav-mobile-logout" onClick={requestSignOut}>
               <FaSignOutAlt /> Sign Out
             </button>
           </div>
         </>
       )}
+
+      <SignOutModal
+        open={signOutOpen}
+        onCancel={() => setSignOutOpen(false)}
+        onConfirm={confirmSignOut}
+      />
     </div>
   );
 };
