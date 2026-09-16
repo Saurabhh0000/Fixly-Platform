@@ -532,11 +532,11 @@
   .fnav-inner,
   .fnav-scrolled .fnav-inner { height: 64px; }
   .fnav-bar { max-width: none; border-radius: 0; }
-  .fnav-scrolled .fnav-bar { max-width: none; border-radius: 18px; }
+  .fnav-scrolled .fnav-bar { max-width: none; border-radius: 50px; }
 }
 @media (max-width: 520px) {
   .fnav-scrolled { padding: 7px 10px; }
-  .fnav-scrolled .fnav-bar { border-radius: 16px; }
+  .fnav-scrolled .fnav-bar { border-radius: 50px; }
   .fnav-inner,
   .fnav-scrolled .fnav-inner { height: 60px; }
   .fnav-logo-fix,
