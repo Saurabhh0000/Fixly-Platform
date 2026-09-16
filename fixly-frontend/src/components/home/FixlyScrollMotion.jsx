@@ -13,7 +13,6 @@ const FixlyScrollMotion = () => {
     let marquee = null;
     const generated = [];
 
-    // Add a scroll-reactive horizontal service ribbon between the services and flow sections.
     const cinema = root.querySelector(".fixly-parallax-cinema");
     if (cinema && !root.querySelector(".fixly-scroll-marquee")) {
       marquee = document.createElement("div");
@@ -27,8 +26,6 @@ const FixlyScrollMotion = () => {
       generated.push(marquee);
     }
 
-    // Build four visual fragments from the existing image. They assemble near the
-    // center of the viewport and scatter again as the user leaves the section.
     root.querySelectorAll(".fixly-image-frame").forEach((frame) => {
       if (frame.querySelector(".fixly-scatter-layer")) return;
       const image = frame.querySelector("img");
@@ -38,13 +35,13 @@ const FixlyScrollMotion = () => {
       layer.className = "fixly-scatter-layer";
       layer.setAttribute("aria-hidden", "true");
       const pieces = [
-        ["0 0", "50% 50%", -82, -62, -7],
-        ["50% 0", "50% 50%", 78, -52, 6],
-        ["0 50%", "50% 50%", -72, 58, 5],
-        ["50% 50%", "50% 50%", 84, 66, -6],
+        ["0 0", -82, -62, -7],
+        ["50% 0", 78, -52, 6],
+        ["0 50%", -72, 58, 5],
+        ["50% 50%", 84, 66, -6],
       ];
 
-      pieces.forEach(([position, size, x, y, rotation], index) => {
+      pieces.forEach(([position, x, y, rotation], index) => {
         const piece = document.createElement("span");
         piece.className = `fixly-scatter-piece fixly-scatter-${index + 1}`;
         piece.style.backgroundImage = `url(${image.currentSrc || image.src})`;
@@ -70,10 +67,9 @@ const FixlyScrollMotion = () => {
     ];
 
     horizontalItems.forEach((el, index) => {
-      if (!el.dataset.motionX) {
-        const pattern = [-1, 1, 0.65, -0.7];
-        el.dataset.motionX = String((pattern[index % pattern.length] * (isMobile() ? 22 : 62)).toFixed(0));
-      }
+      const pattern = [-1, 1, 0.65, -0.7];
+      const base = isMobile() ? 22 : 62;
+      el.dataset.motionX = String((pattern[index % pattern.length] * base).toFixed(0));
     });
 
     const update = () => {
@@ -99,12 +95,24 @@ const FixlyScrollMotion = () => {
 
       root.querySelectorAll(".fixly-image-frame").forEach((frame) => {
         const rect = frame.getBoundingClientRect();
+        if (rect.bottom < -180 || rect.top > viewport + 180) return;
         const center = rect.top + rect.height / 2;
         const progress = clamp((viewport / 2 - center) / (viewport / 2 + rect.height / 2), -1, 1);
         const focus = 1 - Math.min(1, Math.abs(progress) * 1.55);
+        const imageX = progress * (mobile ? 18 : 48);
         frame.style.setProperty("--fx-image-focus", focus.toFixed(3));
-        frame.style.setProperty("--fx-image-x", `${(progress * (mobile ? 18 : 48)).toFixed(2)}px`);
+        frame.style.setProperty("--fx-image-x", `${imageX.toFixed(2)}px`);
         frame.style.setProperty("--fx-image-rotate", `${(progress * (mobile ? 1.5 : 3)).toFixed(2)}deg`);
+
+        frame.querySelectorAll(".fixly-scatter-piece").forEach((piece) => {
+          const scatterStrength = 1 - focus;
+          const x = Number(piece.dataset.scatterX || 0) * (mobile ? 0.58 : 1) * scatterStrength;
+          const y = Number(piece.dataset.scatterY || 0) * (mobile ? 0.58 : 1) * scatterStrength;
+          const rotation = Number(piece.dataset.scatterRotate || 0) * scatterStrength;
+          piece.style.setProperty("--scatter-x", `${x.toFixed(2)}px`);
+          piece.style.setProperty("--scatter-y", `${y.toFixed(2)}px`);
+          piece.style.setProperty("--scatter-r", `${rotation.toFixed(2)}deg`);
+        });
       });
 
       if (marquee) {
