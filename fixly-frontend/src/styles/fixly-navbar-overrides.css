@@ -1,57 +1,88 @@
 /* ============================================================
-   FIXLY NAVBAR — PROFILE MENU OVERRIDES
-   Keeps the sign-out action consistent with the other menu items.
-   Scoped only to the navbar profile dropdown.
+   FIXLY NAVBAR OVERRIDES
+   Remove desktop/mobile role capsules and flatten the profile control.
+   Keep profile dropdown functionality intact.
    ============================================================ */
 
-.fnav-dropdown .fnav-logout-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  margin: 0;
-  padding: 11px 12px;
-  border: 0;
-  border-radius: 11px;
-  background: transparent;
-  color: #dc2626;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: normal;
-  text-align: left;
-  text-decoration: none;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  box-shadow: none;
-  outline: none;
-  transition: background 150ms ease, color 150ms ease;
+/* Existing desktop/mobile role/status capsules are not needed. */
+.fnav-status-pill,
+.fnav-mobile-role-pill {
+  display: none !important;
 }
 
-.fnav-dropdown .fnav-logout-btn:hover {
-  background: #fef2f2;
-  color: #b91c1c;
+/* Remove the outer pill/capsule around the desktop profile trigger.
+   The avatar itself remains circular and the dropdown functionality stays intact. */
+.fnav-profile-trigger {
+  min-height: 40px !important;
+  padding: 2px 4px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-.fnav-dropdown .fnav-logout-btn:focus-visible {
-  outline: 2px solid #16a34a;
-  outline-offset: -2px;
+.fnav-profile-trigger:hover,
+.fnav-profile-trigger.fnav-trigger-active {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-.fnav-dropdown .fnav-logout-btn .fnav-dd-icon {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 auto;
+.fnav-profile-trigger:focus-visible {
+  outline: 2px solid #16a34a !important;
+  outline-offset: 3px !important;
+  border-radius: 8px !important;
 }
 
-.fnav-dropdown .fnav-logout-btn .fnav-dd-item-text {
-  min-width: 0;
-  flex: 1;
+/* Mobile sign-out button: explicit styling so it does not fall back
+   to browser/default button styles. */
+.fnav-mobile-logout {
+  width: 100% !important;
+  min-height: 46px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 9px !important;
+  margin: 14px 0 4px !important;
+  padding: 11px 16px !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 12px !important;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif !important;
+  font-size: 0.86rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease !important;
 }
 
-@media (max-width: 520px) {
-  .fnav-dropdown .fnav-logout-btn {
-    padding: 11px 12px;
+.fnav-mobile-logout:hover {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+  transform: translateY(-1px);
+}
+
+.fnav-mobile-logout:focus-visible {
+  outline: 2px solid #16a34a !important;
+  outline-offset: 2px !important;
+}
+
+.fnav-mobile-logout:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fnav-mobile-logout {
+    transition: none !important;
+  }
+
+  .fnav-mobile-logout:hover,
+  .fnav-mobile-logout:active {
+    transform: none;
   }
 }
