@@ -18,9 +18,11 @@ import {
 import "../styles/fixly-home.css";
 import "../styles/fixly-home-v2.css";
 import "../styles/fixly-home-parallax.css";
+import "../styles/fixly-home-scroll-motion.css";
 import HomeFooter from "../components/footer/HomeFooter";
 import FixlyChatbot from "../components/chatbot/FixlyChatbot";
 import HomeHero from "../components/home/HomeHero";
+import FixlyScrollMotion from "../components/home/FixlyScrollMotion";
 import serviceImg1 from "../assets/service-1.png";
 import serviceImg2 from "../assets/service-2.png";
 import verifiedExpert from "../assets/verified-Expert.png";
@@ -92,7 +94,7 @@ const Home = () => {
   return (
     <div className="fixly-parallax-page">
       <HomeHero />
-
+      <FixlyScrollMotion />
       <div className="fixly-scroll-line" aria-hidden="true" />
 
       <section className="fixly-story fixly-story-dark fixly-services" id="services">
@@ -103,7 +105,6 @@ const Home = () => {
             <h2>Everything your home needs.<br /><em>One platform.</em></h2>
             <p>From small repairs to recurring maintenance, Fixly brings trusted local professionals into one simple service flow.</p>
           </div>
-
           <div className="fixly-service-stage">
             {services.map((service, index) => {
               const Icon = service.icon;
