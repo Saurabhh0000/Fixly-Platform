@@ -19,6 +19,7 @@ import {
   FaTimes,
   FaUserCircle,
   FaListAlt,
+  FaArrowUp,
 } from "react-icons/fa";
 import "../styles/fixly-navbar.css";
 import NotificationBell from "./notifications/NotificationBell";
@@ -165,6 +166,17 @@ const SignOutModal = ({ open, onCancel, onConfirm }) => {
   );
 };
 
+/* ================================================================
+   BRAND — "Fixly." with the accent dot, as in the reference.
+   ================================================================ */
+const FixlyWordmark = () => (
+  <>
+    <span className="fnav-logo-fix">Fix</span>
+    <span className="fnav-logo-ly">ly</span>
+    <span className="fnav-logo-dot">.</span>
+  </>
+);
+
 const FixlyNavbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -173,9 +185,30 @@ const FixlyNavbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [signOutOpen, setSignOutOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const profileRef = useRef(null);
   const navRef = useRef(null);
+
+  /* ===== SCROLL STATE =====
+     Drives the "detach into a floating bar" transition from the
+     reference video. rAF-throttled so it never thrashes on scroll. */
+  useEffect(() => {
+    let ticking = false;
+    const update = () => {
+      setScrolled(window.scrollY > 12);
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   /* ===== CLOSE ON OUTSIDE CLICK ===== */
   useEffect(() => {
@@ -276,12 +309,14 @@ const FixlyNavbar = () => {
 
   const initial = user?.fullName?.charAt(0)?.toUpperCase() || "U";
 
+  const shellClass = `fnav-shell ${scrolled ? "fnav-scrolled" : ""}`;
+
   /* ================================================================
      NOT LOGGED IN
      ================================================================ */
   if (!user) {
     return (
-      <div className="fnav-shell" ref={navRef}>
+      <div className={shellClass} ref={navRef}>
         <nav className="fnav-bar" aria-label="Main navigation">
           <div className="fnav-inner">
             {/* LEFT — LOGO */}
@@ -290,8 +325,7 @@ const FixlyNavbar = () => {
                 to="/"
                 className="fnav-logo"
                 onClick={() => setMobileOpen(false)}>
-                <span className="fnav-logo-fix">Fix</span>
-                <span className="fnav-logo-ly">ly</span>
+                <FixlyWordmark />
               </Link>
             </div>
 
@@ -324,11 +358,16 @@ const FixlyNavbar = () => {
             {/* RIGHT — ACTIONS */}
             <div className="fnav-zone fnav-zone-right">
               <div className="fnav-desktop-actions">
+                <span className="fnav-status-pill">
+                  <span className="fnav-status-dot" aria-hidden="true" />
+                  Available
+                </span>
                 <Link to="/login" className="fnav-btn fnav-btn-ghost">
                   Sign In
                 </Link>
                 <Link to="/register" className="fnav-btn fnav-btn-solid">
                   Get Started
+                  <FaArrowUp className="fnav-btn-arrow" aria-hidden="true" />
                 </Link>
               </div>
 
@@ -358,8 +397,7 @@ const FixlyNavbar = () => {
             <div className="fnav-mobile-sheet" id="fnav-mobile-sheet">
               <div className="fnav-sheet-head">
                 <span className="fnav-sheet-brand">
-                  <span className="fnav-logo-fix">Fix</span>
-                  <span className="fnav-logo-ly">ly</span>
+                  <FixlyWordmark />
                 </span>
                 <button
                   className="fnav-sheet-close"
@@ -370,6 +408,7 @@ const FixlyNavbar = () => {
               </div>
 
               <div className="fnav-mobile-nav">
+                <p className="fnav-mobile-section-label">Navigation</p>
                 <Link
                   to="/"
                   className={`fnav-mobile-link ${isActive("/") ? "fnav-mobile-link-active" : ""}`}
@@ -421,7 +460,7 @@ const FixlyNavbar = () => {
      LOGGED IN
      ================================================================ */
   return (
-    <div className="fnav-shell" ref={navRef}>
+    <div className={shellClass} ref={navRef}>
       <nav className="fnav-bar" aria-label="Main navigation">
         <div className="fnav-inner">
           {/* LEFT — LOGO */}
@@ -430,8 +469,7 @@ const FixlyNavbar = () => {
               to={dashboardPath}
               className="fnav-logo"
               onClick={() => setMobileOpen(false)}>
-              <span className="fnav-logo-fix">Fix</span>
-              <span className="fnav-logo-ly">ly</span>
+              <FixlyWordmark />
             </Link>
           </div>
 
@@ -486,7 +524,7 @@ const FixlyNavbar = () => {
           {/* RIGHT — ACTIONS */}
           <div className="fnav-zone fnav-zone-right">
             <div className="fnav-desktop-actions">
-              {/* Role status pill (mirrors the reference's status dot) */}
+              {/* Role status pill — dot + label, as in the reference */}
               <span className="fnav-status-pill">
                 <span className="fnav-status-dot" aria-hidden="true" />
                 {roleLabel}
@@ -501,7 +539,9 @@ const FixlyNavbar = () => {
               )}
 
               {/* Notification bell (desktop) */}
-              <NotificationBell />
+              <div className="fnav-bell">
+                <NotificationBell />
+              </div>
 
               {/* PROFILE DROPDOWN */}
               <div className="fnav-profile-wrap" ref={profileRef}>
@@ -623,7 +663,7 @@ const FixlyNavbar = () => {
                 flex space-between treats them as one right-aligned unit
                 instead of centering the bell between logo and hamburger. */}
             <div className="fnav-mobile-controls">
-              <div className="fnotif-mobile-trigger">
+              <div className="fnav-bell fnotif-mobile-trigger">
                 <NotificationBell />
               </div>
 
