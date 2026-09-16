@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import "./styles/fixly.css";
 import "./styles/fixly-navbar-overrides.css";
+import "./styles/fixly-home-redesign.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
