@@ -15,6 +15,7 @@
   --fx-scroll-x:0px;
   --fx-scroll-rotate:0deg;
   --fx-scroll-scale:1;
+  will-change:transform;
 }
 
 .fixly-bento{
@@ -27,10 +28,11 @@
 }
 .fixly-editorial-copy{transform:translate3d(var(--fx-scroll-x),0,0);}
 
-/* Make the horizontal movement feel intentional rather than abrupt. */
-.fixly-bento,.fixly-feature-card,.fixly-cinema-step,.fixly-stat-line,.fixly-editorial-copy{
-  will-change:transform;
-}
+/* Preserve the existing reveal opacity while scroll motion controls position. */
+.fixly-bento.fixly-reveal,
+.fixly-feature-card.fixly-reveal,
+.fixly-cinema-step.fixly-reveal,
+.fixly-editorial-copy.fixly-reveal{transition:opacity .8s var(--fx-motion-ease)}
 
 /* ============================================================
    CINEMATIC HORIZONTAL RIBBON
@@ -69,15 +71,15 @@
 
 /* ============================================================
    IMAGE SCATTER / ASSEMBLE
-   Four fragments appear displaced, assemble around viewport center,
-   then separate as the user scrolls past the image.
+   Four fragments separate outside the focal point and assemble
+   when the image reaches the center of the viewport.
    ============================================================ */
 .fixly-has-scatter{overflow:visible!important}
 .fixly-has-scatter>img{
   position:relative;
   z-index:1;
   opacity:var(--fx-image-focus,1);
-  transform:translate3d(var(--fx-image-x,0px),0,0) rotate(var(--fx-image-rotate,0deg)) scale(calc(.985 + var(--fx-image-focus,1) * .015));
+  transform:translate3d(var(--fx-image-x,0px),0,0) rotate(var(--fx-image-rotate,0deg)) scale(var(--fx-image-scale,1));
   transition:opacity .08s linear;
 }
 .fixly-scatter-layer{
@@ -98,17 +100,14 @@
   border-radius:18px;
   box-shadow:0 20px 50px rgba(15,23,42,.16);
   opacity:1;
-  will-change:transform,opacity;
-  transform:translate3d(0,0,0);
+  will-change:transform;
+  transform:translate3d(var(--scatter-x,0px),var(--scatter-y,0px),0) rotate(var(--scatter-r,0deg));
   transition:transform .08s linear;
 }
 .fixly-scatter-1{left:0;top:0}
 .fixly-scatter-2{right:0;top:0}
 .fixly-scatter-3{left:0;bottom:0}
 .fixly-scatter-4{right:0;bottom:0}
-
-/* The JS supplies the actual displacement through CSS custom properties. */
-.fixly-scatter-piece{transform:translate3d(var(--scatter-x,0px),var(--scatter-y,0px),0) rotate(var(--scatter-r,0deg));}
 
 /* ============================================================
    FLOW SECTION — pinned editorial feeling
@@ -121,8 +120,6 @@
 }
 .fixly-parallax-cinema{isolation:isolate}
 .fixly-parallax-cinema .fixly-cinema-steps{z-index:6}
-
-/* Large background word gives depth while the foreground remains readable. */
 .fixly-parallax-cinema:before{
   content:"FIXLY";
   position:absolute;
@@ -138,34 +135,21 @@
   pointer-events:none;
 }
 
-/* ============================================================
-   IMAGE STORY — slight counter-direction creates depth.
-   ============================================================ */
-.fixly-image-story .fixly-editorial-row .fixly-editorial-copy{--fx-scroll-x:0px}
-.fixly-editorial-dark .fixly-editorial-copy{--fx-scroll-x:0px}
-
-/* Feature images travel independently from their cards. */
+/* Feature artwork has its own independent scroll travel. */
 .fixly-feature-card img{
-  transition:transform .65s var(--fx-motion-ease),opacity .5s;
+  --fx-feature-image-x:0px;
+  --fx-feature-image-y:0px;
+  transform:translate3d(var(--fx-feature-image-x),var(--fx-feature-image-y),0) scale(1.02);
+  transition:transform .08s linear,opacity .5s;
   will-change:transform;
 }
-.fixly-feature-card:nth-child(odd) img{transform:translate3d(calc(var(--fx-scroll-x) * -.22),0,0) scale(1.02)}
-.fixly-feature-card:nth-child(even) img{transform:translate3d(calc(var(--fx-scroll-x) * .16),0,0) scale(1.02)}
 
-/* ============================================================
-   SECTION ENTER/EXIT CHOREOGRAPHY
-   ============================================================ */
 .fixly-services .fixly-section-intro,
-.fixly-feature-wall .fixly-section-intro{
-  transition:transform .12s linear;
-}
-
-/* Safety ring gets an additional subtle counter movement. */
+.fixly-feature-wall .fixly-section-intro{transition:transform .12s linear}
 .fixly-safety-ring{will-change:transform}
 
 /* ============================================================
    MOBILE
-   Keep horizontal travel restrained; preserve scatter/assemble.
    ============================================================ */
 @media(max-width:600px){
   .fixly-scroll-marquee{padding:22px 0}
@@ -173,7 +157,7 @@
   .fixly-parallax-cinema .fixly-cinema-content{position:relative;top:auto;min-height:0}
   .fixly-scatter-piece{border-radius:12px}
   .fixly-scatter-layer{border-radius:28px}
-  .fixly-has-scatter>img{transform:translate3d(var(--fx-image-x,0px),0,0) scale(calc(.99 + var(--fx-image-focus,1) * .01))}
+  .fixly-has-scatter>img{transform:translate3d(var(--fx-image-x,0px),0,0) rotate(var(--fx-image-rotate,0deg)) scale(var(--fx-image-scale,1))}
 }
 
 @media(prefers-reduced-motion:reduce){
