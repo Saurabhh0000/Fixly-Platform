@@ -91,6 +91,12 @@ const FixlyScrollMotion = () => {
         el.style.setProperty("--fx-scroll-x", `${x.toFixed(2)}px`);
         el.style.setProperty("--fx-scroll-rotate", `${rotate.toFixed(2)}deg`);
         el.style.setProperty("--fx-scroll-scale", scale.toFixed(3));
+
+        const image = el.querySelector("img");
+        if (image && el.classList.contains("fixly-feature-card")) {
+          image.style.setProperty("--fx-feature-image-x", `${(-x * 0.22).toFixed(2)}px`);
+          image.style.setProperty("--fx-feature-image-y", `${(Math.abs(progress) * 4).toFixed(2)}px`);
+        }
       });
 
       root.querySelectorAll(".fixly-image-frame").forEach((frame) => {
