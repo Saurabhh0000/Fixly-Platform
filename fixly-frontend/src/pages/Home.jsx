@@ -1,26 +1,23 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Row, Col } from "react-bootstrap";
-import fixlyApi from "../api/fixlyApi";
 import {
-  FaCalendarCheck,
-  FaHome,
-  FaUserCheck,
-  FaShieldAlt,
-  FaBolt,
-  FaWrench,
-  FaBroom,
-  FaSignInAlt,
-  FaUserPlus,
-  FaSearch,
-  FaCheckCircle,
-  FaStar,
-  FaLeaf,
   FaArrowRight,
+  FaBolt,
+  FaBroom,
+  FaCalendarCheck,
+  FaCheckCircle,
+  FaHome,
   FaLock,
+  FaSearch,
+  FaShieldAlt,
+  FaStar,
+  FaTools,
+  FaUserCheck,
+  FaWrench,
 } from "react-icons/fa";
 import "../styles/fixly-home.css";
 import "../styles/fixly-home-v2.css";
+import "../styles/fixly-home-parallax.css";
 import HomeFooter from "../components/footer/HomeFooter";
 import FixlyChatbot from "../components/chatbot/FixlyChatbot";
 import HomeHero from "../components/home/HomeHero";
@@ -30,480 +27,210 @@ import verifiedExpert from "../assets/verified-Expert.png";
 import safeAndSecure from "../assets/safeAndSecure.png";
 import support24 from "../assets/support-24x7.png";
 
+const services = [
+  { title: "Home Repair", text: "Plumbing, electrical and everyday fixes.", icon: FaWrench },
+  { title: "Cleaning", text: "Reliable professionals for a cleaner home.", icon: FaBroom },
+  { title: "Maintenance", text: "Keep your home running smoothly.", icon: FaHome },
+  { title: "Instant Help", text: "Get support when the job cannot wait.", icon: FaBolt },
+];
+
+const features = [
+  { title: "Verified Experts", text: "Identity and skill verification before professionals serve customers.", icon: FaShieldAlt, image: verifiedExpert },
+  { title: "Fast Booking", text: "Find a service, choose your professional and book in minutes.", icon: FaCalendarCheck, image: serviceImg2 },
+  { title: "Secure Service", text: "OTP-based service flow and protected customer experience.", icon: FaLock, image: safeAndSecure },
+  { title: "Always Supported", text: "A dependable platform experience whenever you need help.", icon: FaUserCheck, image: support24 },
+];
+
 const Home = () => {
   const navigate = useNavigate();
 
-  /* ── Parallax for How It Works steps (legacy .fh-* section, unchanged this pass) ── */
   useEffect(() => {
-    const handleScroll = () => {
-      const section = document.getElementById("fh-how");
-      if (!section) return;
+    const root = document.querySelector(".fixly-parallax-page");
+    if (!root) return;
 
-      const rect = section.getBoundingClientRect();
-      const viewH = window.innerHeight;
-      const progress = Math.max(
-        0,
-        Math.min(1, 1 - rect.bottom / (viewH + rect.height)),
-      );
-      const multipliers = [-28, 0, 28];
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const items = [...root.querySelectorAll("[data-parallax-speed]")];
+    let raf = 0;
 
-      multipliers.forEach((mult, i) => {
-        const el = document.getElementById(`fh-step-${i + 1}`);
-        if (el) el.style.transform = `translateY(${progress * mult}px)`;
+    const update = () => {
+      raf = 0;
+      if (reduceMotion.matches) return;
+      const viewport = window.innerHeight;
+      items.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom < -160 || rect.top > viewport + 160) return;
+        const speed = Number(el.dataset.parallaxSpeed || 0);
+        const center = rect.top + rect.height / 2;
+        const offset = (viewport / 2 - center) * speed;
+        el.style.setProperty("--parallax-y", `${offset.toFixed(2)}px`);
       });
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const els = document.querySelectorAll(".fixly-reveal");
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
+      { threshold: 0.12 }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <>
-      {/* ══════════════════════════════════════
-          HERO — rebuilt, plain CSS, .fhome-* namespace
-      ══════════════════════════════════════ */}
+    <div className="fixly-parallax-page">
       <HomeHero />
 
-      {/* ══════════════════════════════════════
-          SERVICE CARDS — unchanged this pass (still Bootstrap)
-      ══════════════════════════════════════ */}
-      <section className="fh-services-section">
-        <Container>
-          <div className="fh-section-badge">
-            <FaBolt />
-            <span>Popular Services</span>
-          </div>
-          <h2 className="fh-section-title">What are you looking for?</h2>
-          <p className="fh-section-sub">
-            From repairs to cleaning — we've got you covered.
-          </p>
+      <div className="fixly-scroll-line" aria-hidden="true" />
 
-          <Row className="fh-service-row">
-            <Col md={4} sm={6}>
-              <div className="fh-service-card">
-                <div className="fh-sc-top">
-                  <div className="fh-sc-icon fh-sc-blue">
-                    <FaWrench />
-                  </div>
-                  <span className="fh-sc-badge fh-badge-green">
-                    Upto 40% Off
-                  </span>
-                </div>
-                <h4 className="fh-sc-title">Home Services</h4>
-                <div className="fh-sc-tags">
-                  <span className="fh-tag fh-tag-blue">
-                    <FaWrench />
-                    Plumbing
-                  </span>
-                  <span className="fh-tag fh-tag-amber">
-                    <FaBolt />
-                    Electrical
-                  </span>
-                  <span className="fh-tag fh-tag-green">
-                    <FaBroom />
-                    Cleaning
-                  </span>
-                </div>
-              </div>
-            </Col>
-
-            <Col md={4} sm={6}>
-              <div className="fh-service-card">
-                <div className="fh-sc-top">
-                  <div className="fh-sc-icon fh-sc-violet">
-                    <FaBolt />
-                  </div>
-                  <span className="fh-sc-badge fh-badge-blue">
-                    Fast Response
-                  </span>
-                </div>
-                <h4 className="fh-sc-title">Instant Help</h4>
-                <div className="fh-sc-tags">
-                  <span className="fh-tag fh-tag-red">
-                    <FaBolt />
-                    Emergency
-                  </span>
-                  <span className="fh-tag fh-tag-violet">
-                    <FaCalendarCheck />
-                    Same-Day
-                  </span>
-                </div>
-              </div>
-            </Col>
-
-            <Col md={4} sm={6}>
-              <div className="fh-service-card">
-                <div className="fh-sc-top">
-                  <div className="fh-sc-icon fh-sc-green">
-                    <FaHome />
-                  </div>
-                  <span className="fh-sc-badge fh-badge-dark">
-                    Trusted Pros
-                  </span>
-                </div>
-                <h4 className="fh-sc-title">Maintenance</h4>
-                <div className="fh-sc-tags">
-                  <span className="fh-tag fh-tag-sky">
-                    <FaHome />
-                    AC Service
-                  </span>
-                  <span className="fh-tag fh-tag-slate">
-                    <FaWrench />
-                    Appliances
-                  </span>
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* ══════════════════════════════════════
-          HOW IT WORKS — unchanged this pass
-      ══════════════════════════════════════ */}
-      <section className="fh-how-section" id="fh-how">
-        <Container>
-          <div className="fh-how-header">
-            <div className="fh-section-badge">
-              <FaCheckCircle />
-              <span>Simple Process</span>
-            </div>
-            <h2 className="fh-section-title">
-              How <span className="fh-title-green">Fixly</span> Works
-            </h2>
-            <p className="fh-section-sub">
-              Three easy steps to get a professional at your door.
-            </p>
+      <section className="fixly-story fixly-story-dark fixly-services" id="services">
+        <div className="fixly-orb fixly-orb-green" data-parallax-speed="0.12" aria-hidden="true" />
+        <div className="fixly-container">
+          <div className="fixly-section-intro fixly-reveal">
+            <span className="fixly-kicker"><span>01</span> SERVICES</span>
+            <h2>Everything your home needs.<br /><em>One platform.</em></h2>
+            <p>From small repairs to recurring maintenance, Fixly brings trusted local professionals into one simple service flow.</p>
           </div>
 
-          <div className="fh-steps" id="fh-steps">
-            <div className="fh-step" id="fh-step-1">
-              <div className="fh-step-num">01</div>
-              <div className="fh-step-icon">
-                <FaSearch />
-              </div>
-              <h5 className="fh-step-title">Search</h5>
-              <p className="fh-step-desc">
-                Select your city and the service you need from our verified
-                providers.
-              </p>
-            </div>
-            <div className="fh-step" id="fh-step-2">
-              <div className="fh-step-num">02</div>
-              <div className="fh-step-icon">
-                <FaCalendarCheck />
-              </div>
-              <h5 className="fh-step-title">Book</h5>
-              <p className="fh-step-desc">
-                Pick a date and address. Confirm your booking in seconds.
-              </p>
-            </div>
-            <div className="fh-step" id="fh-step-3">
-              <div className="fh-step-num">03</div>
-              <div className="fh-step-icon">
-                <FaHome />
-              </div>
-              <h5 className="fh-step-title">Relax</h5>
-              <p className="fh-step-desc">
-                Your verified professional arrives on time. Job done right.
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* ══════════════════════════════════════
-          ZIG-ZAG SECTIONS — unchanged this pass
-      ══════════════════════════════════════ */}
-      <section className="fh-zig-section fh-zig-bg">
-        <Container>
-          <Row className="align-items-center fh-zig-row">
-            <Col md={6}>
-              <div className="fh-zig-img-wrap">
-                <img
-                  src={serviceImg1}
-                  className="fh-zig-img"
-                  alt="Verified Professionals"
-                />
-                <div className="fh-zig-img-badge">
-                  <FaShieldAlt />
-                  <span>100% Verified</span>
-                </div>
-              </div>
-            </Col>
-            <Col md={6}>
-              <div className="fh-zig-content">
-                <div className="fh-section-badge">
-                  <FaShieldAlt />
-                  <span>Trust & Safety</span>
-                </div>
-                <h3 className="fh-zig-title">
-                  Verified Professionals You Can Trust
-                </h3>
-                <div className="fh-zig-pills">
-                  <span className="fh-zig-pill fh-zp-green">
-                    <FaCheckCircle />
-                    Background Checked
-                  </span>
-                  <span className="fh-zig-pill fh-zp-dark">
-                    <FaUserCheck />
-                    Trusted Experts
-                  </span>
-                </div>
-                <p className="fh-zig-desc">
-                  <FaUserCheck className="fh-zig-desc-icon" />
-                  All service providers are identity-verified, skill-tested, and
-                  continuously reviewed by real customers.
-                </p>
-                <p className="fh-zig-desc">
-                  <FaShieldAlt className="fh-zig-desc-icon" />
-                  Ensuring safety, reliability, and high-quality service at your
-                  doorstep every time.
-                </p>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      <section className="fh-zig-section">
-        <Container>
-          <Row className="align-items-center flex-md-row-reverse fh-zig-row">
-            <Col md={6}>
-              <div className="fh-zig-img-wrap">
-                <img
-                  src={serviceImg2}
-                  className="fh-zig-img"
-                  alt="Fast Booking"
-                />
-                <div className="fh-zig-img-badge fh-badge-blue-wrap">
-                  <FaBolt />
-                  <span>Instant Booking</span>
-                </div>
-              </div>
-            </Col>
-            <Col md={6}>
-              <div className="fh-zig-content">
-                <div className="fh-section-badge">
-                  <FaBolt />
-                  <span>Transparent & Fast</span>
-                </div>
-                <h3 className="fh-zig-title">Fast &amp; Transparent Booking</h3>
-                <div className="fh-zig-pills">
-                  <span className="fh-zig-pill fh-zp-blue">
-                    <FaCalendarCheck />
-                    Real-Time Updates
-                  </span>
-                  <span className="fh-zig-pill fh-zp-green">
-                    <FaCheckCircle />
-                    No Hidden Charges
-                  </span>
-                </div>
-                <p className="fh-zig-desc">
-                  <FaCalendarCheck className="fh-zig-desc-icon" />
-                  Book services in minutes with live status tracking and instant
-                  confirmations.
-                </p>
-                <p className="fh-zig-desc">
-                  <FaBolt className="fh-zig-desc-icon" />
-                  Clear pricing upfront — no surprises, no last-minute changes.
-                </p>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* ══════════════════════════════════════
-          FEATURE STRIP — unchanged this pass
-      ══════════════════════════════════════ */}
-      <section className="fh-feature-strip">
-        <Container>
-          <div className="fh-section-badge fh-badge-white">
-            <FaStar />
-            <span>Why Fixly</span>
-          </div>
-          <h2 className="fh-section-title fh-title-white">
-            Everything you need, in one place
-          </h2>
-
-          <Row className="g-4 mt-2">
-            {[
-              {
-                title: "Verified Experts",
-                sub: "ID & skill checked",
-                img: verifiedExpert,
-                badge: "Trusted",
-                bc: "fh-fc-green",
-              },
-              {
-                title: "Instant Booking",
-                sub: "Book in under 2 min",
-                img: serviceImg2,
-                badge: "Fast",
-                bc: "fh-fc-blue",
-              },
-              {
-                title: "Safe & Secure",
-                sub: "OTP-protected service",
-                img: safeAndSecure,
-                badge: "Secure",
-                bc: "fh-fc-violet",
-              },
-              {
-                title: "24×7 Support",
-                sub: "Always here for you",
-                img: support24,
-                badge: "Always On",
-                bc: "fh-fc-amber",
-              },
-            ].map((f, i) => (
-              <Col md={3} sm={6} key={i}>
-                <div className="fh-feature-card">
-                  <div className={`fh-fc-badge ${f.bc}`}>{f.badge}</div>
-                  <h4 className="fh-fc-title">{f.title}</h4>
-                  <p className="fh-fc-sub">{f.sub}</p>
-                  <img src={f.img} alt={f.title} className="fh-fc-img" />
-                  <button
-                    className="fh-fc-btn"
-                    onClick={() => navigate("/login")}>
-                    <FaArrowRight />
-                  </button>
-                </div>
-              </Col>
-            ))}
-          </Row>
-        </Container>
-      </section>
-
-      {/* ══════════════════════════════════════
-          TRUST & SAFETY — unchanged this pass
-      ══════════════════════════════════════ */}
-      <section className="fh-trust-section">
-        <Container>
-          <div className="fh-section-badge">
-            <FaLock />
-            <span>Your Safety</span>
-          </div>
-          <h2 className="fh-section-title">
-            Your Safety, Our <span className="fh-title-green">Priority</span>
-          </h2>
-          <p className="fh-section-sub">
-            Every service on Fixly is designed to be safe, secure, and
-            stress-free.
-          </p>
-
-          <Row className="g-4 mt-2">
-            {[
-              {
-                icon: FaShieldAlt,
-                title: "Background Verified",
-                desc: "ID & police verification for all professionals",
-                color: "fh-trust-green",
-              },
-              {
-                icon: FaUserCheck,
-                title: "Trained Experts",
-                desc: "Skill-certified & continuously rated by customers",
-                color: "fh-trust-blue",
-              },
-              {
-                icon: FaCalendarCheck,
-                title: "OTP-Based Service",
-                desc: "Service starts only after OTP verification",
-                color: "fh-trust-violet",
-              },
-              {
-                icon: FaBolt,
-                title: "Secure Payments",
-                desc: "100% secure & transparent pricing always",
-                color: "fh-trust-amber",
-              },
-            ].map((t, i) => {
-              const Icon = t.icon;
+          <div className="fixly-service-stage">
+            {services.map((service, index) => {
+              const Icon = service.icon;
               return (
-                <Col md={3} sm={6} key={i}>
-                  <div className="fh-trust-card">
-                    <div className={`fh-trust-icon-wrap ${t.color}`}>
-                      <Icon />
-                    </div>
-                    <h5 className="fh-trust-title">{t.title}</h5>
-                    <p className="fh-trust-desc">{t.desc}</p>
-                  </div>
-                </Col>
+                <article key={service.title} className={`fixly-bento fixly-bento-${index + 1} fixly-reveal`} data-parallax-speed={index % 2 ? "-0.045" : "0.07"}>
+                  <span className="fixly-card-index">0{index + 1}</span>
+                  <div className="fixly-icon"><Icon /></div>
+                  <h3>{service.title}</h3>
+                  <p>{service.text}</p>
+                  <span className="fixly-card-arrow"><FaArrowRight /></span>
+                </article>
               );
             })}
-          </Row>
-        </Container>
+          </div>
+        </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          CTA — unchanged this pass
-      ══════════════════════════════════════ */}
-      <section className="fh-cta-section">
-        <div className="fh-cta-blob fh-cta-blob-1" />
-        <div className="fh-cta-blob fh-cta-blob-2" />
+      <section className="fixly-parallax-cinema">
+        <div className="fixly-cinema-backdrop" data-parallax-speed="0.16" aria-hidden="true" />
+        <div className="fixly-cinema-glow" data-parallax-speed="-0.1" aria-hidden="true" />
+        <div className="fixly-container fixly-cinema-content fixly-reveal">
+          <span className="fixly-kicker"><span>02</span> THE FLOW</span>
+          <h2>Search.<br /><span>Book.</span><br />Relax.</h2>
+          <p>A calm, predictable booking journey designed around the customer.</p>
+          <button className="fixly-outline-btn" onClick={() => navigate("/search")}>Explore Services <FaArrowRight /></button>
+        </div>
+        <div className="fixly-cinema-steps">
+          {[
+            ["01", "Search", "Choose your city and service."],
+            ["02", "Book", "Select a professional and time."],
+            ["03", "Relax", "Track the job until it is complete."],
+          ].map(([num, title, text], index) => (
+            <div key={num} className="fixly-cinema-step fixly-reveal" data-parallax-speed={index === 1 ? "0.035" : index === 0 ? "-0.045" : "0.06"}>
+              <span>{num}</span><strong>{title}</strong><p>{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-        <Container className="fh-cta-inner">
-          <Row className="align-items-center">
-            <Col md={8}>
-              <div className="fh-cta-section-badge">
-                <FaLeaf />
-                <span>Get Started Today</span>
+      <section className="fixly-story fixly-image-story">
+        <div className="fixly-container">
+          <div className="fixly-editorial-row fixly-reveal">
+            <div className="fixly-editorial-copy">
+              <span className="fixly-kicker"><span>03</span> TRUST</span>
+              <h2>People you can<br /><em>count on.</em></h2>
+              <p>Fixly is built around verified professionals, transparent booking and a service flow that keeps customers informed.</p>
+              <div className="fixly-mini-list">
+                <div><FaCheckCircle /> Background verified</div>
+                <div><FaCheckCircle /> Customer reviewed</div>
+                <div><FaCheckCircle /> OTP protected service</div>
               </div>
-              <h2 className="fh-cta-title">
-                Start booking with{" "}
-                <span className="fh-cta-brand">
-                  <span className="fh-brand-fix">Fix</span>
-                  <span className="fh-cta-ly">ly</span>
-                </span>
-              </h2>
-              <p className="fh-cta-sub">
-                Find trusted professionals for your home — quickly and
-                confidently.
-              </p>
-              <div className="fh-cta-badges">
-                <span className="fh-cta-badge">
-                  <FaShieldAlt />
-                  Verified Experts
-                </span>
-                <span className="fh-cta-badge">
-                  <FaBolt />
-                  Fast Booking
-                </span>
-                <span className="fh-cta-badge">
-                  <FaUserCheck />
-                  Trusted Platform
-                </span>
-              </div>
-            </Col>
+            </div>
+            <div className="fixly-image-frame" data-parallax-speed="0.08">
+              <img src={serviceImg1} alt="Verified Fixly professional" />
+              <div className="fixly-image-stamp"><FaShieldAlt /><span>100%</span><small>VERIFIED</small></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <Col md={4}>
-              <div className="fh-cta-actions">
-                <button
-                  className="fh-cta-btn fh-cta-primary"
-                  onClick={() => navigate("/login")}>
-                  <FaSignInAlt />
-                  <span>Login</span>
-                  <FaArrowRight className="fh-btn-arrow" />
-                </button>
-                <button
-                  className="fh-cta-btn fh-cta-secondary"
-                  onClick={() => navigate("/register")}>
-                  <FaUserPlus />
-                  <span>Create Account</span>
-                </button>
-              </div>
-            </Col>
-          </Row>
-        </Container>
+      <section className="fixly-story fixly-editorial-dark">
+        <div className="fixly-container">
+          <div className="fixly-editorial-row reverse fixly-reveal">
+            <div className="fixly-editorial-copy">
+              <span className="fixly-kicker"><span>04</span> TRANSPARENCY</span>
+              <h2>Know what is<br /><em>happening.</em></h2>
+              <p>Real-time updates and a clear service journey replace uncertainty with visibility from booking to completion.</p>
+              <div className="fixly-stat-line"><strong>01</strong><span>Instant confirmation</span></div>
+              <div className="fixly-stat-line"><strong>02</strong><span>Live booking status</span></div>
+              <div className="fixly-stat-line"><strong>03</strong><span>Clear service completion</span></div>
+            </div>
+            <div className="fixly-image-frame second" data-parallax-speed="-0.075">
+              <img src={serviceImg2} alt="Fast Fixly booking" />
+              <div className="fixly-floating-note" data-parallax-speed="0.12"><FaCalendarCheck /> Booking confirmed</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="fixly-feature-wall">
+        <div className="fixly-container">
+          <div className="fixly-section-intro centered fixly-reveal">
+            <span className="fixly-kicker"><span>05</span> WHY FIXLY</span>
+            <h2>Built for the moments<br /><em>that matter.</em></h2>
+          </div>
+          <div className="fixly-feature-grid">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <article key={feature.title} className={`fixly-feature-card fixly-reveal feature-${index + 1}`} data-parallax-speed={index % 2 ? "0.045" : "-0.035"}>
+                  <div className="fixly-feature-copy"><Icon /><span>0{index + 1}</span><h3>{feature.title}</h3><p>{feature.text}</p></div>
+                  <img src={feature.image} alt="" />
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="fixly-safety-arc">
+        <div className="fixly-safety-ring" data-parallax-speed="0.1" aria-hidden="true" />
+        <div className="fixly-container fixly-safety-content fixly-reveal">
+          <span className="fixly-kicker"><span>06</span> SAFETY FIRST</span>
+          <FaLock className="fixly-safety-icon" />
+          <h2>Your safety is<br /><em>never an afterthought.</em></h2>
+          <p>Verification, secure service activation and transparent status updates are part of the Fixly experience.</p>
+          <button className="fixly-green-btn" onClick={() => navigate("/register")}>Join Fixly <FaArrowRight /></button>
+        </div>
+      </section>
+
+      <section className="fixly-final-cta">
+        <div className="fixly-cta-orb" data-parallax-speed="0.15" aria-hidden="true" />
+        <div className="fixly-container fixly-reveal">
+          <span className="fixly-kicker"><span>07</span> GET STARTED</span>
+          <h2>Good service should<br /><em>feel this simple.</em></h2>
+          <p>Find a trusted professional for your next job with Fixly.</p>
+          <div className="fixly-cta-actions">
+            <button className="fixly-green-btn" onClick={() => navigate("/search")}>Find a Service <FaArrowRight /></button>
+            <button className="fixly-outline-btn" onClick={() => navigate("/become-provider")}>Become a Provider</button>
+          </div>
+          <div className="fixly-cta-proof"><FaStar /> Verified professionals &nbsp; • &nbsp; <FaTools /> Everyday services &nbsp; • &nbsp; <FaCheckCircle /> Secure flow</div>
+        </div>
       </section>
 
       <HomeFooter />
-
       <FixlyChatbot />
-    </>
+    </div>
   );
 };
 
