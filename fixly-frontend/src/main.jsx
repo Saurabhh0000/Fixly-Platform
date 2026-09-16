@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import "./styles/fixly.css";
 import "./styles/fixly-navbar-overrides.css";
 import "./styles/fixly-home-redesign.css";
+import "./styles/fixly-home-effects.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
