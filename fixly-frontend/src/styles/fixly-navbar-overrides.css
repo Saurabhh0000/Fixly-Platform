@@ -1,42 +1,92 @@
 /* ============================================================
    FIXLY NAVBAR OVERRIDES
-   Remove desktop/mobile role capsules and flatten the profile control.
-   Keep profile dropdown functionality intact.
+   Remove role capsules, keep a clean bordered profile control,
+   and keep sign-out styling consistent on desktop/mobile.
    ============================================================ */
 
-/* Existing desktop/mobile role/status capsules are not needed. */
+/* Remove the Service Provider role/status capsules. */
 .fnav-status-pill,
 .fnav-mobile-role-pill {
   display: none !important;
 }
 
-/* Remove the outer pill/capsule around the desktop profile trigger.
-   The avatar itself remains circular and the dropdown functionality stays intact. */
+/* Profile control: keep the clean bordered capsule requested for
+   the navbar while preserving the avatar, name, chevron and dropdown. */
 .fnav-profile-trigger {
   min-height: 40px !important;
-  padding: 2px 4px !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
+  padding: 2px 10px 2px 4px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
   box-shadow: none !important;
 }
 
 .fnav-profile-trigger:hover,
 .fnav-profile-trigger.fnav-trigger-active {
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 999px !important;
+  background: #f8fafc !important;
   box-shadow: none !important;
 }
 
 .fnav-profile-trigger:focus-visible {
   outline: 2px solid #16a34a !important;
-  outline-offset: 3px !important;
-  border-radius: 8px !important;
+  outline-offset: 2px !important;
 }
 
-/* Mobile sign-out button: explicit styling so it does not fall back
-   to browser/default button styles. */
+/* ============================================================
+   DESKTOP PROFILE DROPDOWN — SIGN OUT
+   The base navbar only provides the red text color for this
+   button, so define the complete button UI explicitly here.
+   ============================================================ */
+.fnav-dropdown .fnav-dd-footer .fnav-logout-btn {
+  width: 100% !important;
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  margin: 0 !important;
+  padding: 7px 8px !important;
+  border: 0 !important;
+  border-radius: 11px !important;
+  background: transparent !important;
+  color: #dc2626 !important;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif !important;
+  font-size: 0.81rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+.fnav-dropdown .fnav-dd-footer .fnav-logout-btn:hover {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+}
+
+.fnav-dropdown .fnav-dd-footer .fnav-logout-btn:focus-visible {
+  outline: 2px solid #16a34a !important;
+  outline-offset: -2px !important;
+}
+
+.fnav-dropdown .fnav-dd-footer .fnav-logout-btn .fnav-dd-icon {
+  width: 34px !important;
+  height: 34px !important;
+  flex: 0 0 auto !important;
+}
+
+.fnav-dropdown .fnav-dd-footer .fnav-logout-btn .fnav-dd-item-text {
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+/* Mobile sign-out button. */
 .fnav-mobile-logout {
   width: 100% !important;
   min-height: 46px !important;
