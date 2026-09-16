@@ -1,0 +1,57 @@
+/* ============================================================
+   FIXLY NAVBAR — PROFILE MENU OVERRIDES
+   Keeps the sign-out action consistent with the other menu items.
+   Scoped only to the navbar profile dropdown.
+   ============================================================ */
+
+.fnav-dropdown .fnav-logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 0;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: #dc2626;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: normal;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.fnav-dropdown .fnav-logout-btn:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.fnav-dropdown .fnav-logout-btn:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: -2px;
+}
+
+.fnav-dropdown .fnav-logout-btn .fnav-dd-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+}
+
+.fnav-dropdown .fnav-logout-btn .fnav-dd-item-text {
+  min-width: 0;
+  flex: 1;
+}
+
+@media (max-width: 520px) {
+  .fnav-dropdown .fnav-logout-btn {
+    padding: 11px 12px;
+  }
+}
