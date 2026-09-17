@@ -1,16 +1,10 @@
 /* ============================================================
-   FIXLY — SIX-REFERENCE PARALLAX CHOREOGRAPHY
-   01 Luscious       = independent depth layers
-   02 Freedom        = floating type / lateral drift
-   03 Steakhouse     = cinematic scale + focus
-   04 Land Rover     = interactive horizontal travel + tilt
-   05 Between Us     = layered foreground/background depth
-   06 Alaska         = clip-path image transition + scatter
+   FIXLY — PARALLAX CHOREOGRAPHY
+   Image/text side-enter transitions replace image scattering.
    ============================================================ */
-
 .fixly-parallax-page{--fx-motion-ease:cubic-bezier(.16,1,.3,1)}
 
-.fixly-bento,.fixly-cinema-step,.fixly-stat-line,.fixly-feature-card,.fixly-editorial-copy,.fixly-image-frame{
+.fixly-bento,.fixly-cinema-step,.fixly-stat-line,.fixly-feature-card,.fixly-editorial-copy{
   --fx-scroll-x:0px;--fx-scroll-rotate:0deg;--fx-scroll-scale:1;--fx-pointer-x:0px;--fx-pointer-y:0px;will-change:transform;
 }
 .fixly-bento,.fixly-feature-card{
@@ -18,11 +12,10 @@
 }
 .fixly-cinema-step{transform:translate3d(var(--fx-scroll-x),var(--parallax-y,0),0) rotateZ(var(--fx-scroll-rotate));}
 .fixly-stat-line{transform:translate3d(var(--fx-scroll-x),0,0) rotateZ(var(--fx-scroll-rotate));}
-.fixly-editorial-copy{transform:translate3d(var(--fx-scroll-x),0,0);}
-.fixly-image-frame{transform:perspective(1200px) translate3d(var(--fx-pointer-x),var(--fx-pointer-y),0)}
-.fixly-bento.fixly-reveal,.fixly-feature-card.fixly-reveal,.fixly-cinema-step.fixly-reveal,.fixly-editorial-copy.fixly-reveal{transition:opacity .8s var(--fx-motion-ease)}
+.fixly-editorial-copy{transform:translate3d(var(--fx-scroll-x),0,0)}
+.fixly-bento.fixly-reveal,.fixly-feature-card.fixly-reveal,.fixly-cinema-step.fixly-reveal{transition:opacity .8s var(--fx-motion-ease)}
 
-/* 01 — LUSCIOUS / INDEPENDENT DEPTH LAYERS */
+/* Luscious-inspired independent depth */
 .fx-depth-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .fx-depth-layer{position:absolute;display:block;will-change:transform}
 .fx-depth-back{inset:8% 4% 18% 4%;transform:translate3d(0,var(--depth-back,0),0) scale(1.15);background:radial-gradient(circle at 18% 32%,rgba(34,197,94,.16),transparent 30%),radial-gradient(circle at 80% 70%,rgba(34,197,94,.07),transparent 34%);filter:blur(2px)}
@@ -30,52 +23,50 @@
 .fx-depth-front{width:240px;height:240px;right:5%;bottom:8%;transform:translate3d(0,var(--depth-front,0),0) rotate(18deg);border:1px solid rgba(255,255,255,.06);border-radius:36px}
 .fixly-services>.fixly-container{position:relative;z-index:2}
 
-/* 02 — FREEDOM / FLOATING TYPOGRAPHIC OBJECTS */
+/* Freedom-inspired floating type */
 .fx-freedom-float{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .fx-freedom-float span{position:absolute;display:grid;place-items:center;width:clamp(76px,7vw,112px);height:clamp(76px,7vw,112px);border:1px solid rgba(34,197,94,.22);border-radius:50%;color:rgba(255,255,255,.2);font-size:10px;letter-spacing:.18em;font-weight:800;transform:translate3d(var(--freedom-x),var(--freedom-y),0);will-change:transform}
 .fx-freedom-float span:nth-child(1){left:5%;top:25%}.fx-freedom-float span:nth-child(2){right:7%;top:52%}.fx-freedom-float span:nth-child(3){left:44%;bottom:7%}
 
-/* 03 — STEAKHOUSE / CINEMATIC IMAGE ZOOM */
+/* Steakhouse-inspired cinematic scale */
 .fixly-parallax-cinema{isolation:isolate;overflow:hidden}
-.fixly-cinema-backdrop{transform:translate3d(var(--cinema-x,0),0,0) scale(var(--cinema-scale,1.06));transform-origin:center center;transition:transform .12s linear;will-change:transform}
+.fixly-cinema-backdrop{transform:translate3d(var(--cinema-x,0),0,0) scale(var(--cinema-scale,1.06));transform-origin:center;transition:transform .12s linear;will-change:transform}
 .fixly-parallax-cinema .fixly-cinema-content{position:sticky;top:14vh;min-height:520px;z-index:5}
 .fixly-parallax-cinema .fixly-cinema-steps{z-index:6}
 .fixly-parallax-cinema:before{content:"FIXLY";position:absolute;z-index:1;left:-4vw;top:50%;transform:translateY(-50%);font-size:min(30vw,420px);font-weight:900;line-height:.7;letter-spacing:-.09em;color:rgba(255,255,255,.018);pointer-events:none}
 
-/* CINEMATIC HORIZONTAL RIBBON */
+/* Cinematic horizontal ribbon */
 .fixly-scroll-marquee{position:relative;z-index:4;overflow:hidden;padding:30px 0 28px;background:#07110c;border-top:1px solid rgba(34,197,94,.1);border-bottom:1px solid rgba(34,197,94,.1);--fx-marquee-x:0px}
 .fixly-marquee-row{width:max-content;display:flex;align-items:center;gap:26px;white-space:nowrap;font-size:clamp(2rem,4.8vw,5.5rem);line-height:.9;font-weight:900;letter-spacing:-.06em;text-transform:uppercase;color:rgba(255,255,255,.09);transform:translate3d(calc(var(--fx-marquee-x) - 3vw),0,0);transition:transform .12s linear}
 .fixly-marquee-row+.fixly-marquee-row{margin-top:12px;color:rgba(34,197,94,.2);transform:translate3d(calc(var(--fx-marquee-x) + 8vw),0,0)}
 .fixly-marquee-row i{font-style:normal;color:#22c55e;font-size:.4em}
 
-/* 05 — BETWEEN US / FOREGROUND + BACKGROUND DEPTH */
-.fixly-depth-image-layers{position:absolute;inset:-5%;pointer-events:none;z-index:5;overflow:hidden;border-radius:42px}
-.fixly-depth-image-shadow{position:absolute;inset:0;background:linear-gradient(120deg,rgba(0,0,0,.12),transparent 42%,rgba(34,197,94,.08));transform:translateZ(0)}
-.fixly-depth-image-glass{position:absolute;width:45%;height:120%;top:-10%;left:-18%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:translate3d(0,var(--depth-glass-y,0),0) rotate(12deg);mix-blend-mode:screen}
-.fixly-depth-image-line{position:absolute;top:12%;bottom:12%;left:50%;width:1px;background:rgba(255,255,255,.2);transform:translateX(var(--depth-line-x,0));opacity:.5}
+/* MAIN REQUEST — image enters from LEFT, copy enters from RIGHT */
+.fx-side-reveal{--fx-image-enter:0px;--fx-copy-enter:0px;--fx-side-reveal:1}
+.fx-side-reveal .fixly-image-frame{
+  transform:translate3d(var(--fx-image-enter),0,0) scale(calc(.96 + var(--fx-side-reveal) * .04));
+  opacity:var(--fx-side-reveal);
+  will-change:transform,opacity;
+}
+.fx-side-reveal .fixly-editorial-copy{
+  transform:translate3d(var(--fx-copy-enter),0,0);
+  opacity:var(--fx-side-reveal);
+  will-change:transform,opacity;
+}
+.fx-side-reveal .fixly-image-frame img{transform:scale(1.04);transition:transform .15s linear}
 
-/* 06 — ALASKA / IMAGE TRANSITION + SCATTER */
-.fx-alaska-transition{overflow:visible!important}
-.fx-alaska-transition>img{clip-path:inset(calc((1 - var(--fx-alaska-reveal,1)) * 18%) calc((1 - var(--fx-alaska-reveal,1)) * 12%) round 34px);transition:clip-path .08s linear}
-.fixly-has-scatter{overflow:visible!important}
-.fixly-has-scatter>img{position:relative;z-index:1;opacity:var(--fx-image-focus,1);transform:translate3d(var(--fx-image-x,0px),0,0) rotate(var(--fx-image-rotate,0deg)) scale(var(--fx-image-scale,1));transition:opacity .08s linear}
-.fixly-scatter-layer{position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:38px;overflow:visible;opacity:calc(1 - var(--fx-image-focus,1))}
-.fixly-scatter-piece{position:absolute;width:50%;height:50%;display:block;background-repeat:no-repeat;border-radius:18px;box-shadow:0 20px 50px rgba(15,23,42,.16);opacity:1;will-change:transform;transform:translate3d(var(--scatter-x,0px),var(--scatter-y,0px),0) rotate(var(--scatter-r,0deg));transition:transform .08s linear}
-.fixly-scatter-1{left:0;top:0}.fixly-scatter-2{right:0;top:0}.fixly-scatter-3{left:0;bottom:0}.fixly-scatter-4{right:0;bottom:0}
-
+/* Feature artwork continues to have a small independent depth shift. */
 .fixly-feature-card img{--fx-feature-image-x:0px;--fx-feature-image-y:0px;transform:translate3d(var(--fx-feature-image-x),var(--fx-feature-image-y),0) scale(1.02);transition:transform .08s linear,opacity .5s;will-change:transform}
 .fixly-services .fixly-section-intro,.fixly-feature-wall .fixly-section-intro{transition:transform .12s linear}
 .fixly-safety-ring{will-change:transform}
 
-/* MOBILE */
 @media(max-width:600px){
   .fixly-scroll-marquee{padding:22px 0}.fixly-marquee-row{font-size:2.2rem;gap:18px}.fixly-parallax-cinema .fixly-cinema-content{position:relative;top:auto;min-height:0}
-  .fixly-scatter-piece{border-radius:12px}.fixly-scatter-layer{border-radius:28px}.fixly-has-scatter>img{transform:translate3d(var(--fx-image-x,0px),0,0) rotate(var(--fx-image-rotate,0deg)) scale(var(--fx-image-scale,1))}
   .fx-depth-front{width:120px;height:120px;right:-30px}.fx-freedom-float span{width:64px;height:64px;font-size:8px}.fx-freedom-float span:nth-child(1){left:-18px}.fx-freedom-float span:nth-child(2){right:-16px}.fx-freedom-float span:nth-child(3){left:auto;right:28%;bottom:3%}
-  .fixly-depth-image-layers{border-radius:28px}.fx-alaska-transition>img{clip-path:inset(calc((1 - var(--fx-alaska-reveal,1)) * 8%) calc((1 - var(--fx-alaska-reveal,1)) * 6%) round 24px)}
+  .fx-side-reveal .fixly-image-frame{transform:translate3d(var(--fx-image-enter),0,0) scale(calc(.98 + var(--fx-side-reveal) * .02))}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .fixly-bento,.fixly-cinema-step,.fixly-stat-line,.fixly-feature-card,.fixly-editorial-copy,.fixly-image-frame,.fixly-scatter-piece,.fixly-has-scatter>img,.fixly-marquee-row,.fx-depth-layer,.fx-freedom-float span,.fixly-cinema-backdrop,.fixly-depth-image-glass,.fixly-depth-image-line{transform:none!important;transition:none!important}
-  .fixly-scatter-layer,.fx-freedom-float{display:none}.fx-alaska-transition>img{clip-path:none!important}
+  .fixly-bento,.fixly-cinema-step,.fixly-stat-line,.fixly-feature-card,.fixly-editorial-copy,.fixly-image-frame,.fixly-marquee-row,.fx-depth-layer,.fx-freedom-float span,.fixly-cinema-backdrop,.fx-side-reveal .fixly-image-frame,.fx-side-reveal .fixly-editorial-copy{transform:none!important;transition:none!important;opacity:1!important}
+  .fx-freedom-float{display:none}
 }
