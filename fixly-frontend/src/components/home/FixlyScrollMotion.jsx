@@ -13,7 +13,6 @@ const FixlyScrollMotion = () => {
     let marquee = null;
     const generated = [];
 
-    /* 01 — Luscious: independent depth layers that move at different speeds. */
     const services = root.querySelector(".fixly-services");
     if (services && !services.querySelector(".fx-depth-scene")) {
       const scene = document.createElement("div");
@@ -28,7 +27,6 @@ const FixlyScrollMotion = () => {
       generated.push(scene);
     }
 
-    /* 02 — Freedom: lightweight floating service words/cards around the story. */
     if (services && !services.querySelector(".fx-freedom-float")) {
       const float = document.createElement("div");
       float.className = "fx-freedom-float";
@@ -42,7 +40,6 @@ const FixlyScrollMotion = () => {
       generated.push(float);
     }
 
-    /* 03 — Steakhouse: cinematic image scale/focus transition. */
     const cinema = root.querySelector(".fixly-parallax-cinema");
     if (cinema && !root.querySelector(".fixly-scroll-marquee")) {
       marquee = document.createElement("div");
@@ -56,78 +53,32 @@ const FixlyScrollMotion = () => {
       generated.push(marquee);
     }
 
-    /* 05 — Between Us: separate foreground/background layers around editorial images. */
-    root.querySelectorAll(".fixly-image-frame").forEach((frame, index) => {
-      if (frame.querySelector(".fixly-depth-image-layers")) return;
-      const image = frame.querySelector("img");
-      if (!image) return;
-      const layers = document.createElement("div");
-      layers.className = "fixly-depth-image-layers";
-      layers.setAttribute("aria-hidden", "true");
-      layers.innerHTML = `
-        <span class="fixly-depth-image-shadow"></span>
-        <span class="fixly-depth-image-glass"></span>
-        <span class="fixly-depth-image-line"></span>
-      `;
-      frame.appendChild(layers);
-      frame.dataset.depthIndex = String(index);
-      generated.push(layers);
+    /* Text/image reveal: image enters from the left while copy enters from the right. */
+    root.querySelectorAll(".fixly-editorial-row").forEach((row) => {
+      row.classList.add("fx-side-reveal");
     });
 
-    /* Existing four-piece image scatter is retained and becomes the Alaska-style transition. */
+    /* Remove the previous image-scattering behavior completely. */
     root.querySelectorAll(".fixly-image-frame").forEach((frame) => {
-      if (frame.querySelector(".fixly-scatter-layer")) return;
-      const image = frame.querySelector("img");
-      if (!image) return;
-
-      const layer = document.createElement("div");
-      layer.className = "fixly-scatter-layer";
-      layer.setAttribute("aria-hidden", "true");
-      const pieces = [
-        ["0 0", -82, -62, -7],
-        ["50% 0", 78, -52, 6],
-        ["0 50%", -72, 58, 5],
-        ["50% 50%", 84, 66, -6],
-      ];
-
-      pieces.forEach(([position, x, y, rotation], index) => {
-        const piece = document.createElement("span");
-        piece.className = `fixly-scatter-piece fixly-scatter-${index + 1}`;
-        piece.style.backgroundImage = `url(${image.currentSrc || image.src})`;
-        piece.style.backgroundPosition = position;
-        piece.style.backgroundSize = "200% 200%";
-        piece.dataset.scatterX = String(x);
-        piece.dataset.scatterY = String(y);
-        piece.dataset.scatterRotate = String(rotation);
-        layer.appendChild(piece);
-      });
-
-      frame.appendChild(layer);
-      frame.classList.add("fixly-has-scatter");
-      generated.push(layer);
+      frame.classList.remove("fixly-has-scatter", "fx-alaska-transition");
+      frame.querySelector(".fixly-scatter-layer")?.remove();
+      frame.querySelector(".fixly-depth-image-layers")?.remove();
     });
 
-    /* 06 — Alaska: clip-path reveal for each editorial image as it crosses the viewport. */
-    root.querySelectorAll(".fixly-image-frame").forEach((frame) => {
-      frame.classList.add("fx-alaska-transition");
-    });
-
-    /* 04 — Land Rover: cards travel horizontally and respond subtly to pointer position. */
     const horizontalItems = [
       ...root.querySelectorAll(".fixly-bento"),
       ...root.querySelectorAll(".fixly-cinema-step"),
       ...root.querySelectorAll(".fixly-stat-line"),
       ...root.querySelectorAll(".fixly-feature-card"),
-      ...root.querySelectorAll(".fixly-editorial-copy"),
     ];
 
     horizontalItems.forEach((el, index) => {
       const pattern = [-1, 1, 0.65, -0.7];
-      const base = isMobile() ? 22 : 62;
+      const base = isMobile() ? 12 : 42;
       el.dataset.motionX = String((pattern[index % pattern.length] * base).toFixed(0));
     });
 
-    const pointerItems = [...root.querySelectorAll(".fixly-bento, .fixly-feature-card, .fixly-image-frame")];
+    const pointerItems = [...root.querySelectorAll(".fixly-bento, .fixly-feature-card")];
     const onPointerMove = (event) => {
       if (reduceMotion.matches || isMobile()) return;
       pointerItems.forEach((el) => {
@@ -135,8 +86,8 @@ const FixlyScrollMotion = () => {
         if (rect.bottom < 0 || rect.top > window.innerHeight) return;
         const px = clamp((event.clientX - rect.left) / rect.width - 0.5, -0.5, 0.5);
         const py = clamp((event.clientY - rect.top) / rect.height - 0.5, -0.5, 0.5);
-        el.style.setProperty("--fx-pointer-x", `${(px * 10).toFixed(2)}px`);
-        el.style.setProperty("--fx-pointer-y", `${(py * -8).toFixed(2)}px`);
+        el.style.setProperty("--fx-pointer-x", `${(px * 6).toFixed(2)}px`);
+        el.style.setProperty("--fx-pointer-y", `${(py * -5).toFixed(2)}px`);
       });
     };
 
@@ -146,7 +97,7 @@ const FixlyScrollMotion = () => {
 
       const viewport = window.innerHeight;
       const mobile = isMobile();
-      const maxDistance = mobile ? 24 : 78;
+      const maxDistance = mobile ? 14 : 46;
 
       horizontalItems.forEach((el) => {
         const rect = el.getBoundingClientRect();
@@ -154,79 +105,63 @@ const FixlyScrollMotion = () => {
         const center = rect.top + rect.height / 2;
         const progress = clamp((viewport / 2 - center) / (viewport / 2 + rect.height / 2), -1, 1);
         const x = clamp(Number(el.dataset.motionX || 0) * progress, -maxDistance, maxDistance);
-        const rotate = x * 0.018;
-        const scale = 1 - Math.min(Math.abs(progress) * 0.025, 0.025);
+        const rotate = x * 0.012;
+        const scale = 1 - Math.min(Math.abs(progress) * 0.018, 0.018);
         el.style.setProperty("--fx-scroll-x", `${x.toFixed(2)}px`);
         el.style.setProperty("--fx-scroll-rotate", `${rotate.toFixed(2)}deg`);
         el.style.setProperty("--fx-scroll-scale", scale.toFixed(3));
 
         const image = el.querySelector("img");
         if (image && el.classList.contains("fixly-feature-card")) {
-          image.style.setProperty("--fx-feature-image-x", `${(-x * 0.22).toFixed(2)}px`);
-          image.style.setProperty("--fx-feature-image-y", `${(Math.abs(progress) * 4).toFixed(2)}px`);
+          image.style.setProperty("--fx-feature-image-x", `${(-x * 0.16).toFixed(2)}px`);
+          image.style.setProperty("--fx-feature-image-y", `${(Math.abs(progress) * 3).toFixed(2)}px`);
         }
       });
 
       const depthScene = root.querySelector(".fx-depth-scene");
-      if (depthScene) {
-        const rect = services?.getBoundingClientRect();
-        if (rect) {
-          const p = clamp((viewport / 2 - (rect.top + rect.height / 2)) / viewport, -1, 1);
-          depthScene.style.setProperty("--depth-back", `${(p * (mobile ? 18 : 42)).toFixed(2)}px`);
-          depthScene.style.setProperty("--depth-mid", `${(p * (mobile ? 34 : 76)).toFixed(2)}px`);
-          depthScene.style.setProperty("--depth-front", `${(p * (mobile ? 48 : 108)).toFixed(2)}px`);
-        }
+      if (depthScene && services) {
+        const rect = services.getBoundingClientRect();
+        const p = clamp((viewport / 2 - (rect.top + rect.height / 2)) / viewport, -1, 1);
+        depthScene.style.setProperty("--depth-back", `${(p * (mobile ? 12 : 30)).toFixed(2)}px`);
+        depthScene.style.setProperty("--depth-mid", `${(p * (mobile ? 22 : 52)).toFixed(2)}px`);
+        depthScene.style.setProperty("--depth-front", `${(p * (mobile ? 32 : 72)).toFixed(2)}px`);
       }
 
       root.querySelectorAll("[data-freedom]").forEach((el) => {
         const rect = el.getBoundingClientRect();
         const p = clamp((viewport / 2 - (rect.top + rect.height / 2)) / viewport, -1, 1);
         const direction = Number(el.dataset.freedom || 1);
-        el.style.setProperty("--freedom-x", `${(p * direction * (mobile ? 18 : 48)).toFixed(2)}px`);
-        el.style.setProperty("--freedom-y", `${(-p * (mobile ? 8 : 18)).toFixed(2)}px`);
+        el.style.setProperty("--freedom-x", `${(p * direction * (mobile ? 12 : 32)).toFixed(2)}px`);
+        el.style.setProperty("--freedom-y", `${(-p * (mobile ? 5 : 12)).toFixed(2)}px`);
       });
 
-      root.querySelectorAll(".fixly-image-frame").forEach((frame) => {
-        const rect = frame.getBoundingClientRect();
-        if (rect.bottom < -180 || rect.top > viewport + 180) return;
+      /* Main editorial interaction: image from left, text from right. */
+      root.querySelectorAll(".fx-side-reveal").forEach((row) => {
+        const rect = row.getBoundingClientRect();
+        if (rect.bottom < -120 || rect.top > viewport + 120) return;
         const center = rect.top + rect.height / 2;
-        const progress = clamp((viewport / 2 - center) / (viewport / 2 + rect.height / 2), -1, 1);
-        const focus = 1 - Math.min(1, Math.abs(progress) * 1.55);
-        const imageX = progress * (mobile ? 18 : 48);
-        const reveal = clamp(1 - Math.abs(progress) * 1.25, 0, 1);
-        frame.style.setProperty("--fx-image-focus", focus.toFixed(3));
-        frame.style.setProperty("--fx-image-x", `${imageX.toFixed(2)}px`);
-        frame.style.setProperty("--fx-image-rotate", `${(progress * (mobile ? 1.5 : 3)).toFixed(2)}deg`);
-        frame.style.setProperty("--fx-alaska-reveal", reveal.toFixed(3));
-        frame.style.setProperty("--fx-pointer-x", frame.style.getPropertyValue("--fx-pointer-x") || "0px");
-        frame.style.setProperty("--fx-pointer-y", frame.style.getPropertyValue("--fx-pointer-y") || "0px");
-
-        frame.querySelectorAll(".fixly-scatter-piece").forEach((piece) => {
-          const scatterStrength = 1 - focus;
-          const x = Number(piece.dataset.scatterX || 0) * (mobile ? 0.58 : 1) * scatterStrength;
-          const y = Number(piece.dataset.scatterY || 0) * (mobile ? 0.58 : 1) * scatterStrength;
-          const rotation = Number(piece.dataset.scatterRotate || 0) * scatterStrength;
-          piece.style.setProperty("--scatter-x", `${x.toFixed(2)}px`);
-          piece.style.setProperty("--scatter-y", `${y.toFixed(2)}px`);
-          piece.style.setProperty("--scatter-r", `${rotation.toFixed(2)}deg`);
-        });
-
-        frame.querySelector(".fixly-depth-image-glass")?.style.setProperty("--depth-glass-y", `${(progress * (mobile ? 12 : 30)).toFixed(2)}px`);
-        frame.querySelector(".fixly-depth-image-line")?.style.setProperty("--depth-line-x", `${(progress * (mobile ? 14 : 36)).toFixed(2)}px`);
+        const progress = clamp((viewport / 2 - center) / (viewport * 0.72), -1, 1);
+        const distance = mobile ? 70 : 150;
+        const travel = 1 - Math.abs(progress);
+        const reveal = clamp(1 - Math.abs(progress) * 1.12, 0, 1);
+        row.style.setProperty("--fx-side-progress", travel.toFixed(3));
+        row.style.setProperty("--fx-side-reveal", reveal.toFixed(3));
+        row.style.setProperty("--fx-image-enter", `${((1 - travel) * -distance).toFixed(2)}px`);
+        row.style.setProperty("--fx-copy-enter", `${((1 - travel) * distance).toFixed(2)}px`);
       });
 
       const backdrop = root.querySelector(".fixly-cinema-backdrop");
       if (backdrop && cinema) {
         const rect = cinema.getBoundingClientRect();
         const p = clamp((viewport / 2 - (rect.top + rect.height / 2)) / (viewport * 1.2), -1, 1);
-        backdrop.style.setProperty("--cinema-scale", (1.06 + Math.abs(p) * 0.08).toFixed(3));
-        backdrop.style.setProperty("--cinema-x", `${(p * (mobile ? 10 : 28)).toFixed(2)}px`);
+        backdrop.style.setProperty("--cinema-scale", (1.05 + Math.abs(p) * 0.06).toFixed(3));
+        backdrop.style.setProperty("--cinema-x", `${(p * (mobile ? 7 : 20)).toFixed(2)}px`);
       }
 
       if (marquee) {
         const rect = marquee.getBoundingClientRect();
         const p = clamp((viewport / 2 - (rect.top + rect.height / 2)) / viewport, -1, 1);
-        marquee.style.setProperty("--fx-marquee-x", `${(p * (mobile ? 35 : 110)).toFixed(2)}px`);
+        marquee.style.setProperty("--fx-marquee-x", `${(p * (mobile ? 24 : 80)).toFixed(2)}px`);
       }
     };
 
