@@ -10,7 +10,6 @@
 
 .fixly-parallax-page{--fx-motion-ease:cubic-bezier(.16,1,.3,1)}
 
-/* Shared motion variables */
 .fixly-bento,
 .fixly-cinema-step,
 .fixly-stat-line,
@@ -25,7 +24,6 @@
   will-change:transform;
 }
 
-/* 04 — Land Rover style: directional travel + restrained perspective */
 .fixly-bento,
 .fixly-feature-card{
   transform:perspective(1100px)
@@ -36,7 +34,7 @@
 .fixly-stat-line{transform:translate3d(var(--fx-scroll-x),0,0) rotateZ(var(--fx-scroll-rotate));}
 .fixly-editorial-copy{transform:translate3d(var(--fx-scroll-x),0,0);}
 .fixly-image-frame{
-  transform:perspective(1200px) translate3d(var(--fx-pointer-x),var(--pointer-y,0),0);
+  transform:perspective(1200px) translate3d(var(--fx-pointer-x),var(--fx-pointer-y),0);
 }
 
 .fixly-bento.fixly-reveal,
@@ -44,16 +42,13 @@
 .fixly-cinema-step.fixly-reveal,
 .fixly-editorial-copy.fixly-reveal{transition:opacity .8s var(--fx-motion-ease)}
 
-/* ============================================================
-   01 — LUSCIOUS / INDEPENDENT DEPTH LAYERS
-   ============================================================ */
+/* 01 — LUSCIOUS / INDEPENDENT DEPTH LAYERS */
 .fx-depth-scene{
   position:absolute;
   inset:0;
   overflow:hidden;
   pointer-events:none;
   z-index:0;
-  border-radius:0;
 }
 .fx-depth-layer{position:absolute;display:block;will-change:transform}
 .fx-depth-back{
@@ -77,9 +72,7 @@
 }
 .fixly-services>.fixly-container{position:relative;z-index:2}
 
-/* ============================================================
-   02 — FREEDOM / FLOATING TYPOGRAPHIC OBJECTS
-   ============================================================ */
+/* 02 — FREEDOM / FLOATING TYPOGRAPHIC OBJECTS */
 .fx-freedom-float{
   position:absolute;
   inset:0;
@@ -104,11 +97,9 @@
 }
 .fx-freedom-float span:nth-child(1){left:5%;top:25%}
 .fx-freedom-float span:nth-child(2){right:7%;top:52%}
-.fx-freedom-float span:nth-child(3){left:44%;bottom:7%;}
+.fx-freedom-float span:nth-child(3){left:44%;bottom:7%}
 
-/* ============================================================
-   03 — STEAKHOUSE / CINEMATIC IMAGE ZOOM
-   ============================================================ */
+/* 03 — STEAKHOUSE / CINEMATIC IMAGE ZOOM */
 .fixly-parallax-cinema{isolation:isolate;overflow:hidden}
 .fixly-cinema-backdrop{
   transform:translate3d(var(--cinema-x,0),0,0) scale(var(--cinema-scale,1.06));
@@ -138,9 +129,7 @@
   pointer-events:none;
 }
 
-/* ============================================================
-   CINEMATIC HORIZONTAL RIBBON
-   ============================================================ */
+/* CINEMATIC HORIZONTAL RIBBON */
 .fixly-scroll-marquee{
   position:relative;
   z-index:4;
@@ -173,9 +162,7 @@
 }
 .fixly-marquee-row i{font-style:normal;color:#22c55e;font-size:.4em}
 
-/* ============================================================
-   05 — BETWEEN US / FOREGROUND + BACKGROUND DEPTH
-   ============================================================ */
+/* 05 — BETWEEN US / FOREGROUND + BACKGROUND DEPTH */
 .fixly-depth-image-layers{
   position:absolute;
   inset:-5%;
@@ -207,9 +194,7 @@
   opacity:.5;
 }
 
-/* ============================================================
-   06 — ALASKA / IMAGE TRANSITION + SCATTER
-   ============================================================ */
+/* 06 — ALASKA / IMAGE TRANSITION + SCATTER */
 .fx-alaska-transition{
   clip-path:inset(calc((1 - var(--fx-alaska-reveal,1)) * 18%) calc((1 - var(--fx-alaska-reveal,1)) * 12%) round 34px);
   transition:clip-path .08s linear;
@@ -249,9 +234,6 @@
 .fixly-scatter-3{left:0;bottom:0}
 .fixly-scatter-4{right:0;bottom:0}
 
-/* ============================================================
-   FEATURE ARTWORK
-   ============================================================ */
 .fixly-feature-card img{
   --fx-feature-image-x:0px;
   --fx-feature-image-y:0px;
@@ -263,9 +245,7 @@
 .fixly-feature-wall .fixly-section-intro{transition:transform .12s linear}
 .fixly-safety-ring{will-change:transform}
 
-/* ============================================================
-   MOBILE — preserve the choreography, reduce distance and load
-   ============================================================ */
+/* MOBILE */
 @media(max-width:600px){
   .fixly-scroll-marquee{padding:22px 0}
   .fixly-marquee-row{font-size:2.2rem;gap:18px}
