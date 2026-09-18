@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig {
 
-        // 🔐 Password Encoder
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
@@ -26,19 +25,16 @@ public class SecurityConfig {
 
         @Bean
         public WebSecurityCustomizer webSecurityCustomizer() {
-
                 return (web) -> web.ignoring()
                                 .requestMatchers("/uploads/**");
         }
 
-        // 🔐 Authentication Manager
         @Bean
         public AuthenticationManager authenticationManager(
                         AuthenticationConfiguration config) throws Exception {
                 return config.getAuthenticationManager();
         }
 
-        // 🔐 Security Rules
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -47,54 +43,39 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
 
                                 .authorizeHttpRequests(auth -> auth
-
-                                                /* ================= PUBLIC ================= */
                                                 .requestMatchers("/api/auth/**").permitAll()
                                                 .requestMatchers("/actuator/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/addresses/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/contact").permitAll()
-                                                .requestMatchers(
-                                                                HttpMethod.GET,
-                                                                "/uploads/**")
-                                                .permitAll()
-
+                                                .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                                                 .requestMatchers("/api/chat").permitAll()
 
-                                                /* ================= AUTHENTICATED (ALL ROLES) ================= */
-
-                                                .requestMatchers("/api/users/change-password", "/api/notifications/**")
+                                                .requestMatchers(
+                                                                "/api/users/change-password",
+                                                                "/api/notifications/**",
+                                                                "/api/profile/**")
                                                 .authenticated()
 
-                                                /* ================= USER ================= */
                                                 .requestMatchers(
                                                                 "/api/dashboard/user",
                                                                 "/api/bookings/user/**",
                                                                 "/api/providers/register")
                                                 .hasRole("USER")
 
-                                                /* ================= USER + PROVIDER ================= */
+                                                .requestMatchers("/api/providers/status/**")
+                                                .hasAnyRole("USER", "PROVIDER")
 
-                                                .requestMatchers(
-                                                                "/api/providers/status/**")
-                                                .hasAnyRole(
-                                                                "USER",
-                                                                "PROVIDER")
-
-                                                /* ================= PROVIDER ================= */
                                                 .requestMatchers(
                                                                 "/api/dashboard/provider",
                                                                 "/api/bookings/provider/**",
                                                                 "/api/providers/*/availability")
                                                 .hasRole("PROVIDER")
 
-                                                /* ================= ADMIN ================= */
                                                 .requestMatchers("/api/categories/**", "/api/admin/providers/**",
                                                                 "/api/admin/analytics/**", "/api/admin/contact/**")
                                                 .hasRole("ADMIN")
 
-                                                /* ================= PREFLIGHT ================= */
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                                                 .anyRequest().authenticated())
