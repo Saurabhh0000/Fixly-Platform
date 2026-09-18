@@ -26,10 +26,9 @@ import NotificationBell from "./notifications/NotificationBell";
 
 /* Base for resolving the stored relative profileImage path. Matches the
    convention used by the Profile page: {base}/uploads/{relativePath}. */
-const UPLOADS_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(
-  /\/$/,
-  "",
-);
+const UPLOADS_BASE = (import.meta.env.VITE_API_BASE_URL || "")
+  .replace(/\/$/, "")
+  .replace(/\/api$/, "");
 
 /* ================================================================
    AVATAR — profile image when available, initials fallback.
