@@ -50,11 +50,10 @@ const ProfileSettings = () => {
       const response = await getMyProfile();
       setProfile(response.data);
       setProfileForm({ fullName: response.data.fullName || "", phone: response.data.phone || "" });
-      syncAuthUser(response.data);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Unable to load your profile.");
     }
-  }, [syncAuthUser]);
+  }, []);
 
   const loadAddresses = useCallback(async () => {
     if (!user?.id) return;
