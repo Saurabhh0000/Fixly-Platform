@@ -7,11 +7,12 @@ public enum NotificationType {
     ADDRESS,
     CATEGORY,
     ACCOUNT,
+    PROFILE,
+    PROFILE_PICTURE,
     VERIFYING,
     APPROVAL,
     REJECTION,
     SUSPENDED,
     UNSUSPENDED,
     COMPLETED
-
 }
