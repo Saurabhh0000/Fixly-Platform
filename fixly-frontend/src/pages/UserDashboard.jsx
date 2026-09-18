@@ -234,7 +234,10 @@ const UserDashboard = () => {
             {filter !== "ALL" && (
               <button
                 className="ud-empty-btn"
-                onClick={() => handleFilter("ALL")}>
+                onClick={() => {
+                  setSearchTerm("");
+                  handleFilter("ALL");
+                }}>
                 View All Bookings
               </button>
             )}
@@ -242,7 +245,7 @@ const UserDashboard = () => {
         ) : (
           <>
             {/* RESULTS LINE */}
-            {filter !== "ALL" && (
+            {(filter !== "ALL" || searchTerm) && (
               <p className="ud-results-line">
                 Showing <strong>{filtered.length}</strong>{" "}
                 {filter.toLowerCase()} booking{filtered.length !== 1 ? "s" : ""}
