@@ -366,9 +366,15 @@ const ProviderDashboard = () => {
   if (loading) {
     return (
       <div className="pd-loader">
-        <div className="pd-loader-ring" />
-        <div className="pd-loader-logo">F</div>
-        <p>Loading provider analytics…</p>
+        <div className="pd-loader-card" role="status" aria-live="polite">
+          <div className="pd-loader-mark">
+            <div className="pd-loader-ring" />
+            <span className="pd-loader-logo">F</span>
+          </div>
+          <h2 className="pd-loader-title">Preparing your dashboard</h2>
+          <p>Loading bookings, profile and provider analytics…</p>
+          <div className="pd-loader-progress" aria-hidden="true" />
+        </div>
       </div>
     );
   }
