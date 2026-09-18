@@ -49,7 +49,7 @@ const ProviderCard = ({ provider, onBook }) => {
     const path = provider.profilePicture;
     if (!path) return "";
     if (/^https?:\/\//i.test(path)) return path;
-    const base = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+    const base = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "").replace(/\/api$/, "");
     return base + (path.startsWith("/") ? "" : "/") + path;
   })();
 
