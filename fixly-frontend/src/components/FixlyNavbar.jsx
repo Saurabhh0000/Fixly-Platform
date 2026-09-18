@@ -37,9 +37,12 @@ const UPLOADS_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(
    ================================================================ */
 const FixlyAvatar = ({ user, initial, className }) => {
   const [imgFailed, setImgFailed] = useState(false);
+  const storedPicture = user?.profilePicture || user?.profileImage;
   const src =
-    user?.profileImage && !imgFailed
-      ? `${UPLOADS_BASE}/uploads/${user.profileImage}`
+    storedPicture && !imgFailed
+      ? (/^https?:\/\//i.test(storedPicture)
+          ? storedPicture
+          : `${UPLOADS_BASE}${storedPicture.startsWith("/") ? "" : "/"}${storedPicture}`)
       : null;
 
   if (src) {
