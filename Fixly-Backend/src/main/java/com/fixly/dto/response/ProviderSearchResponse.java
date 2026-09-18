@@ -7,6 +7,7 @@ public class ProviderSearchResponse {
 
 	private Long providerId;
 	private String fullName;
+	private String profilePicture;
 	private String category;
 	private int experienceYears;
 	private double pricePerVisit;
