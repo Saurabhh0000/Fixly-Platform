@@ -23,7 +23,6 @@ import {
   FaBriefcase,
   FaStar,
   FaClock,
-  FaLocationArrow,
 } from "react-icons/fa";
 import { getMyProfile, updateMyProfile, uploadProfilePicture, removeProfilePicture, getMyAddresses, addAddress, updateAddress, deleteAddress } from "../api/profileApi";
 import { AuthContext } from "../context/AuthContext";
