@@ -224,9 +224,9 @@ const ProviderBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [otpBookingId, setOtpBookingId] = useState(null);
   const [filter, setFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [available, setAvailable] = useState(true);
 
   // ===== Provider cancellation modal state =====
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -244,11 +244,6 @@ const ProviderBookings = () => {
       setLoading(true);
       const res = await fixlyApi.get(`/api/bookings/provider/${providerId}`);
       setBookings(Array.isArray(res.data) ? res.data : []);
-      const providerRes = await fixlyApi.get(
-        `/api/providers/status/${user.id}`,
-      );
-
-      setAvailable(providerRes.data.available);
     } catch (err) {
       if (err?.response?.status === 401) return;
       toast.error("Unable to load bookings. Please refresh.", {
@@ -289,10 +284,30 @@ const ProviderBookings = () => {
       : "0";
 
   /* ===== FILTER + PAGINATION ===== */
-  const filtered =
-    filter === "ALL"
-      ? bookings
-      : bookings.filter((b) => normalize(b.status) === filter);
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filtered = bookings.filter((b) => {
+    const matchesStatus =
+      filter === "ALL" || normalize(b.status) === filter;
+
+    if (!normalizedSearch) return matchesStatus;
+
+    const searchable = [
+      b.bookingId,
+      b.customerName,
+      b.category,
+      b.city,
+      b.area,
+      b.pincode,
+      b.serviceDate,
+      b.customerPhone,
+      b.status,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return matchesStatus && searchable.includes(normalizedSearch);
+  });
   const totalPages = Math.max(1, Math.ceil(filtered.length / CARDS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice(
@@ -305,23 +320,17 @@ const ProviderBookings = () => {
     setPage(1);
   };
 
-  const toggleAvailability = async () => {
-    try {
-      const newValue = !available;
-
-      await fixlyApi.put(
-        `/api/providers/${providerId}/availability?available=${newValue}`,
-      );
-
-      setAvailable(newValue);
-
-      toast.success(newValue ? "You are now available" : "You are now offline");
-    } catch (err) {
-      toast.error(
-        err?.response?.data?.message || "Failed to update availability",
-      );
-    }
+  const handleSearch = (value) => {
+    setSearchQuery(value);
+    setPage(1);
   };
+
+  const clearFilters = () => {
+    setFilter("ALL");
+    setSearchQuery("");
+    setPage(1);
+  };
+
 
   /* ===== ACTIONS ===== */
   const accept = async (id) => {
@@ -472,68 +481,34 @@ const ProviderBookings = () => {
   return (
     <ProviderLayout>
       <div className="pd-wrapper">
-        {/* ===== HERO BANNER ===== */}
-        <div className="pd-hero">
-          <div className="pd-hero-deco pd-deco-1" />
-          <div className="pd-hero-deco pd-deco-2" />
-          <div className="pd-hero-deco pd-deco-3" />
-          <div className="pd-hero-content">
-            <div className="pd-hero-avatar">
-              {user?.fullName?.charAt(0)?.toUpperCase()}
-            </div>
-            <div className="pd-hero-text">
-              <h2 className="pd-hero-title">
-                Booking Management
-              </h2>
-              <p className="pd-hero-sub">
-                Manage customer requests, accept jobs and complete services
+        {/* ===== BOOKING PAGE HERO ===== */}
+        <section className="pb-page-hero">
+          <div className="pb-hero-grid">
+            <div className="pb-hero-copy">
+              <span className="pb-eyebrow">
+                <FaClipboardList /> Provider workspace
+              </span>
+              <h1 className="pb-page-title">Your Bookings</h1>
+              <p className="pb-page-subtitle">
+                Review customer requests, manage confirmed services and keep every job organized in one place.
               </p>
             </div>
-            <div className="pd-hero-rating-badge">
-              <FaStar className="pd-hero-star" />
-              <span>{avgRating}</span>
-              <span className="pd-hero-rating-lbl">Avg Rating</span>
+
+            <div className="pb-hero-summary">
+              <div className="pb-hero-summary-icon"><FaStar /></div>
+              <div>
+                <span className="pb-summary-value">{avgRating}</span>
+                <span className="pb-summary-label">Average rating</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          className="avail-wrap"
-          onClick={toggleAvailability}
-          role="button"
-          aria-pressed={available}
-          aria-label={available ? "Go offline" : "Go available"}>
-          {/* Icon ring */}
-          <div
-            className={`avail-icon-ring ${available ? "avail-ring-on" : "avail-ring-off"}`}>
-            {available ? <FaBolt /> : <FaTimesCircle />}
+          <div className="pb-hero-meta">
+            <span><FaClipboardList /> {totalBookings} total bookings</span>
+            <span><FaHourglassHalf /> {pending} awaiting response</span>
+            <span><FaCheckCircle /> {completed.length} completed</span>
           </div>
-
-          {/* Text */}
-          <div className="avail-text">
-            <p className="avail-label">
-              {available
-                ? "You're live and accepting bookings"
-                : "You're offline — not taking bookings"}
-            </p>
-            <p className="avail-sub">
-              {available
-                ? "Customers can find and book your services right now"
-                : "Go available to start receiving new booking requests"}
-            </p>
-          </div>
-
-          {/* Pulsing dot + track */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div
-              className={`avail-dot ${available ? "avail-dot-on" : "avail-dot-off"}`}
-            />
-            <div
-              className={`avail-track ${available ? "avail-track-on" : "avail-track-off"}`}>
-              <div className="avail-thumb" />
-            </div>
-          </div>
-        </div>
+        </section>
 
         {/* ===== STATS ===== */}
         <div className="pd-stats-grid">
@@ -550,31 +525,72 @@ const ProviderBookings = () => {
           ))}
         </div>
 
-        {/* ===== FILTER BAR ===== */}
-        <div className="pd-filter-bar">
-          <div className="pd-filter-label">
-            <FaFilter className="pd-filter-icon" /> Filter
+        {/* ===== BOOKING FILTERS ===== */}
+        <section className="pb-filter-panel" aria-label="Booking filters">
+          <div className="pb-filter-head">
+            <div>
+              <span className="pb-section-kicker">Bookings</span>
+              <h2>Find a booking</h2>
+              <p>Filter by status or search by customer, location, service or booking ID.</p>
+            </div>
+            {(filter !== "ALL" || searchQuery) && (
+              <button type="button" className="pb-clear-btn" onClick={clearFilters}>
+                <FaTimesCircle /> Clear filters
+              </button>
+            )}
           </div>
-          <div className="pd-filter-chips">
-            {FILTERS.map((f) => {
-              const count =
-                f.key === "ALL"
-                  ? bookings.length
-                  : bookings.filter((b) => normalize(b.status) === f.key)
-                      .length;
-              return (
-                <button
-                  key={f.key}
-                  className={`pd-chip pd-chip-${f.key.toLowerCase()} ${filter === f.key ? "pd-chip-active" : ""}`}
-                  onClick={() => handleFilter(f.key)}>
-                  {f.icon}
-                  <span className="pd-chip-label">{f.label}</span>
-                  <span className="pd-chip-count">{count}</span>
-                </button>
-              );
-            })}
+
+          <div className="pb-filter-search">
+            <FaUser className="pb-search-icon" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search customer, service, booking ID, city or pincode..."
+              aria-label="Search bookings"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="pb-search-clear"
+                onClick={() => handleSearch("")}
+                aria-label="Clear booking search">
+                <FaTimesCircle />
+              </button>
+            )}
           </div>
-        </div>
+
+          <div className="pb-filter-toolbar">
+            <div className="pb-status-filters">
+              {FILTERS.map((f) => {
+                const count =
+                  f.key === "ALL"
+                    ? bookings.length
+                    : bookings.filter((b) => normalize(b.status) === f.key).length;
+
+                return (
+                  <button
+                    key={f.key}
+                    type="button"
+                    className={`pb-status-chip ${filter === f.key ? "pb-status-chip-active" : ""}`}
+                    onClick={() => handleFilter(f.key)}
+                    aria-pressed={filter === f.key}>
+                    <span className="pb-chip-icon">{f.icon}</span>
+                    <span>{f.label}</span>
+                    <strong>{count}</strong>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="pb-filter-result">
+              <FaFilter />
+              <span>
+                {filtered.length} result{filtered.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+          </div>
+        </section>
 
         {/* ===== EMPTY ===== */}
         {!loading && filtered.length === 0 && (
@@ -583,19 +599,21 @@ const ProviderBookings = () => {
               <FaClipboardList />
             </div>
             <h4>
-              {filter === "ALL"
-                ? "No bookings yet"
-                : `No ${filter.toLowerCase()} bookings`}
+              {searchQuery
+                ? "No matching bookings"
+                : filter === "ALL"
+                  ? "No bookings yet"
+                  : `No ${filter.toLowerCase()} bookings`}
             </h4>
             <p>
-              {filter === "ALL"
-                ? "Bookings will appear here once customers book your service."
-                : `You have no ${filter.toLowerCase()} bookings right now.`}
+              {searchQuery
+                ? "Try a different search term or clear the filters to see all bookings."
+                : filter === "ALL"
+                  ? "Bookings will appear here once customers book your service."
+                  : `You have no ${filter.toLowerCase()} bookings right now.`}
             </p>
-            {filter !== "ALL" && (
-              <button
-                className="pd-empty-btn"
-                onClick={() => handleFilter("ALL")}>
+            {(filter !== "ALL" || searchQuery) && (
+              <button className="pd-empty-btn" onClick={clearFilters}>
                 View All Bookings
               </button>
             )}
@@ -605,10 +623,11 @@ const ProviderBookings = () => {
         {/* ===== BOOKING GRID ===== */}
         {filtered.length > 0 && (
           <>
-            {filter !== "ALL" && (
-              <p className="pd-results-line">
-                Showing <strong>{filtered.length}</strong>{" "}
-                {filter.toLowerCase()} booking{filtered.length !== 1 ? "s" : ""}
+            {(filter !== "ALL" || searchQuery) && (
+              <p className="pb-results-line">
+                Showing <strong>{filtered.length}</strong> matching booking{filtered.length !== 1 ? "s" : ""}
+                {filter !== "ALL" ? ` · ${filter.toLowerCase()}` : ""}
+                {searchQuery ? ` · “${searchQuery}”` : ""}
               </p>
             )}
 
@@ -807,21 +826,21 @@ const ProviderBookings = () => {
           </>
         )}
 
-        {/* ===== RATINGS TABLE ===== */}
-        <div className="pd-ratings-section">
-          <div className="pd-ratings-card">
-            <div className="pd-ratings-header">
-              <div className="pd-ratings-header-icon">
-                <FaStar />
-              </div>
-              <div>
-                <h3 className="pd-ratings-title">Customer Ratings</h3>
-                <p className="pd-ratings-sub">
-                  Average: <strong>{avgRating} / 5</strong> across{" "}
-                  {ratings.length} review{ratings.length !== 1 ? "s" : ""}
-                </p>
-              </div>
+        {/* ===== RATINGS ===== */}
+        <section className="pb-ratings-section">
+          <div className="pb-ratings-head">
+            <div>
+              <span className="pb-section-kicker">Feedback</span>
+              <h2>Customer ratings</h2>
+              <p>See how completed services are being rated by your customers.</p>
             </div>
+            <div className="pb-rating-overview">
+              <FaStar />
+              <strong>{avgRating}</strong>
+              <span>/ 5 · {ratings.length} review{ratings.length !== 1 ? "s" : ""}</span>
+            </div>
+          </div>
+          <div className="pd-ratings-card">
 
             {ratings.length === 0 ? (
               <div className="pd-no-ratings">
@@ -861,7 +880,7 @@ const ProviderBookings = () => {
               </div>
             )}
           </div>
-        </div>
+        </section>
 
         {otpBookingId && (
           <OtpVerifyModal
