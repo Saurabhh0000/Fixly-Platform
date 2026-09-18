@@ -10,7 +10,7 @@ import {
   FaUserCheck,
   FaMapMarkerAlt,
   FaUserShield,
-  FaUserCog,
+  FaUserCog,\n  FaUser,\n  FaCamera,
 } from "react-icons/fa";
 import { formatRelativeTime } from "../../utils/formatRelativeTime";
 
@@ -39,6 +39,16 @@ const ICON_MAP = {
   CATEGORY: {
     icon: FaTools,
     cls: "fnotif-icon-category",
+  },
+
+  PROFILE: {
+    icon: FaUser,
+    cls: "fnotif-icon-profile",
+  },
+
+  PROFILE_PICTURE: {
+    icon: FaCamera,
+    cls: "fnotif-icon-profile-picture",
   },
 
   ACCOUNT: {
