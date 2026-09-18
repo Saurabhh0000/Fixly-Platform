@@ -25,6 +25,7 @@ import {
   FaBolt,
   FaBan,
   FaTimes,
+  FaSearch,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../styles/fixly-bookings.css";
@@ -43,6 +44,15 @@ const FILTERS = [
 ];
 
 // Local (Asia/Kolkata-safe) YYYY-MM-DD — avoids toISOString()'s UTC shift.
+const resolveImage = (path) => {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  const base = (import.meta.env.VITE_API_BASE_URL || "")
+    .replace(/\/$/, "")
+    .replace(/\/api$/, "");
+  return base + (path.startsWith("/") ? "" : "/") + path;
+};
+
 const getTodayLocalDateString = () => {
   const now = new Date();
   const year = now.getFullYear();
@@ -384,13 +394,23 @@ const UserBookings = () => {
           ))}
         </div>
 
-        {/* ===== FILTER BAR ===== */}
-        <div className="ub-filter-bar">
-          <div className="ub-filter-label">
-            <FaFilter className="ub-filter-icon" />
-            <span>Filter</span>
+        {/* ===== MODERN FILTER / VIEW CONTROLS ===== */}
+        <section className="ub-filter-panel" aria-label="Booking filters">
+          <div className="ub-filter-head">
+            <div className="ub-filter-title-wrap">
+              <div className="ub-filter-title-icon"><FaFilter /></div>
+              <div>
+                <span className="ub-filter-kicker">BOOKING FILTERS</span>
+                <h3>Find a booking quickly</h3>
+              </div>
+            </div>
+            <div className="ub-filter-result">
+              <FaSearch />
+              <span>{filtered.length} result{filtered.length === 1 ? "" : "s"}</span>
+            </div>
           </div>
-          <div className="ub-filter-chips">
+
+          <div className="ub-filter-options">
             {FILTERS.map((f) => {
               const count =
                 f.key === "ALL"
@@ -399,16 +419,21 @@ const UserBookings = () => {
               return (
                 <button
                   key={f.key}
-                  className={`ub-chip ub-chip-${f.key.toLowerCase()} ${activeFilter === f.key ? "ub-chip-active" : ""}`}
-                  onClick={() => handleFilterChange(f.key)}>
-                  {f.icon}
-                  {f.label}
-                  <span className="ub-chip-count">{count}</span>
+                  type="button"
+                  className={`ub-filter-option ${activeFilter === f.key ? "is-active" : ""}`}
+                  onClick={() => handleFilterChange(f.key)}
+                  aria-pressed={activeFilter === f.key}>
+                  <span className={`ub-filter-option-icon ub-filter-${f.key.toLowerCase()}`}>{f.icon}</span>
+                  <span className="ub-filter-option-copy">
+                    <strong>{f.label}</strong>
+                    <small>{count} booking{count === 1 ? "" : "s"}</small>
+                  </span>
+                  <span className="ub-filter-check">{activeFilter === f.key ? "✓" : ""}</span>
                 </button>
               );
             })}
           </div>
-        </div>
+        </section>
 
         {/* ===== EMPTY STATE ===== */}
         {filtered.length === 0 ? (
@@ -478,7 +503,19 @@ const UserBookings = () => {
 
                     <div className="ub-provider-row">
                       <div className="ub-provider-avatar">
-                        {b.providerName?.charAt(0)?.toUpperCase() || "P"}
+                        {resolveImage(b.providerProfilePicture) ? (
+                          <img
+                            src={resolveImage(b.providerProfilePicture)}
+                            alt={b.providerName || "Provider"}
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                              e.currentTarget.nextElementSibling?.classList.remove("ub-provider-initial-hidden");
+                            }}
+                          />
+                        ) : null}
+                        <span className={resolveImage(b.providerProfilePicture) ? "ub-provider-initial-hidden" : ""}>
+                          {b.providerName?.charAt(0)?.toUpperCase() || "P"}
+                        </span>
                       </div>
                       <div className="ub-provider-info">
                         <p className="ub-provider-label">Service Provider</p>
