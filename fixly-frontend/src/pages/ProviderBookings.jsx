@@ -483,11 +483,10 @@ const ProviderBookings = () => {
             </div>
             <div className="pd-hero-text">
               <h2 className="pd-hero-title">
-                Booking Management,{" "}
-                <span className="pd-hero-name">{user?.fullName}</span> 👋
+                Booking Management
               </h2>
               <p className="pd-hero-sub">
-                Manage customer bookings, accept requests and complete jobs
+                Manage customer requests, accept jobs and complete services
               </p>
             </div>
             <div className="pd-hero-rating-badge">
