@@ -326,7 +326,6 @@ public class BookingServiceImpl implements BookingService {
 		response.setBookingId(booking.getBookingId());
 		response.setUserName(booking.getUser().getFullName());
 		response.setProviderName(booking.getProvider().getUser().getFullName());
-		response.setProviderProfilePicture(booking.getProvider().getUser().getProfilePicture());
 		response.setCategory(booking.getProvider().getCategory().getName());
 		response.setServiceDate(booking.getServiceDate());
 		response.setStatus(booking.getStatus().name());
@@ -379,6 +378,7 @@ public class BookingServiceImpl implements BookingService {
 
 		response.setBookingId(booking.getBookingId());
 		response.setProviderName(booking.getProvider().getUser().getFullName());
+		response.setProviderProfilePicture(booking.getProvider().getUser().getProfilePicture());
 		response.setCategory(booking.getProvider().getCategory().getName());
 		if (booking.getStatus().name().equals("ACCEPTED")
 				||
