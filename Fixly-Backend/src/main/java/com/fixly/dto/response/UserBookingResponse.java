@@ -9,6 +9,7 @@ import lombok.Data;
 public class UserBookingResponse {
     private Long bookingId;
     private String providerName;
+    private String providerProfilePicture;
     private String category;
     private LocalDate serviceDate;
     private Double price;
