@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, useContext } from "react";
 import {
-  FaUserTie,
   FaBolt,
   FaTimesCircle,
   FaClipboardList,
