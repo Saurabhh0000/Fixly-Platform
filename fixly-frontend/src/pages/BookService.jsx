@@ -349,29 +349,42 @@ const BookService = () => {
                   </div>
                 </div>
 
-                <label className={`fb-date-card ${serviceDate ? "selected" : ""}`}>
-                  <span className="fb-date-icon"><FaCalendarAlt /></span>
-                  <span className="fb-date-copy">
-                    <small>Service date</small>
-                    <strong>
-                      {serviceDate
-                        ? new Date(`${serviceDate}T00:00:00`).toLocaleDateString("en-IN", {
-                            weekday: "short",
+                <div className="fb-simple-date">
+                  <div className="fb-simple-date-head">
+                    <div className="fb-simple-date-icon"><FaCalendarAlt /></div>
+                    <div>
+                      <label htmlFor="fb-service-date">Preferred service date <em>*</em></label>
+                      <p>Tap the date field to open the calendar and select a day.</p>
+                    </div>
+                  </div>
+                  <div className={`fb-native-date-wrap ${serviceDate ? "selected" : ""}`}>
+                    <FaCalendarAlt className="fb-native-date-leading" />
+                    <input
+                      id="fb-service-date"
+                      type="date"
+                      min={today}
+                      value={serviceDate}
+                      onChange={(e) => setServiceDate(e.target.value)}
+                      aria-label="Preferred service date"
+                    />
+                  </div>
+                  {serviceDate && (
+                    <div className="fb-selected-date">
+                      <FaCheckCircle />
+                      <span>
+                        Selected:{" "}
+                        <strong>
+                          {new Date(`${serviceDate}T00:00:00`).toLocaleDateString("en-IN", {
+                            weekday: "long",
                             day: "numeric",
-                            month: "short",
+                            month: "long",
                             year: "numeric",
-                          })
-                        : "Select your preferred date"}
-                    </strong>
-                  </span>
-                  <input
-                    type="date"
-                    min={today}
-                    value={serviceDate}
-                    onChange={(e) => setServiceDate(e.target.value)}
-                  />
-                  <FaChevronRight className="fb-date-arrow" />
-                </label>
+                          })}
+                        </strong>
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="fb-book-summary">
