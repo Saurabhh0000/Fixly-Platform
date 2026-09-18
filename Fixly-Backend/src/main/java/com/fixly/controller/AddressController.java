@@ -2,51 +2,67 @@ package com.fixly.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import com.fixly.dto.request.AddressRequest;
 import com.fixly.dto.response.AddressResponse;
 import com.fixly.service.AddressService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/addresses")
 @CrossOrigin
+@RequiredArgsConstructor
 public class AddressController {
-	
-	@Autowired
-	private AddressService addressService;
-	
-    // Add address
 
-	@PostMapping("/{id}")
-	public ResponseEntity<AddressResponse> addAddress(@PathVariable Long id, @RequestBody AddressRequest request)
-	{
-		AddressResponse response = addressService.addAddress(id, request);
-		
-		return ResponseEntity.ok(response);
-	}
-	
-    // Get user addresses
+    private final AddressService addressService;
 
-	@GetMapping("/{id}")
-	public ResponseEntity<List<AddressResponse>> getUserAddresses(@PathVariable Long id)
-	{
-		List<AddressResponse> userAddress = addressService.getUserAddress(id);
-		
-		return ResponseEntity.ok(userAddress);
-	}
-	// ✅ GET ALL CITIES (FIXED)
+    @PostMapping("/{id}")
+    public ResponseEntity<AddressResponse> addAddress(
+            @PathVariable Long id,
+            @RequestBody AddressRequest request,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(
+                addressService.addAddress(id, request, authentication.getName())
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<AddressResponse>> getUserAddresses(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(
+                addressService.getUserAddress(id, authentication.getName())
+        );
+    }
+
+    @PutMapping("/{addressId}")
+    public ResponseEntity<AddressResponse> updateAddress(
+            @PathVariable Long addressId,
+            @RequestBody AddressRequest request,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(
+                addressService.updateAddress(addressId, request, authentication.getName())
+        );
+    }
+
+    @DeleteMapping("/{addressId}")
+    public ResponseEntity<Void> deleteAddress(
+            @PathVariable Long addressId,
+            Authentication authentication) {
+
+        addressService.deleteAddress(addressId, authentication.getName());
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/cities")
     public ResponseEntity<List<String>> getAllCities() {
         return ResponseEntity.ok(addressService.getAllCities());
     }
-
 }
