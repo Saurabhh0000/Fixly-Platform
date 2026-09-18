@@ -1295,3 +1295,104 @@
   .ub-filter-panel { margin-left: 10px; margin-right: 10px; }
   .ub-filter-options { grid-template-columns: 1fr 1fr; }
 }
+
+
+/* ================================================================
+   MY BOOKINGS — FILTER SEARCH BAR
+   ================================================================ */
+.ub-filter-helper {
+  margin: 3px 0 0;
+  color: var(--fb-text-muted);
+  font-size: .64rem;
+  font-weight: 500;
+}
+
+.ub-filter-result strong {
+  color: var(--fb-green-deeper);
+  font-size: .82rem;
+  font-weight: 900;
+}
+
+.ub-filter-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ub-filter-search-icon {
+  position: absolute;
+  left: 15px;
+  color: var(--fb-green);
+  font-size: .82rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ub-filter-search input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 46px 0 42px;
+  border: 1.5px solid var(--fb-border);
+  border-radius: 13px;
+  outline: none;
+  background: var(--fb-input-bg);
+  color: var(--fb-text-dark);
+  font-family: inherit;
+  font-size: .78rem;
+  font-weight: 600;
+  box-sizing: border-box;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.ub-filter-search input::placeholder {
+  color: var(--fb-text-light);
+  font-weight: 500;
+}
+
+.ub-filter-search input:hover {
+  border-color: #bbf7d0;
+  background: var(--fb-white);
+}
+
+.ub-filter-search input:focus {
+  border-color: var(--fb-green);
+  background: var(--fb-white);
+  box-shadow: 0 0 0 3px rgba(22,163,74,.10);
+}
+
+.ub-filter-search-clear {
+  position: absolute;
+  right: 9px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: var(--fb-green-light);
+  color: var(--fb-green-deeper);
+  cursor: pointer;
+  font-size: .68rem;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.ub-filter-search-clear:hover {
+  background: #bbf7d0;
+  transform: scale(1.04);
+}
+
+@media (max-width: 600px) {
+  .ub-filter-helper { font-size: .58rem; }
+  .ub-filter-search input {
+    min-height: 43px;
+    padding-left: 39px;
+    font-size: .72rem;
+  }
+  .ub-filter-search-icon { left: 13px; }
+}
+
+@media (max-width: 380px) {
+  .ub-filter-search input { font-size: .68rem; }
+  .ub-filter-helper { display: none; }
+}
