@@ -1,13 +1,12 @@
 package com.fixly.entity;
 
-
-
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fixly.enums.Role;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,6 +34,10 @@ public class User {
     private String fullName;
     private String email;
     private String phone;
+
+    @Column(length = 500)
+    private String profilePicture;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
