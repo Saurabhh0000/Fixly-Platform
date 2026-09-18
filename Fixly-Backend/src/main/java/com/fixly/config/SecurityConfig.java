@@ -45,7 +45,8 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/api/auth/**").permitAll()
                                                 .requestMatchers("/actuator/**").permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()\n                                                .requestMatchers(HttpMethod.GET, "/api/addresses/cities").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/addresses/cities").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/contact").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
