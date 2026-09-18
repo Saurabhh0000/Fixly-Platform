@@ -1,85 +1,42 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import fixlyApi from "../api/fixlyApi";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import {
-  FaCheckCircle,
-  FaCalendarAlt,
-  FaMapMarkerAlt,
-  FaUserTie,
-  FaRupeeSign,
-  FaArrowRight,
   FaArrowLeft,
-  FaShieldAlt,
-  FaBolt,
-  FaTools,
-  FaExclamationTriangle,
-  FaStar,
+  FaArrowRight,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaChevronRight,
   FaClock,
-  FaLock,
-  FaTicketAlt,
   FaHome,
+  FaLock,
+  FaMapMarkerAlt,
+  FaPlus,
+  FaRupeeSign,
+  FaShieldAlt,
+  FaStar,
+  FaTools,
+  FaUserTie,
 } from "react-icons/fa";
 import "../styles/fixly-book.css";
 
-/* ══════════════════════════════════════
-   TOAST HELPERS
-══════════════════════════════════════ */
-const successToast = (msg) =>
-  toast.custom(
-    (t) => (
-      <div
-        className={`fb-toast fb-toast-success ${t.visible ? "fb-toast-in" : "fb-toast-out"}`}>
-        <div className="fb-toast-icon-wrap fb-toast-icon-success">
-          <FaCheckCircle />
-        </div>
-        <div className="fb-toast-body">
-          <strong>Success</strong>
-          <span>{msg}</span>
-        </div>
-      </div>
-    ),
-    { duration: 4500 },
-  );
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+const BACKEND_BASE = API_BASE.replace(/\/api$/, "");
 
-const errorToast = (msg) =>
-  toast.custom(
-    (t) => (
-      <div
-        className={`fb-toast fb-toast-error ${t.visible ? "fb-toast-in" : "fb-toast-out"}`}>
-        <div className="fb-toast-icon-wrap fb-toast-icon-error">
-          <FaExclamationTriangle />
-        </div>
-        <div className="fb-toast-body">
-          <strong>Error</strong>
-          <span>{msg}</span>
-        </div>
-      </div>
-    ),
-    { duration: 3500 },
-  );
+const resolveImage = (path) => {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${BACKEND_BASE}${path.startsWith("/") ? "" : "/"}${path}`;
+};
 
-const warnToast = (msg) =>
-  toast.custom(
-    (t) => (
-      <div
-        className={`fb-toast fb-toast-warn ${t.visible ? "fb-toast-in" : "fb-toast-out"}`}>
-        <div className="fb-toast-icon-wrap fb-toast-icon-warn">
-          <FaExclamationTriangle />
-        </div>
-        <div className="fb-toast-body">
-          <strong>Required</strong>
-          <span>{msg}</span>
-        </div>
-      </div>
-    ),
-    { duration: 3000 },
-  );
+const getLocalDate = () => {
+  const d = new Date();
+  const offset = d.getTimezoneOffset();
+  return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
+};
 
-/* ══════════════════════════════════════
-   COMPONENT
-══════════════════════════════════════ */
 const BookService = () => {
   const { state: provider } = useLocation();
   const navigate = useNavigate();
@@ -92,429 +49,370 @@ const BookService = () => {
   const [success, setSuccess] = useState(false);
   const [bookingRef, setBookingRef] = useState("");
 
-  const today = new Date().toISOString().split("T")[0];
-
-  /* ── real rating, same fields the provider search API returns ── */
-  const rating = provider?.rating ?? 0;
-  const totalReviews = provider?.ratingCount ?? 0;
-  const hasReviews = totalReviews > 0;
+  const today = useMemo(() => getLocalDate(), []);
+  const providerImage = resolveImage(provider?.profilePicture);
+  const rating = Number(provider?.rating || 0);
+  const reviewCount = Number(provider?.ratingCount || 0);
   const filledStars = Math.round(rating);
 
   useEffect(() => {
     if (!provider) {
-      errorToast("Please select a provider first.");
-      navigate("/search");
+      toast.error("Please select a provider first.");
+      navigate("/search", { replace: true });
     }
   }, [provider, navigate]);
 
   useEffect(() => {
     if (!user?.id) return;
-    const fetchAddresses = async () => {
+
+    const loadAddresses = async () => {
       try {
         const res = await fixlyApi.get(`/api/addresses/${user.id}`);
-        setAddresses(res.data);
-      } catch {
-        errorToast("Failed to load your saved addresses.");
+        setAddresses(res.data || []);
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.message || "Unable to load your saved addresses.",
+        );
       }
     };
-    fetchAddresses();
+
+    loadAddresses();
   }, [user?.id]);
 
-  /* ── generate a readable booking ref ── */
-  const genRef = () =>
-    "FXL-" + Math.random().toString(36).toUpperCase().slice(2, 8);
+  const generateReference = () =>
+    `FXL-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 
   const handleBooking = async () => {
     if (!addressId) {
-      warnToast("Please select a service address.");
+      toast.error("Please select a service address.");
       return;
     }
+
     if (!serviceDate) {
-      warnToast("Please pick a preferred date.");
+      toast.error("Please select a preferred service date.");
       return;
     }
 
     setLoading(true);
+
     try {
       await fixlyApi.post("/api/bookings", {
         userId: user.id,
         providerId: provider.providerId,
-        addressId,
+        addressId: Number(addressId),
         serviceDate,
       });
-      setBookingRef(genRef());
+
+      setBookingRef(generateReference());
       setSuccess(true);
-      successToast("Your appointment has been booked!");
-      setTimeout(() => navigate("/user/bookings"), 4000);
-    } catch (err) {
-      errorToast(
-        err.response?.data?.message || "Booking failed. Please try again.",
+      toast.success("Booking request sent successfully.");
+
+      window.setTimeout(() => navigate("/user/bookings"), 4500);
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Booking failed. Please try again.",
       );
     } finally {
       setLoading(false);
     }
   };
 
-  /* ══ SUCCESS SCREEN ══ */
+  if (!provider) return null;
+
+  const formattedDate = serviceDate
+    ? new Date(`${serviceDate}T00:00:00`).toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : "";
+
   if (success) {
-    const formattedDate = serviceDate
-      ? new Date(serviceDate).toLocaleDateString("en-IN", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })
-      : "";
-
     return (
-      <div className="fb-status-page">
-        {/* confetti dots */}
-        <div className="fb-confetti" aria-hidden="true">
-          {[...Array(14)].map((_, i) => (
-            <div key={i} className={`fb-dot fb-dot-${i % 5}`} />
-          ))}
-        </div>
-
-        <div className="fb-success-card">
-          {/* top accent bar */}
-          <div className="fb-success-bar" />
-
-          {/* icon */}
-          <div className="fb-success-icon-wrap">
-            <div className="fb-success-icon-ring" />
-            <div className="fb-success-icon-inner">
+      <main className="fb-page fb-success-page">
+        <div className="fb-success-shell">
+          <div className="fb-success-top">
+            <div className="fb-success-check">
               <FaCheckCircle />
             </div>
+            <span className="fb-eyebrow">BOOKING REQUEST SENT</span>
+            <h1>You're all set.</h1>
+            <p>
+              Your service request has been sent to{" "}
+              <strong>{provider.fullName}</strong>.
+            </p>
           </div>
 
-          <div className="fb-success-tag">
-            <FaTicketAlt /> Booking Confirmed
-          </div>
-
-          <h2>Appointment Scheduled!</h2>
-          <p>
-            Your booking with <strong>{provider?.fullName}</strong> has been
-            confirmed successfully.
-          </p>
-
-          {/* detail grid */}
-          <div className="fb-success-details">
-            <div className="fb-sd-row">
-              <div className="fb-sd-icon">
-                <FaUserTie />
-              </div>
-              <div className="fb-sd-body">
-                <span>Service Provider</span>
-                <strong>{provider?.fullName}</strong>
-              </div>
+          <div className="fb-success-provider">
+            <div className="fb-provider-avatar fb-provider-avatar-large">
+              {providerImage ? (
+                <img src={providerImage} alt={provider.fullName} />
+              ) : (
+                <span>{provider.fullName?.charAt(0)?.toUpperCase() || "P"}</span>
+              )}
             </div>
-            <div className="fb-sd-row">
-              <div className="fb-sd-icon">
-                <FaTools />
-              </div>
-              <div className="fb-sd-body">
-                <span>Service</span>
-                <strong>{provider?.category || "Home Service"}</strong>
-              </div>
+            <div>
+              <span>Service provider</span>
+              <strong>{provider.fullName}</strong>
+              <small>
+                <FaTools /> {provider.category || "Home Service"}
+              </small>
             </div>
-            <div className="fb-sd-row">
-              <div className="fb-sd-icon">
-                <FaCalendarAlt />
-              </div>
-              <div className="fb-sd-body">
-                <span>Date</span>
-                <strong>{formattedDate}</strong>
-              </div>
-            </div>
-            <div className="fb-sd-row">
-              <div className="fb-sd-icon rupee">
-                <FaRupeeSign />
-              </div>
-              <div className="fb-sd-body">
-                <span>Amount</span>
-                <strong className="fb-sd-price">
-                  ₹ {provider?.pricePerVisit}
-                </strong>
-              </div>
+            <div className="fb-success-price">
+              <span>Price / visit</span>
+              <strong>₹{provider.pricePerVisit}</strong>
             </div>
           </div>
 
-          {/* booking ref */}
-          <div className="fb-booking-ref">
-            <span>Booking Reference</span>
+          <div className="fb-success-grid">
+            <div>
+              <span><FaCalendarAlt /> Date</span>
+              <strong>{formattedDate}</strong>
+            </div>
+            <div>
+              <span><FaMapMarkerAlt /> Address</span>
+              <strong>
+                {addresses.find((a) => String(a.id) === String(addressId))?.area},{" "}
+                {addresses.find((a) => String(a.id) === String(addressId))?.city}
+              </strong>
+            </div>
+          </div>
+
+          <div className="fb-reference">
+            <span>Request reference</span>
             <strong>{bookingRef}</strong>
           </div>
 
-          {/* redirect note */}
-          <div className="fb-redirect-note">
+          <div className="fb-success-footer">
             <FaClock />
-            <span>Redirecting to your bookings in a moment…</span>
+            <span>Taking you to My Bookings shortly.</span>
+            <button onClick={() => navigate("/user/bookings")}>
+              View bookings <FaArrowRight />
+            </button>
           </div>
         </div>
-      </div>
+      </main>
     );
   }
 
-  /* ══ MAIN LAYOUT ══ */
   return (
-    <div className="fb-page">
-      <div className="fb-wrapper">
-        {/* ── LEFT PANEL ── */}
-        <div className="fb-left">
-          <div className="fb-left-inner">
-            {/* Logo */}
-            <div className="fb-logo">
-              <div className="fb-logo-icon">
-                <FaBolt />
-              </div>
-              <span className="fb-logo-text">
-                Fix<strong>ly</strong>
+    <main className="fb-page">
+      <div className="fb-book-shell">
+        <header className="fb-book-topbar">
+          <button className="fb-back-link" onClick={() => navigate(-1)}>
+            <FaArrowLeft /> Back to providers
+          </button>
+          <div className="fb-step-indicator">
+            <span className="fb-step-active">01</span>
+            <i />
+            <span>02</span>
+            <i />
+            <span>03</span>
+          </div>
+          <span className="fb-step-label">BOOK SERVICE</span>
+        </header>
+
+        <div className="fb-book-layout">
+          <section className="fb-provider-panel">
+            <div className="fb-provider-cover">
+              <span className="fb-verified-badge">
+                <FaCheckCircle /> Verified Fixly Pro
               </span>
+              <div className="fb-cover-orb fb-cover-orb-one" />
+              <div className="fb-cover-orb fb-cover-orb-two" />
             </div>
 
-            {/* Headline */}
-            <div className="fb-left-headline">
-              <h1>One step away from great service.</h1>
-              <p>
-                Confirm your appointment and let a verified Fixly professional
-                handle the rest.
-              </p>
-            </div>
-
-            {/* Provider hero card */}
-            <div className="fb-provider-hero">
-              <div className="fb-ph-glow" />
-              <div className="fb-ph-top">
-                <div className="fb-ph-avatar">
-                  <FaUserTie />
+            <div className="fb-provider-content">
+              <div className="fb-provider-avatar-wrap">
+                <div className="fb-provider-avatar">
+                  {providerImage ? (
+                    <img src={providerImage} alt={provider.fullName || "Provider"} />
+                  ) : (
+                    <span>{provider.fullName?.charAt(0)?.toUpperCase() || "P"}</span>
+                  )}
                 </div>
+                <span className="fb-online-dot" title="Provider availability" />
+              </div>
 
-                {/* ⭐ Real average rating, same data the provider
-                    search results already carry — no extra API call. */}
-                {hasReviews ? (
-                  <div className="fb-ph-rating">
-                    <div className="fb-ph-stars">
-                      {[...Array(5)].map((_, i) => (
-                        <FaStar
-                          key={i}
-                          className={
-                            i < filledStars
-                              ? "fb-ph-star-filled"
-                              : "fb-ph-star-empty"
-                          }
-                        />
+              <div className="fb-provider-name-row">
+                <div>
+                  <span className="fb-mini-label">YOU ARE BOOKING</span>
+                  <h1>{provider.fullName || "Fixly Provider"}</h1>
+                  <p><FaTools /> {provider.category || "Home Service"}</p>
+                </div>
+                <div className="fb-rating">
+                  <strong>{rating.toFixed(1)}</strong>
+                  <div>
+                    <div className="fb-stars">
+                      {[0, 1, 2, 3, 4].map((i) => (
+                        <FaStar key={i} className={i < filledStars ? "filled" : ""} />
                       ))}
                     </div>
-                    <span className="fb-ph-rating-val">
-                      {rating.toFixed(1)} ({totalReviews})
-                    </span>
+                    <span>{reviewCount} reviews</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="fb-provider-facts">
+                <div>
+                  <span>Experience</span>
+                  <strong>
+                    {provider.experienceYears === 0
+                      ? "Fresher"
+                      : `${provider.experienceYears} yrs`}
+                  </strong>
+                </div>
+                <div>
+                  <span>Location</span>
+                  <strong>{provider.area || provider.city || "Local"}</strong>
+                </div>
+                <div>
+                  <span>Rate</span>
+                  <strong>₹{provider.pricePerVisit}</strong>
+                </div>
+              </div>
+
+              <div className="fb-trust-card">
+                <div className="fb-trust-icon"><FaShieldAlt /></div>
+                <div>
+                  <strong>Verified professional</strong>
+                  <span>Identity and service profile verified by Fixly.</span>
+                </div>
+                <FaCheckCircle />
+              </div>
+            </div>
+          </section>
+
+          <section className="fb-book-panel">
+            <div className="fb-panel-heading">
+              <span className="fb-eyebrow">STEP 01 · SERVICE DETAILS</span>
+              <h2>Where & when?</h2>
+              <p>Tell us where the service is needed and choose a convenient date.</p>
+            </div>
+
+            <div className="fb-progress-line">
+              <span />
+            </div>
+
+            <div className="fb-form">
+              <div className="fb-form-field">
+                <div className="fb-field-heading">
+                  <div className="fb-field-number">01</div>
+                  <div>
+                    <label>Service address <em>*</em></label>
+                    <p>Where should the professional visit?</p>
+                  </div>
+                </div>
+
+                {addresses.length > 0 ? (
+                  <div className="fb-address-options">
+                    {addresses.map((address, index) => (
+                      <button
+                        type="button"
+                        key={address.id}
+                        className={`fb-address-option ${String(addressId) === String(address.id) ? "selected" : ""}`}
+                        onClick={() => setAddressId(String(address.id))}
+                      >
+                        <span className="fb-address-radio">
+                          <span />
+                        </span>
+                        <span className="fb-address-icon"><FaHome /></span>
+                        <span className="fb-address-copy">
+                          <strong>{address.area}, {address.city}</strong>
+                          <small>{address.pincode}{index === 0 ? " · Saved address" : ""}</small>
+                        </span>
+                        <FaChevronRight className="fb-address-arrow" />
+                      </button>
+                    ))}
                   </div>
                 ) : (
-                  <span className="fb-ph-no-reviews">No reviews yet</span>
-                )}
-              </div>
-              <div className="fb-ph-name">{provider?.fullName || "—"}</div>
-              <div className="fb-ph-service">
-                <FaTools /> {provider?.category || "Home Service"}
-              </div>
-              <div className="fb-ph-divider" />
-              <div className="fb-ph-price">
-                <div className="fb-ph-price-label">Price Per Visit</div>
-                <div className="fb-ph-price-value">
-                  <FaRupeeSign /> {provider?.pricePerVisit}
-                </div>
-              </div>
-            </div>
-
-            {/* Feature pills */}
-            <div className="fb-left-pills">
-              <div className="fb-pill">
-                <FaShieldAlt />
-                <span>Verified Pro</span>
-              </div>
-              <div className="fb-pill">
-                <FaLock />
-                <span>Secure Booking</span>
-              </div>
-              <div className="fb-pill">
-                <FaStar />
-                <span>Top Rated</span>
-              </div>
-            </div>
-
-            {/* Trust line */}
-            <div className="fb-trust">
-              <FaLock />
-              <span>Your payment &amp; data are 100% protected by Fixly.</span>
-            </div>
-          </div>
-        </div>
-
-        {/* ── RIGHT PANEL ── */}
-        <div className="fb-right">
-          <div className="fb-right-inner">
-            {/* Header */}
-            <div className="fb-form-header">
-              <div className="fb-form-icon">
-                <FaCalendarAlt />
-              </div>
-              <h2>Complete Your Booking</h2>
-              <p>Choose your address and preferred date to confirm</p>
-            </div>
-
-            {/* Mobile-only provider summary */}
-            <div className="fb-mobile-summary">
-              <div className="fb-ms-provider">
-                <div className="fb-ms-avatar">
-                  <FaUserTie />
-                </div>
-                <div className="fb-ms-info">
-                  <span>Provider</span>
-                  <strong>{provider?.fullName}</strong>
-                  <em>
-                    <FaTools /> {provider?.category || "Home Service"}
-                  </em>
-                </div>
-                <div className="fb-ms-price">
-                  <span>Price</span>
-                  <strong>₹{provider?.pricePerVisit}</strong>
-                </div>
-              </div>
-            </div>
-
-            {/* ── Order summary strip ── */}
-            <div className="fb-order-strip">
-              <div className="fb-os-item">
-                <FaUserTie />
-                <div>
-                  <span>Provider</span>
-                  <strong>{provider?.fullName}</strong>
-                </div>
-              </div>
-              <div className="fb-os-sep" />
-              <div className="fb-os-item">
-                <FaTools />
-                <div>
-                  <span>Service</span>
-                  <strong>{provider?.category || "Home Service"}</strong>
-                </div>
-              </div>
-              <div className="fb-os-sep" />
-              <div className="fb-os-item price-item">
-                <FaRupeeSign />
-                <div>
-                  <span>Total</span>
-                  <strong>₹ {provider?.pricePerVisit}</strong>
-                </div>
-              </div>
-            </div>
-
-            {/* Form */}
-            <div className="fb-form">
-              {/* Address */}
-              <div className="fb-field">
-                <label className="fb-label">
-                  <FaMapMarkerAlt />
-                  <span>
-                    Service Address <span className="fb-required">*</span>
-                  </span>
-                </label>
-                <div className="fb-select-wrap">
-                  <FaHome className="fb-select-icon" />
-                  <select
-                    value={addressId}
-                    onChange={(e) => setAddressId(e.target.value)}
-                    className={
-                      !addressId && addresses.length > 0 ? "fb-invalid" : ""
-                    }>
-                    <option value="">— Choose a saved address —</option>
-                    {addresses.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.area}, {a.city} ({a.pincode})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {addresses.length === 0 && (
-                  <div className="fb-no-address">
-                    <FaExclamationTriangle />
-                    <span>
-                      No addresses found. Please add one in your profile first.
-                    </span>
+                  <div className="fb-empty-address">
+                    <div><FaMapMarkerAlt /></div>
+                    <div>
+                      <strong>No saved address</strong>
+                      <span>Add an address before booking this service.</span>
+                    </div>
+                    <button type="button" onClick={() => navigate("/profile")}>
+                      <FaPlus /> Add address
+                    </button>
                   </div>
                 )}
               </div>
 
-              {/* Date */}
-              <div className="fb-field">
-                <label className="fb-label">
-                  <FaCalendarAlt />
-                  <span>
-                    Preferred Date <span className="fb-required">*</span>
+              <div className="fb-form-field">
+                <div className="fb-field-heading">
+                  <div className="fb-field-number">02</div>
+                  <div>
+                    <label>Preferred date <em>*</em></label>
+                    <p>Choose a date that works for you.</p>
+                  </div>
+                </div>
+
+                <label className={`fb-date-card ${serviceDate ? "selected" : ""}`}>
+                  <span className="fb-date-icon"><FaCalendarAlt /></span>
+                  <span className="fb-date-copy">
+                    <small>Service date</small>
+                    <strong>
+                      {serviceDate
+                        ? new Date(`${serviceDate}T00:00:00`).toLocaleDateString("en-IN", {
+                            weekday: "short",
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : "Select your preferred date"}
+                    </strong>
                   </span>
-                </label>
-                <div className="fb-date-wrap">
-                  <FaCalendarAlt className="fb-select-icon" />
                   <input
                     type="date"
                     min={today}
                     value={serviceDate}
                     onChange={(e) => setServiceDate(e.target.value)}
                   />
-                </div>
+                  <FaChevronRight className="fb-date-arrow" />
+                </label>
               </div>
 
-              {/* Price summary row */}
-              <div className="fb-price-row">
-                <div className="fb-price-left">
-                  <FaRupeeSign />
-                  <div>
-                    <span>Payable Amount</span>
-                    <strong>₹ {provider?.pricePerVisit}</strong>
-                  </div>
+              <div className="fb-book-summary">
+                <div>
+                  <span>Payable amount</span>
+                  <strong>₹{provider.pricePerVisit}</strong>
                 </div>
-                <div className="fb-price-badge">
-                  <FaShieldAlt /> Secure
-                </div>
+                <span className="fb-secure-pill"><FaLock /> Secure booking</span>
               </div>
 
-              {/* Confirm */}
               <button
-                className="fb-confirm-btn"
+                className="fb-confirm"
+                type="button"
+                disabled={loading || !addressId || !serviceDate || addresses.length === 0}
                 onClick={handleBooking}
-                disabled={loading || !addressId || !serviceDate}>
+              >
                 {loading ? (
                   <>
-                    <span className="fb-spinner" /> Processing…
+                    <span className="fb-spinner" /> Sending request...
                   </>
                 ) : (
                   <>
-                    <FaLock />
-                    <span>Confirm &amp; Book Appointment</span>
+                    <span>Confirm booking</span>
                     <FaArrowRight />
                   </>
                 )}
               </button>
 
-              {/* Cancel */}
-              <button className="fb-cancel-btn" onClick={() => navigate(-1)}>
-                <FaArrowLeft />
-                <span>Go Back</span>
+              <button className="fb-cancel" type="button" onClick={() => navigate(-1)}>
+                Cancel and return
               </button>
             </div>
 
-            {/* Footer */}
-            <div className="fb-info-box">
-              <FaShieldAlt />
-              <span>
-                Your booking details are private and securely stored on Fixly
-                servers.
-              </span>
+            <div className="fb-privacy">
+              <FaLock />
+              <span>Your booking information is private and securely handled by Fixly.</span>
             </div>
-          </div>
+          </section>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
