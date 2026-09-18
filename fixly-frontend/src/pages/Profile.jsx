@@ -14,7 +14,16 @@ import {
   FaShieldAlt,
   FaTimes,
   FaMapMarkedAlt,
-  FaCompass,\n  FaCamera,\n  FaTrash,\n  FaEdit,\n  FaSave,\n  FaEnvelope,\n  FaBriefcase,\n  FaStar,\n  FaClock,\n  FaLocationArrow,
+  FaCompass,
+  FaCamera,
+  FaTrash,
+  FaEdit,
+  FaSave,
+  FaEnvelope,
+  FaBriefcase,
+  FaStar,
+  FaClock,
+  FaLocationArrow,
 } from "react-icons/fa";
 import { getMyProfile, updateMyProfile, uploadProfilePicture, removeProfilePicture, getMyAddresses, addAddress, updateAddress, deleteAddress } from "../api/profileApi";
 import { AuthContext } from "../context/AuthContext";
