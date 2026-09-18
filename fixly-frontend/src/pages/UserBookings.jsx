@@ -108,6 +108,7 @@ const UserBookings = () => {
   const [showReview, setShowReview] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [activeFilter, setActiveFilter] = useState("ALL");
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
 
   // ===== CANCELLATION STATE =====
@@ -275,14 +276,39 @@ const UserBookings = () => {
       icon: <FaClock />,
     };
 
-  /* ===== FILTER ===== */
-  const filtered =
-    activeFilter === "ALL"
-      ? bookings
-      : bookings.filter((b) => b.status === activeFilter);
+  /* ===== FILTER + SEARCH ===== */
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filtered = bookings.filter((b) => {
+    const matchesStatus =
+      activeFilter === "ALL" || b.status === activeFilter;
+
+    if (!normalizedSearch) return matchesStatus;
+
+    const haystack = [
+      b.bookingId,
+      b.providerName,
+      b.category,
+      b.city,
+      b.area,
+      b.pincode,
+      b.status,
+      b.serviceDate,
+      b.providerPhone,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return matchesStatus && haystack.includes(normalizedSearch);
+  });
 
   const handleFilterChange = (key) => {
     setActiveFilter(key);
+    setPage(1);
+  };
+
+  const handleSearch = (value) => {
+    setSearchTerm(value);
     setPage(1);
   };
 
@@ -394,20 +420,41 @@ const UserBookings = () => {
           ))}
         </div>
 
-        {/* ===== MODERN FILTER / VIEW CONTROLS ===== */}
-        <section className="ub-filter-panel" aria-label="Booking filters">
+        {/* ===== MODERN FILTER + SEARCH ===== */}
+        <section className="ub-filter-panel" aria-label="Booking filters and search">
           <div className="ub-filter-head">
             <div className="ub-filter-title-wrap">
               <div className="ub-filter-title-icon"><FaFilter /></div>
               <div>
                 <span className="ub-filter-kicker">BOOKING FILTERS</span>
                 <h3>Find a booking quickly</h3>
+                <p className="ub-filter-helper">Search your bookings or filter them by status.</p>
               </div>
             </div>
             <div className="ub-filter-result">
-              <FaSearch />
-              <span>{filtered.length} result{filtered.length === 1 ? "" : "s"}</span>
+              <strong>{filtered.length}</strong>
+              <span>{filtered.length === 1 ? "booking" : "bookings"} found</span>
             </div>
+          </div>
+
+          <div className="ub-filter-search">
+            <FaSearch className="ub-filter-search-icon" />
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search by provider, service, city, area or booking ID..."
+              aria-label="Search bookings"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className="ub-filter-search-clear"
+                onClick={() => handleSearch("")}
+                aria-label="Clear booking search">
+                <FaTimes />
+              </button>
+            )}
           </div>
 
           <div className="ub-filter-options">
@@ -450,9 +497,11 @@ const UserBookings = () => {
               </div>
             )}
             <h4 className="ub-empty-title">
-              {bookings.length === 0
-                ? "No bookings yet"
-                : `No ${activeFilter.toLowerCase()} bookings`}
+              {searchTerm
+                ? "No matching bookings"
+                : bookings.length === 0
+                  ? "No bookings yet"
+                  : `No ${activeFilter.toLowerCase()} bookings`}
             </h4>
             <p className="ub-empty-sub">
               {bookings.length === 0
@@ -468,7 +517,10 @@ const UserBookings = () => {
             ) : (
               <button
                 className="ub-empty-btn"
-                onClick={() => handleFilterChange("ALL")}>
+                onClick={() => {
+                  setSearchTerm("");
+                  handleFilterChange("ALL");
+                }}>
                 View All Bookings
               </button>
             )}
@@ -476,11 +528,12 @@ const UserBookings = () => {
         ) : (
           <>
             {/* RESULTS LINE */}
-            {activeFilter !== "ALL" && (
+            {(activeFilter !== "ALL" || searchTerm) && (
               <p className="ub-results-line">
                 Showing <strong>{filtered.length}</strong>{" "}
-                {activeFilter.toLowerCase()} booking
-                {filtered.length !== 1 ? "s" : ""}
+                {searchTerm
+                  ? "matching booking" + (filtered.length !== 1 ? "s" : "")
+                  : activeFilter.toLowerCase() + " booking" + (filtered.length !== 1 ? "s" : "")}
               </p>
             )}
 
