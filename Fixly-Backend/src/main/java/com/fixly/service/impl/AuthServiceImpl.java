@@ -68,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
         response.setFullName(user.getFullName());
         response.setEmail(user.getEmail());
         response.setRole(user.getRole().name());
+        response.setProfilePicture(user.getProfilePicture());
         response.setMessage("Registration successful");
 
         notificationService.send(
@@ -96,6 +97,7 @@ public class AuthServiceImpl implements AuthService {
         response.setPhone(user.getPhone());
         response.setEmail(user.getEmail());
         response.setRole(user.getRole().name());
+        response.setProfilePicture(user.getProfilePicture());
         response.setMessage("Login successful");
 
         // ================= PROVIDER STATUS CHECK =================
