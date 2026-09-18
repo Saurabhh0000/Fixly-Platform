@@ -45,6 +45,13 @@ const ProviderCard = ({ provider, onBook }) => {
         : `${provider.experienceYears} Yrs Exp`;
 
   const isAvailable = provider.available && provider.status !== "SUSPENDED";
+  const providerImage = (() => {
+    const path = provider.profilePicture;
+    if (!path) return "";
+    if (/^https?:\\/\\//i.test(path)) return path;
+    const base = (import.meta.env.VITE_API_BASE_URL || "").replace(/\\/$/, "");
+    return base + (path.startsWith("/") ? "" : "/") + path;
+  })();
 
   return (
     <div className={`pc-card ${isAvailable ? "pc-available" : "pc-offline"}`}>
@@ -65,8 +72,19 @@ const ProviderCard = ({ provider, onBook }) => {
         {/* avatar */}
         <div className="pc-avatar-wrap">
           <div className="pc-avatar">
-            <span className="pc-avatar-letter">
-              {provider.fullName?.charAt(0)?.toUpperCase()}
+            {providerImage ? (
+              <img
+                className="pc-avatar-image"
+                src={providerImage}
+                alt={provider.fullName || "Service provider"}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling?.classList.remove("pc-avatar-hidden");
+                }}
+              />
+            ) : null}
+            <span className={`pc-avatar-letter ${providerImage ? "pc-avatar-hidden" : ""}`}>
+              {provider.fullName?.charAt(0)?.toUpperCase() || "P"}
             </span>
           </div>
           {rating >= 4.5 && (
