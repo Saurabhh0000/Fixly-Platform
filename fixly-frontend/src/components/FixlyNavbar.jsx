@@ -492,14 +492,6 @@ const FixlyNavbar = () => {
                 </Link>
               )}
 
-              {user.role === "PROVIDER" && (
-                <button
-                  className={`fnav-mobile-link ${isActive("/provider/bookings") ? "fnav-mobile-link-active" : ""}`}
-                  onClick={() => go("/provider/bookings")}>
-                  <FaClipboardList className="fnav-ml-icon" /> Bookings
-                </button>
-              )}
-
               {user.role === "USER" && (
                 <>
                   <Link
@@ -740,6 +732,14 @@ const FixlyNavbar = () => {
                 onClick={() => go(dashboardPath)}>
                 <FaTachometerAlt className="fnav-ml-icon" /> Dashboard
               </button>
+
+              {user.role === "PROVIDER" && (
+                <button
+                  className={`fnav-mobile-link ${isActive("/provider/bookings") ? "fnav-mobile-link-active" : ""}`}
+                  onClick={() => go("/provider/bookings")}>
+                  <FaClipboardList className="fnav-ml-icon" /> Bookings
+                </button>
+              )}
 
               {user.role === "USER" && (
                 <>
