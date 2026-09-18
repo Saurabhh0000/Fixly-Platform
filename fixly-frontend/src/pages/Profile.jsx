@@ -26,7 +26,7 @@ const ProfileSettings=()=>{
  const role=profile?.role||user?.role;
  const roleLabel=useMemo(()=>role==="PROVIDER"?"Service Provider":role==="ADMIN"?"Administrator":"User",[role]);
  const initials=(profile?.fullName||user?.fullName||"U").trim().charAt(0).toUpperCase();
- const resolveImage=path=>{if(!path)return "";if(/^https?:\/\//i.test(path))return path;const base=(import.meta.env.VITE_API_BASE_URL||"").replace(/\/$/,"");return base+(path.startsWith("/")?"":"/")+path};
+ const resolveImage=path=>{if(!path)return "";if(/^https?:\/\//i.test(path))return path;const base=(import.meta.env.VITE_API_BASE_URL||"").replace(/\/$/,"").replace(/\/api$/,"");return base+(path.startsWith("/")?"":"/")+path};
  const profileImage=resolveImage(profile?.profilePicture);
  const syncAuthUser=useCallback(data=>login({...user,id:data.userId,fullName:data.fullName,phone:data.phone,email:data.email,role:data.role,providerId:data.provider?.providerId??user?.providerId,profilePicture:data.profilePicture||null}),[login,user]);
  const loadProfile=useCallback(async()=>{try{const r=await getMyProfile();setProfile(r.data);setProfileForm({fullName:r.data.fullName||"",phone:r.data.phone||""})}catch(e){toast.error(e?.response?.data?.message||"Unable to load your profile.")}},[]);
