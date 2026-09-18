@@ -35,11 +35,17 @@ import "../styles/fixly-provider-dashboard.css";
 import ProviderLayout from "../layouts/ProviderLayout";
 import { AuthContext } from "../context/AuthContext";
 
-const MONTH_COUNT = 6;
 const CHART_GREEN = "#16a34a";
 const CHART_GREEN_DARK = "#166534";
 const CHART_GREEN_LIGHT = "#86efac";
 const CHART_GREEN_SOFT = "#dcfce7";
+
+const ANALYTICS_PERIODS = [
+  { key: "DAY", label: "Day", description: "Last 24 hours" },
+  { key: "WEEK", label: "Week", description: "Last 7 days" },
+  { key: "MONTH", label: "Month", description: "Last 6 months" },
+  { key: "YEAR", label: "Year", description: "Last 5 years" },
+];
 
 const resolveImage = (path) => {
   if (!path) return "";
@@ -51,6 +57,82 @@ const resolveImage = (path) => {
 };
 
 const normalize = (value) => (value || "").toUpperCase().trim();
+const parseBookingDate = (value) => {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const startOfDay = (date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+const formatDay = (date) =>
+  date.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+
+const getPeriodConfig = (period) => {
+  const now = new Date();
+  const end = new Date(now);
+  let start;
+  let points = [];
+
+  if (period === "DAY") {
+    start = new Date(now);
+    start.setDate(start.getDate() - 0);
+    start = startOfDay(start);
+    for (let i = 0; i < 24; i += 1) {
+      const d = new Date(start);
+      d.setHours(i, 0, 0, 0);
+      points.push({
+        key: d.toISOString().slice(0, 13),
+        label: d.toLocaleTimeString("en-IN", { hour: "numeric" }),
+        start: d,
+        end: new Date(d.getTime() + 60 * 60 * 1000),
+      });
+    }
+  } else if (period === "WEEK") {
+    start = startOfDay(now);
+    start.setDate(start.getDate() - 6);
+    for (let i = 0; i < 7; i += 1) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      points.push({
+        key: d.toISOString().slice(0, 10),
+        label: formatDay(d),
+        start: d,
+        end: new Date(d.getTime() + 24 * 60 * 60 * 1000),
+      });
+    }
+  } else if (period === "YEAR") {
+    start = new Date(now.getFullYear() - 4, 0, 1);
+    for (let i = 0; i < 5; i += 1) {
+      const d = new Date(now.getFullYear() - 4 + i, 0, 1);
+      points.push({
+        key: String(d.getFullYear()),
+        label: String(d.getFullYear()),
+        start: d,
+        end: new Date(d.getFullYear() + 1, 0, 1),
+      });
+    }
+  } else {
+    start = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    for (let i = 0; i < 6; i += 1) {
+      const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
+      points.push({
+        key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
+        label: d.toLocaleDateString("en-IN", { month: "short", year: "numeric" }),
+        start: d,
+        end: new Date(d.getFullYear(), d.getMonth() + 1, 1),
+      });
+    }
+  }
+
+  return { now, start, end, points };
+};
+
+const isInRange = (date, start, end) => date && date >= start && date < end;
 
 const getMonthKey = (date) => {
   if (!date) return "";
@@ -80,6 +162,7 @@ const ProviderDashboard = () => {
   const [profile, setProfile] = useState(null);
   const [available, setAvailable] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [analyticsPeriod, setAnalyticsPeriod] = useState("MONTH");
 
   const loadDashboard = async () => {
     if (!providerId) return;
@@ -127,53 +210,64 @@ const ProviderDashboard = () => {
         ? rated.reduce((sum, b) => sum + Number(b.rating), 0) / rated.length
         : 0;
 
-    const months = getMonthSeries();
-    const bookingTrend = months.map((month) => {
-      const monthBookings = bookings.filter(
-        (b) => getMonthKey(b.serviceDate) === month.key,
-      );
-      const completed = monthBookings.filter(
-        (b) => normalize(b.status) === "COMPLETED",
-      );
+    const { start, end, points } = getPeriodConfig(analyticsPeriod);
+    const periodBookings = bookings.filter((b) => {
+      const date = parseBookingDate(b.serviceDate);
+      return isInRange(date, start, end);
+    });
+    const periodCompleted = periodBookings.filter((b) => normalize(b.status) === "COMPLETED");
+    const periodCancelled = periodBookings.filter((b) => normalize(b.status) === "CANCELLED");
+    const periodRated = periodBookings.filter((b) => b.rating != null && Number(b.rating) > 0);
+
+    const bookingTrend = points.map((point) => {
+      const rows = periodBookings.filter((b) => {
+        const date = parseBookingDate(b.serviceDate);
+        return isInRange(date, point.start, point.end);
+      });
       return {
-        month: month.label,
-        bookings: monthBookings.length,
-        completed: completed.length,
+        label: point.label,
+        bookings: rows.length,
+        completed: rows.filter((b) => normalize(b.status) === "COMPLETED").length,
       };
     });
 
-    const earningsTrend = months.map((month) => {
-      const completed = bookings.filter(
-        (b) =>
-          normalize(b.status) === "COMPLETED" &&
-          getMonthKey(b.serviceDate) === month.key,
-      );
+    const earningsTrend = points.map((point) => {
+      const rows = periodCompleted.filter((b) => {
+        const date = parseBookingDate(b.serviceDate);
+        return isInRange(date, point.start, point.end);
+      });
       return {
-        month: month.label,
-        value: completed.reduce(
-          (sum, booking) => sum + Number(booking.pricePerVisit || 0),
-          0,
-        ),
+        label: point.label,
+        value: rows.reduce((sum, booking) => sum + Number(booking.pricePerVisit || 0), 0),
       };
     });
 
     const statusData = [
-      { name: "Pending", value: pending },
-      { name: "Accepted", value: accepted },
-      { name: "Completed", value: completedBookings.length },
-      { name: "Cancelled", value: cancelled },
+      { name: "Pending", value: periodBookings.filter((b) => normalize(b.status) === "PENDING").length },
+      { name: "Accepted", value: periodBookings.filter((b) => normalize(b.status) === "ACCEPTED").length },
+      { name: "Completed", value: periodCompleted.length },
+      { name: "Cancelled", value: periodCancelled.length },
     ];
 
     const ratingData = [1, 2, 3, 4, 5].map((rating) => ({
       rating: `${rating}★`,
-      reviews: rated.filter((b) => Math.round(Number(b.rating)) === rating).length,
+      reviews: periodRated.filter((b) => Math.round(Number(b.rating)) === rating).length,
     }));
 
     const completionRate =
-      total > 0 ? Math.round((completedBookings.length / total) * 100) : 0;
+      periodBookings.length > 0
+        ? Math.round((periodCompleted.length / periodBookings.length) * 100)
+        : 0;
 
     const cancellationRate =
-      total > 0 ? Math.round((cancelled / total) * 100) : 0;
+      periodBookings.length > 0
+        ? Math.round((periodCancelled.length / periodBookings.length) * 100)
+        : 0;
+
+    const periodAvgRating =
+      periodRated.length > 0
+        ? periodRated.reduce((sum, b) => sum + Number(b.rating), 0) / periodRated.length
+        : 0;
 
     return {
       total,
@@ -184,6 +278,14 @@ const ProviderDashboard = () => {
       completedValue,
       avgRating,
       ratedCount: rated.length,
+      periodBookings: periodBookings.length,
+      periodCompleted: periodCompleted.length,
+      periodRatedCount: periodRated.length,
+      periodCompletedValue: periodCompleted.reduce(
+        (sum, booking) => sum + Number(booking.pricePerVisit || 0),
+        0,
+      ),
+      periodAvgRating,
       bookingTrend,
       earningsTrend,
       statusData,
@@ -191,7 +293,7 @@ const ProviderDashboard = () => {
       completionRate,
       cancellationRate,
     };
-  }, [bookings]);
+  }, [bookings, analyticsPeriod]);
 
   const stats = [
     {
@@ -379,12 +481,56 @@ const ProviderDashboard = () => {
             <span className="pd-analytics-kicker">PROVIDER ANALYTICS</span>
             <h2>Performance overview</h2>
             <p>
-              A clear view of booking activity, completion, customer ratings and
-              completed booking value.
+              Explore booking activity, completion, customer ratings and completed booking value across different time periods.
             </p>
           </div>
-          <div className="pd-analytics-period">
-            <FaCalendarAlt /> Last {MONTH_COUNT} months
+          <div className="pd-analytics-period-picker" role="group" aria-label="Analytics period">
+            {ANALYTICS_PERIODS.map((period) => (
+              <button
+                key={period.key}
+                type="button"
+                className={`pd-period-btn ${analyticsPeriod === period.key ? "pd-period-btn-active" : ""}`}
+                onClick={() => setAnalyticsPeriod(period.key)}
+                title={period.description}
+                aria-pressed={analyticsPeriod === period.key}>
+                {period.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="pd-insight-grid pd-insight-grid-top">
+          <div className="pd-insight-card pd-insight-completion">
+            <span className="pd-insight-icon"><FaCheckCircle /></span>
+            <div>
+              <strong>{analytics.completionRate}%</strong>
+              <span>Completion rate</span>
+              <small>Completed bookings ÷ all bookings</small>
+            </div>
+          </div>
+          <div className="pd-insight-card">
+            <span className="pd-insight-icon"><FaTimesCircle /></span>
+            <div>
+              <strong>{analytics.cancellationRate}%</strong>
+              <span>Cancellation rate</span>
+              <small>Cancelled bookings ÷ all bookings</small>
+            </div>
+          </div>
+          <div className="pd-insight-card">
+            <span className="pd-insight-icon"><FaStar /></span>
+            <div>
+              <strong>{analytics.periodAvgRating ? analytics.periodAvgRating.toFixed(1) : "0.0"}/5</strong>
+              <span>Average rating</span>
+              <small>Based on rated bookings in period</small>
+            </div>
+          </div>
+          <div className="pd-insight-card">
+            <span className="pd-insight-icon"><FaTrophy /></span>
+            <div>
+              <strong>{analytics.periodCompleted}</strong>
+              <span>Jobs completed</span>
+              <small>Completed services in period</small>
+            </div>
           </div>
         </section>
 
@@ -395,7 +541,7 @@ const ProviderDashboard = () => {
                 <span className="pd-chart-icon"><FaChartLine /></span>
                 <div>
                   <h3>Booking activity</h3>
-                  <p>Requests and completed jobs by month</p>
+                  <p>Requests and completed jobs in the selected period</p>
                 </div>
               </div>
             </div>
@@ -403,7 +549,7 @@ const ProviderDashboard = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={analytics.bookingTrend}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="month" tick={{ fill: "#64748b", fontSize: 11 }} />
+                  <XAxis dataKey="label" tick={{ fill: "#64748b", fontSize: 11 }} />
                   <YAxis allowDecimals={false} tick={{ fill: "#64748b", fontSize: 11 }} />
                   <Tooltip />
                   <Legend />
@@ -434,7 +580,7 @@ const ProviderDashboard = () => {
                 <span className="pd-chart-icon"><FaChartPie /></span>
                 <div>
                   <h3>Booking status</h3>
-                  <p>Current booking mix</p>
+                  <p>Booking mix for the selected period</p>
                 </div>
               </div>
             </div>
@@ -478,7 +624,7 @@ const ProviderDashboard = () => {
                 <span className="pd-chart-icon"><FaRupeeSign /></span>
                 <div>
                   <h3>Completed booking value</h3>
-                  <p>Value of completed services by month</p>
+                  <p>Value of completed services in the selected period</p>
                 </div>
               </div>
             </div>
@@ -506,7 +652,7 @@ const ProviderDashboard = () => {
                 <span className="pd-chart-icon"><FaStar /></span>
                 <div>
                   <h3>Customer ratings</h3>
-                  <p>{analytics.ratedCount} rated booking{analytics.ratedCount === 1 ? "" : "s"}</p>
+                  <p>{analytics.periodRatedCount} rated booking{analytics.periodRatedCount === 1 ? "" : "s"}</p>
                 </div>
               </div>
             </div>
@@ -529,40 +675,7 @@ const ProviderDashboard = () => {
           </article>
         </section>
 
-        <section className="pd-insight-grid">
-          <div className="pd-insight-card">
-            <span className="pd-insight-icon"><FaCheckCircle /></span>
-            <div>
-              <strong>{analytics.completionRate}%</strong>
-              <span>Completion rate</span>
-              <small>Completed bookings ÷ all bookings</small>
-            </div>
-          </div>
-          <div className="pd-insight-card">
-            <span className="pd-insight-icon"><FaTimesCircle /></span>
-            <div>
-              <strong>{analytics.cancellationRate}%</strong>
-              <span>Cancellation rate</span>
-              <small>Cancelled bookings ÷ all bookings</small>
-            </div>
-          </div>
-          <div className="pd-insight-card">
-            <span className="pd-insight-icon"><FaStar /></span>
-            <div>
-              <strong>{analytics.avgRating ? analytics.avgRating.toFixed(1) : "0.0"}/5</strong>
-              <span>Average rating</span>
-              <small>Based on rated completed bookings</small>
-            </div>
-          </div>
-          <div className="pd-insight-card">
-            <span className="pd-insight-icon"><FaTrophy /></span>
-            <div>
-              <strong>{analytics.completed}</strong>
-              <span>Jobs completed</span>
-              <small>Successfully completed services</small>
-            </div>
-          </div>
-        </section>
+>
       </div>
     </ProviderLayout>
   );
