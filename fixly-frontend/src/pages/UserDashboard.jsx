@@ -18,8 +18,10 @@ import {
   FaChevronRight,
   FaClipboardList,
   FaFire,
+  FaSearch,
 } from "react-icons/fa";
 import fixlyApi from "../api/fixlyApi";
+import { getMyProfile } from "../api/profileApi";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import "../styles/fixly-dashboard.css";
@@ -42,16 +44,32 @@ const STATUS_STYLE = {
   CANCELLED: { cls: "ud-s-cancelled", label: "Cancelled" },
 };
 
+const resolveImage = (path) => {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  const base = (import.meta.env.VITE_API_BASE_URL || "")
+    .replace(/\/$/, "")
+    .replace(/\/api$/, "");
+  return base + (path.startsWith("/") ? "" : "/") + path;
+};
+
 const UserDashboard = () => {
   const { user } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [filter, setFilter] = useState("ALL");
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (!user?.id) return;
+
+    getMyProfile()
+      .then((res) => setProfile(res.data || null))
+      .catch(() => setProfile(null));
+
     const loadBookings = async () => {
       try {
         const res = await fixlyApi.get(`/api/bookings/user/${user.id}`);
@@ -69,9 +87,29 @@ const UserDashboard = () => {
     loadBookings();
   }, [user]);
 
-  /* ===== FILTER + PAGINATION ===== */
-  const filtered =
-    filter === "ALL" ? bookings : bookings.filter((b) => b.status === filter);
+  /* ===== FILTER + SEARCH + PAGINATION ===== */
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filtered = bookings.filter((b) => {
+    const matchesStatus = filter === "ALL" || b.status === filter;
+    if (!normalizedSearch) return matchesStatus;
+
+    const haystack = [
+      b.bookingId,
+      b.providerName,
+      b.category,
+      b.city,
+      b.area,
+      b.pincode,
+      b.status,
+      b.serviceDate,
+      b.providerPhone,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return matchesStatus && haystack.includes(normalizedSearch);
+  });
   const totalPages = Math.max(1, Math.ceil(filtered.length / CARDS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice(
@@ -83,6 +121,16 @@ const UserDashboard = () => {
     setFilter(key);
     setPage(1);
   };
+
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setPage(1);
+  };
+
+  const dashboardUser = profile || user;
+  const userPicture = resolveImage(
+    dashboardUser?.profilePicture || dashboardUser?.profileImage,
+  );
 
   /* ===== STATS ===== */
   const total = bookings.length;
@@ -152,12 +200,25 @@ const UserDashboard = () => {
 
           <div className="ud-hero-content">
             <div className="ud-hero-avatar">
-              {user?.fullName?.charAt(0)?.toUpperCase()}
+              {userPicture ? (
+                <img
+                  src={userPicture}
+                  alt={dashboardUser?.fullName || "Profile"}
+                  className="ud-hero-avatar-image"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.nextElementSibling?.classList.remove("ud-avatar-initial-hidden");
+                  }}
+                />
+              ) : null}
+              <span className={userPicture ? "ud-avatar-initial-hidden" : ""}>
+                {dashboardUser?.fullName?.charAt(0)?.toUpperCase() || "U"}
+              </span>
             </div>
             <div className="ud-hero-text">
               <h2 className="ud-hero-title">
                 Welcome back,{" "}
-                <span className="ud-hero-name">{user?.fullName}</span> 👋
+                <span className="ud-hero-name">{dashboardUser?.fullName || user?.fullName}</span> 👋
               </h2>
               <p className="ud-hero-sub">
                 Here's an overview of all your service bookings
@@ -181,18 +242,41 @@ const UserDashboard = () => {
           ))}
         </div>
 
-        {/* ===== FILTER BAR ===== */}
-        <div className="ud-filter-bar">
-          <div className="ud-filter-header">
-            <div className="ud-filter-header-icon">
-              <FaFilter />
+        {/* ===== MODERN FILTER + SEARCH ===== */}
+        <section className="ud-booking-controls" aria-label="Booking filters and search">
+          <div className="ud-controls-head">
+            <div className="ud-controls-title-wrap">
+              <div className="ud-controls-icon"><FaFilter /></div>
+              <div>
+                <span className="ud-controls-kicker">BOOKING FILTERS</span>
+                <h3>Find a booking quickly</h3>
+                <p>Search your bookings or filter them by status.</p>
+              </div>
             </div>
-            <div className="ud-filter-header-text">
-              <h3 className="ud-filter-title">Filter Bookings</h3>
-              <p className="ud-filter-subtitle">
-                Narrow down your bookings by status
-              </p>
+            <div className="ud-controls-result">
+              <strong>{filtered.length}</strong>
+              <span>{filtered.length === 1 ? "booking" : "bookings"} found</span>
             </div>
+          </div>
+
+          <div className="ud-search-wrap">
+            <FaSearch className="ud-search-icon" />
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search by provider, service, city, area or booking ID..."
+              aria-label="Search bookings"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className="ud-search-clear"
+                onClick={() => handleSearch("")}
+                aria-label="Clear booking search">
+                ×
+              </button>
+            )}
           </div>
 
           <div className="ud-filter-chips">
@@ -204,8 +288,10 @@ const UserDashboard = () => {
               return (
                 <button
                   key={f.key}
+                  type="button"
                   className={`ud-chip ud-chip-${f.key.toLowerCase()} ${filter === f.key ? "ud-chip-active" : ""}`}
-                  onClick={() => handleFilter(f.key)}>
+                  onClick={() => handleFilter(f.key)}
+                  aria-pressed={filter === f.key}>
                   <span className="ud-chip-icon">{f.icon}</span>
                   <span className="ud-chip-label">{f.label}</span>
                   <span className="ud-chip-count">{count}</span>
@@ -213,7 +299,7 @@ const UserDashboard = () => {
               );
             })}
           </div>
-        </div>
+        </section>
 
         {/* ===== EMPTY ===== */}
         {filtered.length === 0 ? (
@@ -222,16 +308,20 @@ const UserDashboard = () => {
               <FaCalendarAlt />
             </div>
             <h4>
-              {filter === "ALL"
-                ? "No bookings yet"
-                : `No ${filter.toLowerCase()} bookings`}
+              {searchTerm
+                ? "No matching bookings"
+                : filter === "ALL"
+                  ? "No bookings yet"
+                  : `No ${filter.toLowerCase()} bookings`}
             </h4>
             <p>
-              {filter === "ALL"
-                ? "Your service bookings will appear here once you make one."
-                : `You don't have any ${filter.toLowerCase()} bookings right now.`}
+              {searchTerm
+                ? "Try a different provider, service, city, area or booking detail."
+                : filter === "ALL"
+                  ? "Your service bookings will appear here once you make one."
+                  : `You don't have any ${filter.toLowerCase()} bookings right now.`}
             </p>
-            {filter !== "ALL" && (
+            {(filter !== "ALL" || searchTerm) && (
               <button
                 className="ud-empty-btn"
                 onClick={() => {
@@ -248,7 +338,9 @@ const UserDashboard = () => {
             {(filter !== "ALL" || searchTerm) && (
               <p className="ud-results-line">
                 Showing <strong>{filtered.length}</strong>{" "}
-                {filter.toLowerCase()} booking{filtered.length !== 1 ? "s" : ""}
+                {searchTerm
+                  ? "matching booking" + (filtered.length !== 1 ? "s" : "")
+                  : filter.toLowerCase() + " booking" + (filtered.length !== 1 ? "s" : "")}
               </p>
             )}
 
@@ -271,7 +363,22 @@ const UserDashboard = () => {
 
                       {/* avatar + name */}
                       <div className="ud-band-left">
-                        <div className="ud-band-avatar">{initial}</div>
+                        <div className="ud-band-avatar">
+                          {resolveImage(b.providerProfilePicture) ? (
+                            <img
+                              src={resolveImage(b.providerProfilePicture)}
+                              alt={b.providerName || "Provider"}
+                              className="ud-band-avatar-image"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                                e.currentTarget.nextElementSibling?.classList.remove("ud-provider-initial-hidden");
+                              }}
+                            />
+                          ) : null}
+                          <span className={resolveImage(b.providerProfilePicture) ? "ud-provider-initial-hidden" : ""}>
+                            {initial}
+                          </span>
+                        </div>
                         <div className="ud-band-info">
                           <p className="ud-band-provider-lbl">
                             Service Provider
