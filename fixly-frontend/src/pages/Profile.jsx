@@ -81,13 +81,13 @@ const ProfileSettings = () => {
 
   const roleLabel = useMemo(() => role === "PROVIDER" ? "Service Provider" : role === "ADMIN" ? "Administrator" : "User", [role]);
   const initials = (profile?.fullName || user?.fullName || "U").trim().charAt(0).toUpperCase();
-  const profileImage = profile?.profilePicture ? (/^https?:\\/\\/i.test(profile.profilePicture) ? profile.profilePicture : (import.meta.env.VITE_API_BASE_URL || "").replace(/\\/$/, "") + (profile.profilePicture.startsWith("/") ? "" : "/") + profile.profilePicture) : "";
+  const profileImage = profile?.profilePicture ? (/^https?:\/\//i.test(profile.profilePicture) ? profile.profilePicture : (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "") + (profile.profilePicture.startsWith("/") ? "" : "/") + profile.profilePicture) : "";
 
   const saveProfile = async () => {
     const fullName = profileForm.fullName.trim();
     const phone = profileForm.phone.trim();
     if (!fullName) return toast.error("Full name is required.");
-    if (!/^[6-9]\\d{9}$/.test(phone)) return toast.error("Enter a valid 10-digit Indian mobile number.");
+    if (!/^[6-9]\d{9}$/.test(phone)) return toast.error("Enter a valid 10-digit Indian mobile number.");
     try {
       setSavingProfile(true);
       const response = await updateMyProfile({ fullName, phone });
@@ -137,7 +137,7 @@ const ProfileSettings = () => {
 
   const saveAddress = async () => {
     const payload = { city: addressForm.city.trim(), area: addressForm.area.trim(), pincode: addressForm.pincode.trim() };
-    if (!payload.city || !payload.area || !/^\\d{6}$/.test(payload.pincode)) return toast.error("Enter city, area and a valid 6-digit pincode.");
+    if (!payload.city || !payload.area || !/^\d{6}$/.test(payload.pincode)) return toast.error("Enter city, area and a valid 6-digit pincode.");
     try {
       setSavingAddress(true);
       if (addressMode === "edit") { await updateAddress(editingAddressId, payload); toast.success("Address updated successfully."); }
