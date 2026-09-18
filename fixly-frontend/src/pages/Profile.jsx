@@ -156,6 +156,19 @@ const ProfileSettings = () => {
 
   const permanent = addresses[0];
   const alternatives = addresses.slice(1);
+
+  if (!profile) {
+    return (
+      <div className="pst-wrapper">
+        <div className="pst-container">
+          <div className="pst-loading-card">
+            <div className="pst-loading-avatar" />
+            <div className="pst-loading-lines"><span /><span /><span /></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="pst-wrapper">
       <div className="pst-container">
@@ -215,6 +228,26 @@ const ProfileSettings = () => {
             <div className="pst-field"><label className="pst-label"><FaEnvelope className="pst-label-icon" /> Email Address</label><div className="pst-readonly-box"><FaEnvelope className="pst-box-icon" /><span>{profile.email || "—"}</span></div></div>
           </div>}
         </div>
+
+        {/* ===== PROVIDER PROFILE ===== */}
+        {role === "PROVIDER" && profile.provider && (
+          <div className="pst-card pst-provider-card">
+            <div className="pst-card-header">
+              <div className="pst-card-header-icon orange"><FaBriefcase /></div>
+              <div>
+                <h3 className="pst-card-title">Provider Profile</h3>
+                <p className="pst-card-subtitle">Your professional information and current provider status</p>
+              </div>
+              <span className="pst-provider-status">{profile.provider.status}</span>
+            </div>
+            <div className="pst-provider-grid">
+              <div className="pst-provider-stat"><FaBriefcase /><span>Category</span><strong>{profile.provider.category || "—"}</strong></div>
+              <div className="pst-provider-stat"><FaClock /><span>Experience</span><strong>{profile.provider.experienceYears} years</strong></div>
+              <div className="pst-provider-stat"><FaStar /><span>Rating</span><strong>{Number(profile.provider.rating || 0).toFixed(1)}</strong></div>
+              <div className="pst-provider-stat"><FaCheckCircle /><span>Availability</span><strong>{profile.provider.available ? "Available" : "Unavailable"}</strong></div>
+            </div>
+          </div>
+        )}
 
         {/* ===== PERMANENT ADDRESS CARD ===== */}
         {permanent && (
