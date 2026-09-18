@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserDashboard from "./pages/UserDashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import ProviderBookings from "./pages/ProviderBookings";
 import UserBookings from "./pages/UserBookings";
 import SearchResults from "./pages/SearchResults";
 import BookService from "./pages/BookService";
@@ -115,6 +116,15 @@ function App() {
           element={
             <PrivateRoute role="PROVIDER">
               <ProviderDashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/provider/bookings"
+          element={
+            <PrivateRoute role="PROVIDER">
+              <ProviderBookings />
             </PrivateRoute>
           }
         />
