@@ -537,6 +537,11 @@ public class ProviderServiceImpl implements ProviderService {
 
 						: "Unknown");
 
+		response.setProfilePicture(
+				provider.getUser() != null
+						? provider.getUser().getProfilePicture()
+						: null);
+
 		// ✅ Safe category
 
 		response.setCategory(
