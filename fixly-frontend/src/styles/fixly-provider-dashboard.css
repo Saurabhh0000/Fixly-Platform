@@ -1862,3 +1862,203 @@
   .pb-ratings-section .pd-ratings-table td[data-label="Rating"]::before { content: "Rating"; }
   .pb-ratings-section .pd-ratings-table td[data-label="Feedback"]::before { content: "Feedback"; }
 }
+
+
+/* ================================================================
+   PROVIDER DASHBOARD — LOADER + ANALYTICS PERIOD CONTROLS
+   ================================================================ */
+.pd-loader {
+  position: relative;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 40px 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(220, 252, 231, .9), transparent 28%),
+    radial-gradient(circle at 85% 80%, rgba(187, 247, 208, .55), transparent 26%),
+    #f8fafb;
+  color: #64748b;
+}
+
+.pd-loader::before,
+.pd-loader::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pd-loader::before {
+  width: 380px;
+  height: 380px;
+  top: -220px;
+  right: -120px;
+  border: 70px solid rgba(22, 163, 74, .045);
+}
+
+.pd-loader::after {
+  width: 280px;
+  height: 280px;
+  bottom: -170px;
+  left: -120px;
+  border: 55px solid rgba(22, 163, 74, .04);
+}
+
+.pd-loader-card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  padding: 34px 28px 30px;
+  box-sizing: border-box;
+  border: 1px solid #dcfce7;
+  border-radius: 24px;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, .09);
+  text-align: center;
+}
+
+.pd-loader-mark {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+  border-radius: 20px;
+  color: #ffffff;
+  background: linear-gradient(145deg, #16a34a, #166534);
+  box-shadow: 0 14px 30px rgba(22, 163, 74, .22);
+}
+
+.pd-loader-ring {
+  position: absolute;
+  inset: -7px;
+  width: auto;
+  height: auto;
+  border: 2px solid #86efac;
+  border-top-color: transparent;
+  border-radius: 26px;
+  animation: pd-loader-spin .9s linear infinite;
+}
+
+.pd-loader-logo {
+  position: static;
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.pd-loader-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.pd-loader p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+.pd-loader-progress {
+  width: 100%;
+  height: 5px;
+  margin-top: 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dcfce7;
+}
+
+.pd-loader-progress::after {
+  content: "";
+  display: block;
+  width: 38%;
+  height: 100%;
+  border-radius: inherit;
+  background: #16a34a;
+  animation: pd-loader-progress 1.2s ease-in-out infinite;
+}
+
+@keyframes pd-loader-progress {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(360%); }
+}
+
+.pd-analytics-period-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #dcfce7;
+  border-radius: 13px;
+  background: #f0fdf4;
+}
+
+.pd-period-btn {
+  min-width: 68px;
+  height: 36px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 9px;
+  color: #64748b;
+  background: transparent;
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.pd-period-btn:hover {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.pd-period-btn-active {
+  color: #ffffff;
+  background: #16a34a;
+  box-shadow: 0 5px 13px rgba(22, 163, 74, .18);
+}
+
+.pd-period-btn-active:hover {
+  color: #ffffff;
+  background: #15803d;
+}
+
+.pd-insight-grid-top {
+  margin-top: 0;
+  margin-bottom: 22px;
+}
+
+.pd-insight-grid-top .pd-insight-card {
+  min-height: 94px;
+  border-color: #dcfce7;
+  background: linear-gradient(135deg, #ffffff, #f0fdf4);
+}
+
+.pd-insight-grid-top .pd-insight-card:first-child {
+  border-color: #86efac;
+  box-shadow: 0 10px 28px rgba(22, 163, 74, .08);
+}
+
+@media (max-width: 760px) {
+  .pd-loader-card { padding: 30px 22px 26px; }
+  .pd-analytics-period-picker {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .pd-period-btn { min-width: 0; padding: 0 5px; }
+}
+
+@media (max-width: 430px) {
+  .pd-analytics-period-picker {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
