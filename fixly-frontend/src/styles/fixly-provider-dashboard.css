@@ -1684,3 +1684,181 @@
   .pb-hero-meta span { justify-content: flex-start; }
   .pb-status-filters { grid-template-columns: 1fr; }
 }
+
+
+/* Booking-page-only refinements for pagination, empty state and feedback.
+   Existing .pd-card and .pd-stat-card styles remain intentionally untouched. */
+.pb-ratings-section .pd-ratings-card {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .045);
+}
+
+.pb-ratings-section .pd-table-wrap {
+  border: 0;
+  border-radius: 0;
+}
+
+.pb-ratings-section .pd-ratings-table th {
+  background: #f8fafb;
+  color: #64748b;
+  font-size: .69rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.pb-ratings-section .pd-ratings-table td {
+  color: #334155;
+  font-size: .8rem;
+}
+
+.pb-ratings-section .pd-ratings-table tbody tr {
+  transition: background .18s ease;
+}
+
+.pb-ratings-section .pd-ratings-table tbody tr:hover {
+  background: #f0fdf4;
+}
+
+.pb-ratings-section .pd-no-ratings {
+  min-height: 170px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: #64748b;
+}
+
+.pb-ratings-section .pd-empty-star {
+  font-size: 1.7rem;
+  color: #86efac;
+}
+
+.pb-ratings-section .pd-no-ratings p {
+  color: #64748b;
+  font-size: .82rem;
+}
+
+.pb-ratings-section .pd-ratings-header,
+.pb-ratings-section .pd-ratings-sub {
+  display: none;
+}
+
+.pb-ratings-section .pd-pagination,
+.pb-ratings-section + .pd-ratings-section .pd-pagination {
+  margin-top: 18px;
+}
+
+.pd-wrapper > .pd-pagination {
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, .045);
+}
+
+.pd-wrapper > .pd-pagination .pd-page-btn {
+  border-radius: 10px;
+}
+
+.pd-wrapper > .pd-pagination .pd-page-active {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+.pd-wrapper > .pd-pagination .pd-page-info {
+  color: #64748b;
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.pd-wrapper > .pd-empty {
+  margin: 28px 0;
+  padding: 54px 24px;
+  border: 1px dashed #bbf7d0;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff, #f0fdf4);
+}
+
+.pd-wrapper > .pd-empty .pd-empty-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 14px;
+  border-radius: 18px;
+  color: #166534;
+  background: #dcfce7;
+}
+
+.pd-wrapper > .pd-empty h4 {
+  color: #0f172a;
+  font-size: 1.05rem;
+}
+
+.pd-wrapper > .pd-empty p {
+  max-width: 520px;
+  margin: 7px auto 0;
+  color: #64748b;
+  font-size: .82rem;
+  line-height: 1.55;
+}
+
+.pd-wrapper > .pd-empty .pd-empty-btn {
+  margin-top: 18px;
+  border-radius: 11px;
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+@media (max-width: 600px) {
+  .pd-wrapper > .pd-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pd-wrapper > .pd-pagination .pd-page-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  .pb-ratings-section .pd-ratings-table thead {
+    display: none;
+  }
+
+  .pb-ratings-section .pd-ratings-table,
+  .pb-ratings-section .pd-ratings-table tbody,
+  .pb-ratings-section .pd-ratings-table tr,
+  .pb-ratings-section .pd-ratings-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .pb-ratings-section .pd-ratings-table tr {
+    padding: 13px 15px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .pb-ratings-section .pd-ratings-table td {
+    padding: 5px 0;
+    border: 0;
+  }
+
+  .pb-ratings-section .pd-ratings-table td::before {
+    display: inline-block;
+    min-width: 76px;
+    color: #94a3b8;
+    font-size: .64rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .pb-ratings-section .pd-ratings-table td[data-label="ID"]::before { content: "ID"; }
+  .pb-ratings-section .pd-ratings-table td[data-label="Customer"]::before { content: "Customer"; }
+  .pb-ratings-section .pd-ratings-table td[data-label="Rating"]::before { content: "Rating"; }
+  .pb-ratings-section .pd-ratings-table td[data-label="Feedback"]::before { content: "Feedback"; }
+}
