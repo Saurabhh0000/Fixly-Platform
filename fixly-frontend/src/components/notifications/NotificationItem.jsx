@@ -10,7 +10,9 @@ import {
   FaUserCheck,
   FaMapMarkerAlt,
   FaUserShield,
-  FaUserCog,\n  FaUser,\n  FaCamera,
+  FaUserCog,
+  FaUser,
+  FaCamera,
 } from "react-icons/fa";
 import { formatRelativeTime } from "../../utils/formatRelativeTime";
 
