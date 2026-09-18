@@ -13,7 +13,8 @@ import com.fixly.entity.User;
 import com.fixly.enums.NotificationType;
 import com.fixly.exception.BadRequestException;
 import com.fixly.exception.ResourceNotFoundException;
-import com.fixly.repository.AddressRepository;\nimport com.fixly.repository.BookingRepository;
+import com.fixly.repository.AddressRepository;
+import com.fixly.repository.BookingRepository;
 import com.fixly.repository.UserRepository;
 import com.fixly.service.AddressService;
 import com.fixly.service.NotificationService;
@@ -25,7 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class AddressServiceImpl implements AddressService {
 
     private final UserRepository userRepo;
-    private final AddressRepository addressRepo;\n    private final BookingRepository bookingRepo;
+    private final AddressRepository addressRepo;
+    private final BookingRepository bookingRepo;
     private final NotificationService notificationService;
 
     @Override
