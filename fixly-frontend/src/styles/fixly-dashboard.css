@@ -706,3 +706,300 @@
   .ud-chip { padding: 5px 9px; }
   .ud-pagination { padding: 0 12px; }
 }
+
+/* ================================================================
+   FIXLY DASHBOARD — BOOKING FILTER + SEARCH REFRESH
+   Scoped to dashboard controls only.
+   ================================================================ */
+.ud-booking-controls {
+  margin: 0 20px 22px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 8px 28px rgba(15,23,42,.06);
+}
+
+.ud-controls-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.ud-controls-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.ud-controls-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.ud-controls-kicker {
+  display: block;
+  color: #15803d;
+  font-size: .6rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.ud-controls-title-wrap h3 {
+  margin: 3px 0 2px;
+  color: #0f172a;
+  font-size: .96rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.ud-controls-title-wrap p {
+  margin: 0;
+  color: #64748b;
+  font-size: .68rem;
+  font-weight: 500;
+}
+
+.ud-controls-result {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 8px 11px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #f8fafb;
+  color: #64748b;
+  font-size: .66rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ud-controls-result strong {
+  color: #166534;
+  font-size: .82rem;
+  font-weight: 900;
+}
+
+.ud-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ud-search-icon {
+  position: absolute;
+  left: 15px;
+  color: #16a34a;
+  font-size: .82rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ud-search-wrap input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 44px 0 42px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 13px;
+  outline: none;
+  background: #f8fafb;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: .78rem;
+  font-weight: 600;
+  box-sizing: border-box;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.ud-search-wrap input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.ud-search-wrap input:hover {
+  border-color: #bbf7d0;
+  background: #ffffff;
+}
+
+.ud-search-wrap input:focus {
+  border-color: #16a34a;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(22,163,74,.10);
+}
+
+.ud-search-clear {
+  position: absolute;
+  right: 9px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.ud-search-clear:hover {
+  background: #bbf7d0;
+  transform: scale(1.04);
+}
+
+.ud-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 6px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 11px;
+  background: #f8fafb;
+  color: #475569;
+  font-family: inherit;
+  font-size: .7rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease, color .16s ease, box-shadow .16s ease;
+}
+
+.ud-chip:hover {
+  transform: translateY(-1px);
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.ud-chip-active {
+  background: linear-gradient(135deg,#15803d 0%,#16a34a 55%,#22c55e 100%) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 16px rgba(22,163,74,.25);
+}
+
+.ud-chip-icon {
+  display: inline-flex;
+  font-size: .68rem;
+}
+
+.ud-chip-count {
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(15,23,42,.07);
+  text-align: center;
+  font-size: .61rem;
+  font-weight: 900;
+}
+
+.ud-chip-active .ud-chip-count {
+  background: rgba(255,255,255,.22);
+  color: #ffffff;
+}
+
+.ud-hero-avatar {
+  overflow: hidden;
+  position: relative;
+}
+
+.ud-hero-avatar-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.ud-avatar-initial-hidden,
+.ud-provider-initial-hidden {
+  display: none;
+}
+
+.ud-band-avatar {
+  position: relative;
+  overflow: hidden;
+}
+
+.ud-band-avatar-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+@media (max-width: 600px) {
+  .ud-booking-controls {
+    margin: 0 12px 16px;
+    padding: 13px;
+    border-radius: 17px;
+  }
+
+  .ud-controls-head {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ud-controls-icon {
+    width: 35px;
+    height: 35px;
+    flex-basis: 35px;
+    border-radius: 10px;
+  }
+
+  .ud-controls-kicker { font-size: .55rem; }
+  .ud-controls-title-wrap h3 { font-size: .82rem; }
+  .ud-controls-title-wrap p { font-size: .61rem; }
+
+  .ud-controls-result {
+    padding: 6px 9px;
+    font-size: .58rem;
+  }
+
+  .ud-controls-result strong { font-size: .72rem; }
+
+  .ud-search-wrap input {
+    min-height: 43px;
+    font-size: .72rem;
+    padding-left: 39px;
+  }
+
+  .ud-filter-chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 7px;
+  }
+
+  .ud-chip {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 39px;
+    padding: 6px 9px;
+  }
+}
+
+@media (max-width: 380px) {
+  .ud-booking-controls { margin-left: 10px; margin-right: 10px; }
+  .ud-controls-head { gap: 7px; }
+  .ud-controls-title-wrap { gap: 8px; }
+  .ud-controls-result span { display: none; }
+  .ud-search-wrap input { font-size: .68rem; }
+}
