@@ -148,9 +148,9 @@ function App() {
           }
         />
         <Route
-          path="/admin/contact-history"
+          path="/contact-history"
           element={
-            <PrivateRoute role="ADMIN">
+            <PrivateRoute>
               <ContactHistory />
             </PrivateRoute>
           }
