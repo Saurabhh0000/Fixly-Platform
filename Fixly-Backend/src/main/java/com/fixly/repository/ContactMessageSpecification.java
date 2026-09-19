@@ -47,7 +47,8 @@ public final class ContactMessageSpecification {
                 Predicate nameLike = cb.like(cb.lower(root.get("name")), like);
                 Predicate emailLike = cb.like(cb.lower(root.get("email")), like);
                 Predicate subjectLike = cb.like(cb.lower(root.get("subject")), like);
-                predicate = cb.and(predicate, cb.or(nameLike, emailLike, subjectLike));
+                Predicate messageLike = cb.like(cb.lower(root.get("message")), like);
+                predicate = cb.and(predicate, cb.or(nameLike, emailLike, subjectLike, messageLike));
             }
 
             return predicate;
