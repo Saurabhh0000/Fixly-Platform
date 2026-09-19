@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +34,13 @@ import com.fixly.service.AdminContactService;
  * not re-derive or trust any role information from the request.
  */
 @RestController
+@CrossOrigin(
+        allowedOriginPatterns = "*",
+        allowedHeaders = "*",
+        methods = { org.springframework.web.bind.annotation.RequestMethod.GET,
+                org.springframework.web.bind.annotation.RequestMethod.PATCH,
+                org.springframework.web.bind.annotation.RequestMethod.OPTIONS },
+        allowCredentials = "true")
 @RequestMapping("/api/admin/contact")
 public class AdminContactController {
 
