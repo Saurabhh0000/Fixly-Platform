@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/FixlyNavbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -17,7 +17,6 @@ import Profile from "./pages/Profile";
 import AdminProviderRequests from "./pages/AdminProviderRequests";
 import HelpSupport from "./pages/HelpSupport";
 import NotificationPage from "./pages/NotificationPage";
-
 import PrivateRoute from "./components/PrivateRoute";
 import AdminCategories from "./pages/AdminCategories";
 import About from "./pages/About";
@@ -29,13 +28,16 @@ import RefundPolicy from "./pages/RefundPolicy";
 import Contact from "./pages/Contact";
 import ContactManagement from "./pages/ContactManagement";
 import ContactHistory from "./pages/ContactHistory";
-function App() {
+
+function AppContent() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+
   return (
-    <BrowserRouter>
-      <Navbar />
+    <>
+      {!isAuthPage && <Navbar />}
 
       <Routes>
-        {/* PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -48,7 +50,7 @@ function App() {
         <Route path="/cancellation-policy" element={<CancellationPolicy />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="/contact" element={<Contact />} />
-        {/* PROFILE & SECURITY */}
+
         <Route
           path="/profile"
           element={
@@ -57,7 +59,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/change-password"
           element={
@@ -83,7 +84,6 @@ function App() {
           }
         />
 
-        {/* USER */}
         <Route
           path="/user/dashboard"
           element={
@@ -92,7 +92,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/user/bookings"
           element={
@@ -101,7 +100,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/become-provider"
           element={
@@ -111,7 +109,6 @@ function App() {
           }
         />
 
-        {/* PROVIDER */}
         <Route
           path="/provider/dashboard"
           element={
@@ -120,7 +117,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/provider/bookings"
           element={
@@ -130,7 +126,6 @@ function App() {
           }
         />
 
-        {/* ADMIN */}
         <Route
           path="/admin/dashboard"
           element={
@@ -171,7 +166,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* BOOK SERVICE */}
+
         <Route
           path="/book"
           element={
@@ -181,6 +176,14 @@ function App() {
           }
         />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
