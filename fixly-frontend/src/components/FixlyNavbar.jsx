@@ -789,6 +789,12 @@ const FixlyNavbar = () => {
                     <FaEnvelope className="fnav-ml-icon" />
                     Contact Management
                   </button>
+                  <button
+                    className={`fnav-mobile-link ${isActive("/admin/contact-history") ? "fnav-mobile-link-active" : ""}`}
+                    onClick={() => go("/admin/contact-history")}>
+                    <FaHistory className="fnav-ml-icon" />
+                    Contact History
+                  </button>
                 </>
               )}
             </div>
