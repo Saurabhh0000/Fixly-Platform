@@ -12,8 +12,8 @@ import {
   FaUserSlash,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
-import AdminLayout from "../layouts/AdminLayout";
-import { getAdminContacts } from "../api/contactService";
+
+import { getMyContactHistory } from "../api/contactService";
 import "../styles/contact-history.css";
 
 const PAGE_SIZE = 20;
@@ -120,7 +120,7 @@ const ContactHistory = () => {
     setError(false);
 
     try {
-      const result = await getAdminContacts({
+      const result = await getMyContactHistory({
         page,
         size: PAGE_SIZE,
         status: statusFilter || undefined,
@@ -152,11 +152,10 @@ const ContactHistory = () => {
   const resolvedOnPage = data.content.filter(
     (contact) => contact.status === "RESOLVED",
   ).length;
-  const openOnPage = data.content.length - resolvedOnPage;
+  const openOnPage = data.content.filter((contact) => contact.status !== "RESOLVED").length;
 
   return (
-    <AdminLayout>
-      <div className="fixly-contact-history">
+    <div className="fixly-contact-history">
         <header className="fch-header">
           <div className="fch-title-block">
             <div className="fch-title-icon" aria-hidden="true">
@@ -165,8 +164,7 @@ const ContactHistory = () => {
             <div>
               <h1>Contact History</h1>
               <p>
-                Track every contact query and see whether the admin has
-                resolved it.
+                Track your support queries and see whether Fixly has resolved them.
               </p>
             </div>
           </div>
@@ -253,7 +251,7 @@ const ContactHistory = () => {
               </p>
             </div>
             <span className="fch-list-note">
-              Status reflects the latest admin action
+              Status reflects the latest support action
             </span>
           </div>
 
@@ -359,7 +357,6 @@ const ContactHistory = () => {
           )}
         </section>
       </div>
-    </AdminLayout>
   );
 };
 
