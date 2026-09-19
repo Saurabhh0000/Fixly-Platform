@@ -21,8 +21,17 @@ public final class ContactMessageSpecification {
 
     public static Specification<ContactMessage> withFilters(
             ContactUserType userType, ContactStatus status, ContactReason reason, String search) {
+        return withFiltersForUser(userType, status, reason, search, null);
+    }
+
+    public static Specification<ContactMessage> withFiltersForUser(
+            ContactUserType userType, ContactStatus status, ContactReason reason, String search, Long userId) {
         return (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
+
+            if (userId != null) {
+                predicate = cb.and(predicate, cb.equal(root.get("user").get("userId"), userId));
+            }
 
             if (userType != null) {
                 predicate = cb.and(predicate, cb.equal(root.get("userType"), userType));
