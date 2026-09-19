@@ -10,7 +10,7 @@ const PrivateRoute = ({ children, role }) => {
   if (!user) return <Navigate to="/login" replace />;
 
   // ✅ ROLE MISMATCH → REDIRECT TO DASHBOARD
-  if (role && user.role !== role) {
+  if (role && (Array.isArray(role) ? !role.includes(user.role) : user.role !== role)) {
     const redirect =
       user.role === "ADMIN"
         ? "/admin/dashboard"
