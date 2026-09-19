@@ -131,15 +131,11 @@ const Register = () => {
               </span>
             </div>
 
-            <h2 className="rg-left-heading">
-              Your home deserves
-              <br />
-              just a click away.
-            </h2>
+            <div className="rg-hero"><span className="rg-eyebrow"><span className="rg-eyebrow-dot" /> Welcome to Fixly</span><h2 className="rg-left-heading">A better way to <span>get things done.</span></h2>
 
             <p className="rg-left-sub">
               Create your Fixly account and discover a simpler way to find, book, and manage trusted local services.
-            </p>
+            </p><div className="rg-feature-strip"><div className="rg-feature"><FaCheckCircle /> Verified professionals</div><div className="rg-feature"><FaShieldAlt /> Secure bookings</div><div className="rg-feature"><FaStar /> Real ratings</div><div className="rg-feature"><FaClock /> Fast responses</div></div></div>
 
             {/* FEATURES */}
             <div className="rg-features">
@@ -162,7 +158,7 @@ const Register = () => {
         </div>
 
         {/* ===== RIGHT PANEL ===== */}
-        <div className="rg-right">
+        <div className="rg-right"><div className="rg-right-inner">
           {/* HEADER */}
           <div className="rg-right-header">
             <div className="rg-right-icon">
@@ -332,7 +328,7 @@ const Register = () => {
             </Link>
           </p>
         </div>
-      </div>
+      </div></div>
     </div>
   );
 };
