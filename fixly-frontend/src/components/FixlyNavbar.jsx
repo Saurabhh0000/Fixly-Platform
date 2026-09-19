@@ -492,6 +492,13 @@ const FixlyNavbar = () => {
                   <FaClipboardList className="fnav-link-icon" /> Bookings
                 </Link>
               )}
+              {user.role === "PROVIDER" && (
+                <Link
+                  to="/contact-history"
+                  className={`fnav-link ${isActive("/contact-history") ? "fnav-link-active" : ""}`}>
+                  <FaHistory className="fnav-link-icon" /> Contact History
+                </Link>
+              )}
 
               {user.role === "USER" && (
                 <>
@@ -504,6 +511,11 @@ const FixlyNavbar = () => {
                     to="/user/bookings"
                     className={`fnav-link ${isActive("/user/bookings") ? "fnav-link-active" : ""}`}>
                     <FaClipboardList className="fnav-link-icon" /> My Bookings
+                  </Link>
+                  <Link
+                    to="/contact-history"
+                    className={`fnav-link ${isActive("/contact-history") ? "fnav-link-active" : ""}`}>
+                    <FaHistory className="fnav-link-icon" /> Contact History
                   </Link>
                 </>
               )}
@@ -526,11 +538,6 @@ const FixlyNavbar = () => {
                     to="/admin/contact"
                     className={`fnav-link ${isActive("/admin/contact") ? "fnav-link-active" : ""}`}>
                     <FaEnvelope className="fnav-link-icon" /> Contact
-                  </Link>
-                  <Link
-                    to="/admin/contact-history"
-                    className={`fnav-link ${isActive("/admin/contact-history") ? "fnav-link-active" : ""}`}>
-                    <FaHistory className="fnav-link-icon" /> Contact History
                   </Link>
                 </>
               )}
@@ -745,6 +752,11 @@ const FixlyNavbar = () => {
                   onClick={() => go("/provider/bookings")}>
                   <FaClipboardList className="fnav-ml-icon" /> Bookings
                 </button>
+                <button
+                  className={`fnav-mobile-link ${isActive("/contact-history") ? "fnav-mobile-link-active" : ""}`}
+                  onClick={() => go("/contact-history")}>
+                  <FaHistory className="fnav-ml-icon" /> Contact History
+                </button>
               )}
 
               {user.role === "USER" && (
@@ -758,6 +770,11 @@ const FixlyNavbar = () => {
                     className={`fnav-mobile-link ${isActive("/user/bookings") ? "fnav-mobile-link-active" : ""}`}
                     onClick={() => go("/user/bookings")}>
                     <FaClipboardList className="fnav-ml-icon" /> My Bookings
+                  </button>
+                  <button
+                    className={`fnav-mobile-link ${isActive("/contact-history") ? "fnav-mobile-link-active" : ""}`}
+                    onClick={() => go("/contact-history")}>
+                    <FaHistory className="fnav-ml-icon" /> Contact History
                   </button>
                   <button
                     className="fnav-mobile-link fnav-ml-blue"
@@ -788,12 +805,6 @@ const FixlyNavbar = () => {
                     onClick={() => go("/admin/contact")}>
                     <FaEnvelope className="fnav-ml-icon" />
                     Contact Management
-                  </button>
-                  <button
-                    className={`fnav-mobile-link ${isActive("/admin/contact-history") ? "fnav-mobile-link-active" : ""}`}
-                    onClick={() => go("/admin/contact-history")}>
-                    <FaHistory className="fnav-ml-icon" />
-                    Contact History
                   </button>
                 </>
               )}
