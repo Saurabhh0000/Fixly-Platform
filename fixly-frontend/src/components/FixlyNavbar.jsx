@@ -19,6 +19,7 @@ import {
   FaTimes,
   FaUserCircle,
   FaListAlt,
+  FaHistory,
   FaArrowUp,
 } from "react-icons/fa";
 import "../styles/fixly-navbar.css";
@@ -525,6 +526,11 @@ const FixlyNavbar = () => {
                     to="/admin/contact"
                     className={`fnav-link ${isActive("/admin/contact") ? "fnav-link-active" : ""}`}>
                     <FaEnvelope className="fnav-link-icon" /> Contact
+                  </Link>
+                  <Link
+                    to="/admin/contact-history"
+                    className={`fnav-link ${isActive("/admin/contact-history") ? "fnav-link-active" : ""}`}>
+                    <FaHistory className="fnav-link-icon" /> Contact History
                   </Link>
                 </>
               )}
