@@ -130,7 +130,7 @@ const Login = () => {
 
             <p className="lg-left-sub">
               Book trusted local professionals, manage your services, and get things done without the hassle.
-            </p>
+            </p><div className="lg-trust-row"><div className="lg-avatar-stack"><span className="lg-avatar">F</span><span className="lg-avatar">R</span><span className="lg-avatar">A</span></div><div className="lg-trust-text"><strong>Built for everyday moments</strong><span>Find help. Book confidently. Get it done.</span></div></div></div>
 
             <div className="lg-features">
               {features.map((f, i) => (
@@ -151,7 +151,7 @@ const Login = () => {
         </div>
 
         {/* ===== RIGHT PANEL ===== */}
-        <div className="lg-right">
+        <div className="lg-right"><div className="lg-right-inner">
           <div className="lg-right-header">
             <div className="lg-right-icon">
               <FaSignInAlt />
@@ -216,14 +216,14 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="lg-register-text">
+          <div className="lg-divider">or</div><p className="lg-register-text">
             Don't have an account?{" "}
             <Link to="/register" className="lg-register-link">
               Create Account
             </Link>
           </p>
         </div>
-      </div>
+      </div></div>
     </div>
   );
 };
