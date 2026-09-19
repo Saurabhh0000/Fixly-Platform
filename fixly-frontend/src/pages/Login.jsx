@@ -3,21 +3,19 @@ import { useNavigate, Link } from "react-router-dom";
 import {
   FaEnvelope,
   FaLock,
-  FaCheckCircle,
-  FaShieldAlt,
-  FaStar,
-  FaClock,
   FaEye,
   FaEyeSlash,
-  FaSignInAlt,
-  FaBolt,
   FaArrowRight,
-  FaUserCircle,
+  FaShieldAlt,
+  FaBolt,
+  FaCheckCircle,
+  FaStar,
+  FaUserFriends,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import fixlyApi from "../api/fixlyApi";
 import { AuthContext } from "../context/AuthContext";
-import "../styles/fixly-login.css";
+import "../styles/fixly-auth.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,24 +29,10 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!email.trim()) {
-      toast.error("Please enter your email address.", { duration: 3500 });
-      return;
-    }
-    if (!email.includes("@")) {
-      toast.error("Please enter a valid email address.", { duration: 3500 });
-      return;
-    }
-    if (!password.trim()) {
-      toast.error("Please enter your password.", { duration: 3500 });
-      return;
-    }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters.", {
-        duration: 3500,
-      });
-      return;
-    }
+    if (!email.trim()) return toast.error("Please enter your email address.");
+    if (!email.includes("@")) return toast.error("Please enter a valid email address.");
+    if (!password.trim()) return toast.error("Please enter your password.");
+    if (password.length < 6) return toast.error("Password must be at least 6 characters.");
 
     try {
       setLoading(true);
@@ -57,9 +41,7 @@ const Login = () => {
       login(res.data);
       localStorage.setItem("auth", btoa(`${email}:${password}`));
 
-      toast.success(`Welcome back, ${res.data.fullName} 👋`, {
-        duration: 4000,
-      });
+      toast.success(`Welcome back, ${res.data.fullName} 👋`, { duration: 4000 });
 
       switch (res.data.role) {
         case "ADMIN":
@@ -72,145 +54,141 @@ const Login = () => {
           navigate("/user/dashboard");
       }
     } catch (err) {
-      toast.error(
-        err?.response?.data?.message || "Invalid email or password",
-
-        {
-          duration: 4000,
-        },
-      );
+      toast.error(err?.response?.data?.message || "Invalid email or password", {
+        duration: 4000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const features = [
-    {
-      icon: <FaCheckCircle />,
-      title: "Verified Professionals",
-      sub: "All providers are identity-verified",
-    },
-    {
-      icon: <FaShieldAlt />,
-      title: "Secure & Safe Bookings",
-      sub: "End-to-end encrypted transactions",
-    },
-    {
-      icon: <FaStar />,
-      title: "Real Customer Ratings",
-      sub: "Honest reviews from real users",
-    },
-    {
-      icon: <FaClock />,
-      title: "Fast Service Response",
-      sub: "Providers respond within minutes",
-    },
-  ];
-
   return (
-    <div className="lg-wrapper">
-      <div className="lg-card">
-        <section className="lg-left">
-          <div className="lg-left-inner">
-            <div className="lg-brand">
-              <div className="lg-brand-icon"><FaBolt /></div>
-              <span className="lg-brand-name">Fix<span>ly</span></span>
+    <main className="fx-auth-page">
+      <div className="fx-auth-shell">
+        <section className="fx-auth-visual">
+          <div className="fx-auth-orbit fx-auth-orbit-one" />
+          <div className="fx-auth-orbit fx-auth-orbit-two" />
+
+          <Link to="/" className="fx-auth-logo" aria-label="Fixly home">
+            <span className="fx-auth-logo-mark"><FaBolt /></span>
+            <span>Fix<span>ly</span></span>
+          </Link>
+
+          <div className="fx-auth-visual-content">
+            <span className="fx-auth-kicker">YOUR EVERYDAY SERVICE PARTNER</span>
+            <h1>
+              Get things done.
+              <strong> Without the hassle.</strong>
+            </h1>
+            <p>
+              Find trusted local professionals for home, personal and everyday
+              services — all from one simple platform.
+            </p>
+
+            <div className="fx-auth-benefits">
+              <div><FaCheckCircle /><span><b>Verified professionals</b><small>Trusted local service providers</small></span></div>
+              <div><FaShieldAlt /><span><b>Safe & secure bookings</b><small>Your information stays protected</small></span></div>
+              <div><FaStar /><span><b>Real customer ratings</b><small>Choose services with confidence</small></span></div>
             </div>
+          </div>
 
-            <div className="lg-left-content">
-              <span className="lg-eyebrow">YOUR EVERYDAY SERVICE PARTNER</span>
-              <h1 className="lg-left-heading">
-                Get things done.
-                <span> Without the hassle.</span>
-              </h1>
-              <p className="lg-left-sub">
-                Find trusted local professionals for the moments that matter,
-                and book the help you need with confidence.
-              </p>
-
-              <div className="lg-trust-row">
-                <div className="lg-avatar-stack">
-                  <span className="lg-avatar">F</span>
-                  <span className="lg-avatar">R</span>
-                  <span className="lg-avatar">A</span>
-                  <span className="lg-avatar">+</span>
-                </div>
-                <div className="lg-trust-text">
-                  <strong>Built for everyday moments</strong>
-                  <span>Find help · Book confidently · Get it done</span>
-                </div>
-              </div>
+          <div className="fx-auth-visual-footer">
+            <div className="fx-auth-mini-users">
+              <span>F</span><span>R</span><span>A</span><span>+</span>
             </div>
-
-            <div className="lg-feature-strip">
-              {features.slice(0, 3).map((f, i) => (
-                <div key={i} className="lg-feature-item">
-                  <div className="lg-feature-icon">{f.icon}</div>
-                  <div className="lg-feature-text">
-                    <strong>{f.title}</strong>
-                    <span>{f.sub}</span>
-                  </div>
-                </div>
-              ))}
+            <div>
+              <b>Built for everyday moments</b>
+              <small>Find help · Book confidently · Get it done</small>
             </div>
-
-            <div className="lg-left-note">Secure account · Trusted services · Simple booking</div>
           </div>
         </section>
 
-        <section className="lg-right">
-          <div className="lg-right-inner">
-            <div className="lg-right-header">
-              <div className="lg-right-icon"><FaSignInAlt /></div>
+        <section className="fx-auth-form-panel">
+          <div className="fx-auth-form-wrap">
+            <div className="fx-auth-mobile-logo">
+              <Link to="/" className="fx-auth-logo fx-auth-logo-dark">
+                <span className="fx-auth-logo-mark"><FaBolt /></span>
+                <span>Fix<span>ly</span></span>
+              </Link>
+            </div>
+
+            <div className="fx-auth-heading">
+              <div className="fx-auth-icon"><FaLock /></div>
               <div>
-                <span className="lg-form-eyebrow">WELCOME BACK</span>
-                <h2 className="lg-right-title">Sign in to Fixly</h2>
-                <p className="lg-right-sub">Your trusted services are one sign-in away.</p>
+                <span>WELCOME BACK</span>
+                <h2>Sign in to Fixly</h2>
+                <p>Your trusted services are one sign-in away.</p>
               </div>
             </div>
 
-            <form className="lg-form" onSubmit={handleLogin}>
-              <div className="lg-field">
-                <label className="lg-label"><FaEnvelope /> Email address</label>
-                <div className="lg-input-wrap">
-                  <FaEnvelope className="lg-input-icon" />
-                  <input type="email" placeholder="you@example.com" value={email}
-                    onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+            <form className="fx-auth-form" onSubmit={handleLogin}>
+              <label className="fx-auth-field">
+                <span>Email address</span>
+                <div className="fx-auth-input">
+                  <FaEnvelope />
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                  />
                 </div>
-              </div>
+              </label>
 
-              <div className="lg-field">
-                <label className="lg-label"><FaLock /> Password</label>
-                <div className="lg-input-wrap">
-                  <FaLock className="lg-input-icon" />
-                  <input type={showPwd ? "text" : "password"} placeholder="Enter your password"
-                    value={password} onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password" />
-                  <button type="button" className="lg-eye-btn"
-                    onClick={() => setShowPwd(!showPwd)} tabIndex={-1}>
+              <label className="fx-auth-field">
+                <span>Password</span>
+                <div className="fx-auth-input">
+                  <FaLock />
+                  <input
+                    type={showPwd ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    className="fx-auth-eye"
+                    onClick={() => setShowPwd((value) => !value)}
+                    aria-label={showPwd ? "Hide password" : "Show password"}
+                  >
                     {showPwd ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
+              </label>
+
+              <div className="fx-auth-meta">
+                <label><input type="checkbox" /> Remember me</label>
+                <span>Forgot password?</span>
               </div>
 
-              <button type="submit" className="lg-submit-btn" disabled={loading}>
-                {loading ? <><span className="lg-spinner" /> Signing in…</> :
-                  <><span>Sign in to Fixly</span><FaArrowRight className="lg-btn-arrow" /></>}
+              <button type="submit" className="fx-auth-primary" disabled={loading}>
+                {loading ? (
+                  <><span className="fx-auth-spinner" /> Signing in…</>
+                ) : (
+                  <>Sign in to Fixly <FaArrowRight /></>
+                )}
               </button>
             </form>
 
-            <div className="lg-security">
+            <div className="fx-auth-secure">
               <FaShieldAlt />
               <span>Your account and personal information are protected.</span>
             </div>
 
-            <p className="lg-register-text">
-              New to Fixly? <Link to="/register" className="lg-register-link">Create your account <FaArrowRight /></Link>
+            <p className="fx-auth-switch">
+              New to Fixly? <Link to="/register">Create your account <FaArrowRight /></Link>
+            </p>
+
+            <p className="fx-auth-bottom-note">
+              <FaUserFriends /> Trusted by people looking for reliable local services
             </p>
           </div>
         </section>
       </div>
-    </div>
-  );};
+    </main>
+  );
+};
 
 export default Login;
