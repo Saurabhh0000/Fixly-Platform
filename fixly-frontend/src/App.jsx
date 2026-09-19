@@ -150,7 +150,7 @@ function App() {
         <Route
           path="/contact-history"
           element={
-            <PrivateRoute>
+            <PrivateRoute role={["USER", "PROVIDER"]}>
               <ContactHistory />
             </PrivateRoute>
           }
