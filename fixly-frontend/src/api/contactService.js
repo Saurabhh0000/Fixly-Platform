@@ -14,3 +14,8 @@ export async function updateContactStatus(id, status) {
   const res = await fixlyApi.patch(`/api/admin/contact/${id}/status`, { status });
   return res.data;
 }
+
+export async function getMyContactHistory(params) {
+  const res = await fixlyApi.get("/api/contact/history", { params });
+  return res.data;
+}
