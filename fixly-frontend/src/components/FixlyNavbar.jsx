@@ -747,16 +747,18 @@ const FixlyNavbar = () => {
               </button>
 
               {user.role === "PROVIDER" && (
-                <button
-                  className={`fnav-mobile-link ${isActive("/provider/bookings") ? "fnav-mobile-link-active" : ""}`}
-                  onClick={() => go("/provider/bookings")}>
-                  <FaClipboardList className="fnav-ml-icon" /> Bookings
-                </button>
-                <button
-                  className={`fnav-mobile-link ${isActive("/contact-history") ? "fnav-mobile-link-active" : ""}`}
-                  onClick={() => go("/contact-history")}>
-                  <FaHistory className="fnav-ml-icon" /> Contact History
-                </button>
+                <>
+                  <button
+                    className={`fnav-mobile-link ${isActive("/provider/bookings") ? "fnav-mobile-link-active" : ""}`}
+                    onClick={() => go("/provider/bookings")}>
+                    <FaClipboardList className="fnav-ml-icon" /> Bookings
+                  </button>
+                  <button
+                    className={`fnav-mobile-link ${isActive("/contact-history") ? "fnav-mobile-link-active" : ""}`}
+                    onClick={() => go("/contact-history")}>
+                    <FaHistory className="fnav-ml-icon" /> Contact History
+                  </button>
+                </>
               )}
 
               {user.role === "USER" && (
