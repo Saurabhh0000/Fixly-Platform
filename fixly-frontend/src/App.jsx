@@ -28,6 +28,7 @@ import CancellationPolicy from "./pages/CancellationPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import Contact from "./pages/Contact";
 import ContactManagement from "./pages/ContactManagement";
+import ContactHistory from "./pages/ContactHistory";
 function App() {
   return (
     <BrowserRouter>
@@ -143,6 +144,14 @@ function App() {
           element={
             <PrivateRoute role="ADMIN">
               <ContactManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/contact-history"
+          element={
+            <PrivateRoute role="ADMIN">
+              <ContactHistory />
             </PrivateRoute>
           }
         />
