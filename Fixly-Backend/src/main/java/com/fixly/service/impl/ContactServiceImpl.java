@@ -3,11 +3,15 @@ package com.fixly.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fixly.chat.AuthenticatedUserResolver;
 import com.fixly.dto.request.ContactRequest;
 import com.fixly.dto.response.ContactResponse;
+import com.fixly.dto.response.ContactAdminResponse;
+import com.fixly.dto.response.PageResponse;
 import com.fixly.entity.ContactMessage;
 import com.fixly.entity.User;
 import com.fixly.enums.ContactReason;
@@ -15,7 +19,9 @@ import com.fixly.enums.ContactUserType;
 import com.fixly.enums.Role;
 import com.fixly.exception.BadRequestException;
 import com.fixly.repository.ContactMessageRepository;
+import com.fixly.repository.ContactMessageSpecification;
 import com.fixly.service.ContactService;
+import com.fixly.enums.ContactStatus;
 
 @Service
 public class ContactServiceImpl implements ContactService {
@@ -68,6 +74,40 @@ public class ContactServiceImpl implements ContactService {
         }
 
         return ContactResponse.ok("Your message has been received successfully.");
+    }
+
+    @Override
+    public PageResponse<ContactAdminResponse> getMyContactHistory(
+            ContactStatus status, String search, Pageable pageable) {
+        User user = authenticatedUserResolver.resolveCurrentUser();
+        ContactUserType userType = resolveUserType(user);
+
+        Page<ContactMessage> page = contactMessageRepository.findAll(
+                ContactMessageSpecification.withFiltersForUser(
+                        userType, status, null, search, user.getUserId()),
+                pageable);
+
+        return PageResponse.from(page.map(this::toContactHistoryResponse));
+    }
+
+    private ContactAdminResponse toContactHistoryResponse(ContactMessage entity) {
+        return ContactAdminResponse.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .email(entity.getEmail())
+                .phone(entity.getPhone())
+                .subject(entity.getSubject())
+                .message(entity.getMessage())
+                .reason(entity.getReason())
+                .userType(entity.getUserType())
+                .status(entity.getStatus())
+                .userId(entity.getUser() != null ? entity.getUser().getUserId() : null)
+                .userName(entity.getUser() != null ? entity.getUser().getFullName() : null)
+                .userEmail(entity.getUser() != null ? entity.getUser().getEmail() : null)
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .resolvedAt(entity.getResolvedAt())
+                .build();
     }
 
     private ContactUserType resolveUserType(User user) {
