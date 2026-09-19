@@ -123,14 +123,13 @@ const Login = () => {
             </div>
 
             <h2 className="lg-left-heading">
-              Trusted home services,
+              Services that make
               <br />
               just a click away.
             </h2>
 
             <p className="lg-left-sub">
-              Thousands of happy customers across India trust Fixly for
-              reliable, affordable home services.
+              Book trusted local professionals, manage your services, and get things done without the hassle.
             </p>
 
             <div className="lg-features">
@@ -157,9 +156,9 @@ const Login = () => {
             <div className="lg-right-icon">
               <FaSignInAlt />
             </div>
-            <h3 className="lg-right-title">Welcome Back</h3>
+            <h3 className="lg-right-title">Welcome back to Fixly</h3>
             <p className="lg-right-sub">
-              Sign in to continue to your Fixly account
+              Your trusted services are just one sign-in away.
             </p>
           </div>
 
