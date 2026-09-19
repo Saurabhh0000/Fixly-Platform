@@ -49,6 +49,7 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.GET, "/api/addresses/cities").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/providers/search").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/contact").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/contact/history").hasAnyRole("USER", "PROVIDER")
                                                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                                                 .requestMatchers("/api/chat").permitAll()
 
