@@ -110,30 +110,40 @@ const Login = () => {
   return (
     <div className="lg-wrapper">
       <div className="lg-card">
-        {/* ===== LEFT PANEL ===== */}
-        <div className="lg-left">
+        <section className="lg-left">
           <div className="lg-left-inner">
             <div className="lg-brand">
-              <div className="lg-brand-icon">
-                <FaBolt />
-              </div>
-              <span className="lg-brand-name">
-                Fix<span>ly</span>
-              </span>
+              <div className="lg-brand-icon"><FaBolt /></div>
+              <span className="lg-brand-name">Fix<span>ly</span></span>
             </div>
 
-            <h2 className="lg-left-heading">
-              Services that make
-              <br />
-              just a click away.
-            </h2>
+            <div className="lg-left-content">
+              <span className="lg-eyebrow">YOUR EVERYDAY SERVICE PARTNER</span>
+              <h1 className="lg-left-heading">
+                Get things done.
+                <span> Without the hassle.</span>
+              </h1>
+              <p className="lg-left-sub">
+                Find trusted local professionals for the moments that matter,
+                and book the help you need with confidence.
+              </p>
 
-            <p className="lg-left-sub">
-              Book trusted local professionals, manage your services, and get things done without the hassle.
-            </p><div className="lg-trust-row"><div className="lg-avatar-stack"><span className="lg-avatar">F</span><span className="lg-avatar">R</span><span className="lg-avatar">A</span></div><div className="lg-trust-text"><strong>Built for everyday moments</strong><span>Find help. Book confidently. Get it done.</span></div></div></div>
+              <div className="lg-trust-row">
+                <div className="lg-avatar-stack">
+                  <span className="lg-avatar">F</span>
+                  <span className="lg-avatar">R</span>
+                  <span className="lg-avatar">A</span>
+                  <span className="lg-avatar">+</span>
+                </div>
+                <div className="lg-trust-text">
+                  <strong>Built for everyday moments</strong>
+                  <span>Find help · Book confidently · Get it done</span>
+                </div>
+              </div>
+            </div>
 
-            <div className="lg-features">
-              {features.map((f, i) => (
+            <div className="lg-feature-strip">
+              {features.slice(0, 3).map((f, i) => (
                 <div key={i} className="lg-feature-item">
                   <div className="lg-feature-icon">{f.icon}</div>
                   <div className="lg-feature-text">
@@ -144,88 +154,63 @@ const Login = () => {
               ))}
             </div>
 
-            <div className="lg-left-note">
-              🔒 Your data is safe and never shared with third parties.
-            </div>
+            <div className="lg-left-note">Secure account · Trusted services · Simple booking</div>
           </div>
-        </div>
+        </section>
 
-        {/* ===== RIGHT PANEL ===== */}
-        <div className="lg-right"><div className="lg-right-inner">
-          <div className="lg-right-header">
-            <div className="lg-right-icon">
-              <FaSignInAlt />
+        <section className="lg-right">
+          <div className="lg-right-inner">
+            <div className="lg-right-header">
+              <div className="lg-right-icon"><FaSignInAlt /></div>
+              <div>
+                <span className="lg-form-eyebrow">WELCOME BACK</span>
+                <h2 className="lg-right-title">Sign in to Fixly</h2>
+                <p className="lg-right-sub">Your trusted services are one sign-in away.</p>
+              </div>
             </div>
-            <h3 className="lg-right-title">Welcome back to Fixly</h3>
-            <p className="lg-right-sub">
-              Your trusted services are just one sign-in away.
+
+            <form className="lg-form" onSubmit={handleLogin}>
+              <div className="lg-field">
+                <label className="lg-label"><FaEnvelope /> Email address</label>
+                <div className="lg-input-wrap">
+                  <FaEnvelope className="lg-input-icon" />
+                  <input type="email" placeholder="you@example.com" value={email}
+                    onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+                </div>
+              </div>
+
+              <div className="lg-field">
+                <label className="lg-label"><FaLock /> Password</label>
+                <div className="lg-input-wrap">
+                  <FaLock className="lg-input-icon" />
+                  <input type={showPwd ? "text" : "password"} placeholder="Enter your password"
+                    value={password} onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password" />
+                  <button type="button" className="lg-eye-btn"
+                    onClick={() => setShowPwd(!showPwd)} tabIndex={-1}>
+                    {showPwd ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" className="lg-submit-btn" disabled={loading}>
+                {loading ? <><span className="lg-spinner" /> Signing in…</> :
+                  <><span>Sign in to Fixly</span><FaArrowRight className="lg-btn-arrow" /></>}
+              </button>
+            </form>
+
+            <div className="lg-security">
+              <FaShieldAlt />
+              <span>Your account and personal information are protected.</span>
+            </div>
+
+            <p className="lg-register-text">
+              New to Fixly? <Link to="/register" className="lg-register-link">Create your account <FaArrowRight /></Link>
             </p>
           </div>
-
-          <form className="lg-form" onSubmit={handleLogin}>
-            <div className="lg-field">
-              <label className="lg-label">
-                <FaEnvelope className="lg-label-icon" /> Email Address
-              </label>
-              <div className="lg-input-wrap">
-                <FaEnvelope className="lg-input-icon" />
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                />
-              </div>
-            </div>
-
-            <div className="lg-field">
-              <label className="lg-label">
-                <FaLock className="lg-label-icon" /> Password
-              </label>
-              <div className="lg-input-wrap">
-                <FaLock className="lg-input-icon" />
-                <input
-                  type={showPwd ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  className="lg-eye-btn"
-                  onClick={() => setShowPwd(!showPwd)}
-                  tabIndex={-1}>
-                  {showPwd ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-            </div>
-
-            <button type="submit" className="lg-submit-btn" disabled={loading}>
-              {loading ? (
-                <>
-                  <span className="lg-spinner" /> Signing in…
-                </>
-              ) : (
-                <>
-                  <FaUserCircle className="lg-btn-icon" /> Sign In{" "}
-                  <FaArrowRight className="lg-btn-arrow" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="lg-divider">or</div><p className="lg-register-text">
-            Don't have an account?{" "}
-            <Link to="/register" className="lg-register-link">
-              Create Account
-            </Link>
-          </p>
-        </div>
-      </div></div>
+        </section>
+      </div>
     </div>
-  );
-};
+  );};
 
 export default Login;
