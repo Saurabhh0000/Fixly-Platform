@@ -132,14 +132,13 @@ const Register = () => {
             </div>
 
             <h2 className="rg-left-heading">
-              Trusted home services,
+              Your home deserves
               <br />
               just a click away.
             </h2>
 
             <p className="rg-left-sub">
-              Join thousands of happy customers across India who trust Fixly for
-              their home service needs.
+              Create your Fixly account and discover a simpler way to find, book, and manage trusted local services.
             </p>
 
             {/* FEATURES */}
@@ -169,9 +168,9 @@ const Register = () => {
             <div className="rg-right-icon">
               <FaUserPlus />
             </div>
-            <h3 className="rg-right-title">Create Account</h3>
+            <h3 className="rg-right-title">Create your Fixly account</h3>
             <p className="rg-right-sub">
-              Fill in the details below to get started
+              A few details now. A smarter service experience next.
             </p>
           </div>
 
