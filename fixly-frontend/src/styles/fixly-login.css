@@ -21,3 +21,62 @@
 @media(max-width:700px){.lg-card{display:flex;flex-direction:column}.lg-left{height:31%;min-height:185px;flex:none}.lg-left-inner{padding:20px 22px 17px}.lg-brand-icon{width:34px;height:34px;border-radius:10px}.lg-brand-name{font-size:1.35rem}.lg-hero{margin:auto 0}.lg-eyebrow{font-size:.58rem;padding:5px 8px;margin-bottom:9px}.lg-left-heading{font-size:clamp(1.65rem,7.5vw,2.45rem);line-height:1;margin-bottom:8px}.lg-left-sub{font-size:.66rem;line-height:1.45;max-width:500px}.lg-trust-row,.lg-left-footer{display:none}.lg-right{height:69%;min-height:0;padding:22px 20px 18px;align-items:flex-start;overflow:hidden}.lg-right-inner{width:min(100%,430px);margin:auto}.lg-right-header{margin-bottom:17px}.lg-right-kicker{font-size:.59rem;margin-bottom:6px}.lg-right-title{font-size:1.45rem;margin-bottom:5px}.lg-right-sub{font-size:.68rem}.lg-form{gap:10px}.lg-field{gap:4px}.lg-label{font-size:.61rem}.lg-input-wrap{height:43px;border-radius:10px;padding:0 11px}.lg-input-wrap input{font-size:.73rem}.lg-submit-btn{height:44px;font-size:.72rem}.lg-divider{margin:11px 0 9px}.lg-register-text{font-size:.64rem}}
 @media(max-width:380px){.lg-left{height:27%;min-height:160px}.lg-right{height:73%;padding:17px 15px}.lg-left-inner{padding:16px 16px 12px}.lg-left-heading{font-size:1.5rem}.lg-left-sub{font-size:.61rem}.lg-right-title{font-size:1.3rem}.lg-form{gap:8px}.lg-input-wrap{height:40px}.lg-submit-btn{height:41px}}
 @media(prefers-reduced-motion:reduce){.lg-submit-btn{transition:none}}
+
+/* Final fit-to-viewport SaaS refinement */
+.lg-wrapper{height:100dvh;min-height:100svh;overflow:hidden;padding:0;background:#f0fdf4}
+.lg-card{height:100%;min-height:0;max-width:none;border-radius:0;box-shadow:none}
+.lg-left{min-width:0}
+.lg-left-inner{height:100%;min-height:0;padding:clamp(30px,5vh,68px) clamp(28px,5vw,76px)}
+.lg-brand{margin-bottom:clamp(24px,5vh,58px)}
+.lg-left-content{max-width:680px}
+.lg-eyebrow,.lg-form-eyebrow{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.14em;color:#bbf7d0;margin-bottom:13px}
+.lg-left-heading{font-size:clamp(2.25rem,4.2vw,4.35rem);max-width:650px}
+.lg-left-heading span{display:block;color:#dcfce7}
+.lg-left-sub{max-width:590px}
+.lg-trust-row{display:flex;align-items:center;gap:14px;margin-top:28px}
+.lg-avatar-stack{display:flex;align-items:center}
+.lg-avatar{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-left:-7px;border:2px solid #16a34a;background:#dcfce7;color:#166534;font-size:.62rem;font-weight:800}
+.lg-avatar:first-child{margin-left:0}
+.lg-avatar:nth-child(2){background:#fff;color:#15803d}.lg-avatar:nth-child(3){background:#bbf7d0}.lg-avatar:nth-child(4){background:#15803d;color:#fff}
+.lg-trust-text{display:flex;flex-direction:column;gap:2px}.lg-trust-text strong{font-size:.75rem}.lg-trust-text span{font-size:.65rem;color:rgba(255,255,255,.68)}
+.lg-feature-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:auto;max-width:700px}
+.lg-feature-item{min-width:0;padding:12px;border-radius:13px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.lg-feature-text span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lg-left-note{margin-top:14px;width:auto;display:block;max-width:max-content;padding:7px 11px;font-size:.61rem}
+.lg-right{min-width:0;padding:28px clamp(28px,5vw,80px);overflow:hidden}
+.lg-right-inner{width:100%;max-width:470px;margin:auto}
+.lg-right-header{display:flex;align-items:center;gap:14px;margin-bottom:27px;text-align:left}
+.lg-right-icon{width:46px;height:46px;flex:0 0 46px;margin:0;border-radius:13px}
+.lg-form-eyebrow{color:#16a34a;margin:0 0 4px}
+.lg-right-title{font-size:clamp(1.5rem,2.2vw,2rem);margin:0 0 4px}
+.lg-right-sub{font-size:.76rem}
+.lg-form{gap:14px}
+.lg-field{gap:6px}
+.lg-label{font-size:.68rem}
+.lg-input-wrap{min-height:48px;padding:11px 13px;border-radius:12px}
+.lg-submit-btn{min-height:48px;margin-top:3px;padding:12px 16px}
+.lg-security{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:15px;color:#64748b;font-size:.64rem}
+.lg-security svg{color:#16a34a}
+.lg-register-text{font-size:.72rem;margin-top:17px}
+.lg-register-link{display:inline-flex;align-items:center;gap:5px}
+@media(max-width:1050px){.lg-left-inner{padding:28px 34px}.lg-right{padding:25px 34px}.lg-left-heading{font-size:clamp(2rem,4vw,3.3rem)}.lg-feature-strip{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .lg-wrapper{height:100dvh;min-height:100svh;overflow:hidden;background:#f0fdf4}
+ .lg-card{display:grid;grid-template-rows:39% 61%;height:100dvh;min-height:0}
+ .lg-left{min-height:0}
+ .lg-left-inner{height:100%;padding:20px 20px 16px;justify-content:flex-start}
+ .lg-brand{margin-bottom:18px}.lg-brand-icon{width:36px;height:36px;border-radius:10px}.lg-brand-name{font-size:1.5rem}
+ .lg-eyebrow{font-size:.55rem;margin-bottom:8px}.lg-left-heading{font-size:clamp(1.65rem,8vw,2.35rem);line-height:1.02;margin-bottom:9px}.lg-left-sub{font-size:.68rem;line-height:1.45;max-width:95%}
+ .lg-trust-row{margin-top:14px}.lg-avatar{width:26px;height:26px}.lg-trust-text strong{font-size:.65rem}.lg-trust-text span{font-size:.56rem}
+ .lg-feature-strip,.lg-left-note{display:none}
+ .lg-right{padding:18px 20px 20px;overflow:hidden}
+ .lg-right-inner{max-width:500px}
+ .lg-right-header{margin-bottom:17px;gap:11px}.lg-right-icon{width:40px;height:40px;flex-basis:40px;border-radius:11px;font-size:.9rem}
+ .lg-form-eyebrow{font-size:.53rem}.lg-right-title{font-size:1.35rem}.lg-right-sub{font-size:.65rem}
+ .lg-form{gap:11px}.lg-label{font-size:.61rem}.lg-input-wrap{min-height:43px;padding:9px 11px;border-radius:10px}.lg-input-wrap input{font-size:.78rem}
+ .lg-submit-btn{min-height:43px;font-size:.76rem;border-radius:10px}.lg-security{margin-top:9px;font-size:.55rem}.lg-register-text{font-size:.64rem;margin-top:9px}
+}
+@media(max-width:380px){
+ .lg-card{grid-template-rows:36% 64%}.lg-left-inner{padding:16px 16px 12px}.lg-brand{margin-bottom:13px}.lg-left-heading{font-size:1.5rem}.lg-left-sub{font-size:.62rem}.lg-right{padding:15px 16px}.lg-right-title{font-size:1.22rem}.lg-form{gap:9px}.lg-input-wrap{min-height:40px}.lg-submit-btn{min-height:40px}
+}
+@media(prefers-reduced-motion:reduce){.lg-submit-btn,.lg-feature-item{transition:none}}
